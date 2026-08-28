@@ -1,0 +1,15 @@
+android/
+node_modules/
+dist/
+.idea/
+www/
+*.apk
+*.aab
+scripts/
+main.js
+lite.html
+lite.js
+lite.css
+ANDROID.md
+package-lock.json
+capacitor.config.json

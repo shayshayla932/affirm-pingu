@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="10dp"
+    android:background="@drawable/widget_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="今日"
+        android:textColor="#FFE14A"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/widget_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="0"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:paddingTop="2dp"
+        android:paddingBottom="4dp" />
+
+    <ImageView
+        android:id="@+id/widget_pingu"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:src="@drawable/widget_pingu"
+        android:contentDescription="@string/widget_pingu_desc"
+        android:scaleType="fitCenter" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="点我 NOOT"
+        android:textColor="#FFFFFF"
+        android:textSize="11sp"
+        android:paddingTop="4dp" />
+</LinearLayout>

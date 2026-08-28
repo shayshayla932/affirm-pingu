@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Affirm Pingu</string>
+    <string name="lite_app_name">Pingu 快捷</string>
+    <string name="title_activity_main">Affirm Pingu</string>
+    <string name="package_name">com.shaygu.affirmpingu</string>
+    <string name="custom_url_scheme">com.shaygu.affirmpingu</string>
+    <string name="widget_name">Pingu 计数</string>
+    <string name="widget_description">主屏幕点企鹅即可显化计数</string>
+    <string name="widget_pingu_desc">点企鹅显化</string>
+</resources>

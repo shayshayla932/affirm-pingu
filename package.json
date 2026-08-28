@@ -1,0 +1,49 @@
+{
+  "name": "affirm-pingu",
+  "version": "1.0.0",
+  "description": "像素风肯定语计数器 · 本机应用",
+  "main": "main.js",
+  "author": "shaygu",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "app": "bash scripts/build-app.sh",
+    "pack": "electron-builder --mac dir",
+    "dist": "electron-builder --mac dmg",
+    "www": "bash scripts/sync-www.sh",
+    "cap:sync": "npm run www && npx cap sync android",
+    "cap:open": "npm run cap:sync && npx cap open android",
+    "apk:hint": "echo 'Install Android Studio, then: npm run cap:open  → Build APK'"
+  },
+  "build": {
+    "appId": "com.shaygu.affirmpingu",
+    "productName": "Affirm Pingu",
+    "files": [
+      "main.js",
+      "index.html",
+      "styles.css",
+      "app.js"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "target": [
+        "dmg",
+        "dir"
+      ],
+      "identity": null
+    }
+  },
+  "devDependencies": {
+    "electron": "^37.2.0",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.0",
+    "@capacitor/app": "^8.1.1",
+    "@capacitor/cli": "^8.5.0",
+    "@capacitor/core": "^8.5.0"
+  }
+}

@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#e93abb" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>Affirm Pingu</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="assets/icon-192.png" />
+  <link rel="apple-touch-icon" href="assets/icon-192.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+  <div class="desk">
+    <div class="laptop">
+      <div class="laptop-bezel">
+        <div class="webcam"></div>
+        <div class="screen" id="screen">
+          <div class="scene-bg" aria-hidden="true">
+            <div class="bg-photo" id="bg-photo">
+              <div class="bg-aurora">
+                <span class="aurora-blob aurora-a"></span>
+                <span class="aurora-blob aurora-b"></span>
+                <span class="aurora-blob aurora-c"></span>
+                <span class="aurora-blob aurora-d"></span>
+              </div>
+            </div>
+            <div class="scene-vignette"></div>
+          </div>
+
+          <!-- Left icon rail -->
+          <nav class="icon-rail" id="icon-rail" aria-label="侧栏">
+            <div class="rail-items">
+              <button type="button" class="rail-btn" id="icon-calendar" title="日历" aria-label="日历" aria-expanded="false">
+                <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="rail-btn" id="icon-affirm" title="肯定语" aria-label="肯定语">
+                <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="rail-btn" id="icon-stats" title="统计" aria-label="统计" aria-expanded="false">
+                <i class="fa-solid fa-trophy" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="rail-btn" id="icon-chat" title="Pingu 对话" aria-label="Pingu 对话">
+                <i class="fa-solid fa-comment" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="rail-btn" id="icon-resources" title="资源" aria-label="资源" aria-expanded="false">
+                <i class="fa-solid fa-book" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="rail-btn rail-btn-bottom" id="icon-settings" title="外观设置" aria-label="外观设置">
+                <i class="fa-solid fa-gear" aria-hidden="true"></i>
+              </button>
+            </div>
+            <button type="button" class="rail-toggle" id="rail-toggle" title="收起侧栏" aria-label="收起侧栏" aria-expanded="true">
+              <svg class="rail-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M9.5 6.5 15 12l-5.5 5.5"/>
+              </svg>
+            </button>
+          </nav>
+
+          <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+
+          <!-- Calendar drawer (closed by default) -->
+          <aside class="calendar-drawer hud-box" id="calendar-drawer" hidden>
+            <div class="drawer-head">
+              <span>日历</span>
+              <button type="button" class="icon-close" id="close-calendar" aria-label="关闭">×</button>
+            </div>
+            <div class="panel-tabs">
+              <button type="button" class="tab active" data-view="calendar" id="tab-calendar">日历</button>
+              <button type="button" class="tab" data-view="list" id="tab-list">列表</button>
+            </div>
+            <div class="panel-body">
+              <div id="calendar-view" class="view active">
+                <div class="cal-header">
+                  <button type="button" id="prev-month" class="nav-btn" aria-label="上个月">
+                    <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                  <span id="cal-title" class="cal-title"></span>
+                  <button type="button" id="next-month" class="nav-btn" aria-label="下个月">
+                    <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  </button>
+                </div>
+                <div class="cal-weekdays">
+                  <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+                </div>
+                <div id="cal-grid" class="cal-grid"></div>
+                <div class="cal-legend" aria-hidden="true">
+                  <span>少</span>
+                  <i class="heat-swatch heat-0"></i>
+                  <i class="heat-swatch heat-1"></i>
+                  <i class="heat-swatch heat-2"></i>
+                  <i class="heat-swatch heat-3"></i>
+                  <i class="heat-swatch heat-4"></i>
+                  <span>多</span>
+                </div>
+              </div>
+              <div id="list-view" class="view">
+                <ul id="history-list" class="history-list"></ul>
+              </div>
+            </div>
+            <div class="panel-footer">
+              <div class="stat-chip">
+                <span class="stat-chip-label">今日</span>
+                <strong class="stat-chip-value" id="today-count">0</strong>
+              </div>
+              <div class="stat-chip">
+                <span class="stat-chip-label">累计</span>
+                <strong class="stat-chip-value" id="total-count">0</strong>
+              </div>
+            </div>
+          </aside>
+
+          <!-- Stats drawer (closed by default) -->
+          <aside class="stats-drawer hud-box" id="stats-drawer" hidden>
+            <div class="drawer-head">
+              <span>统计</span>
+              <button type="button" class="icon-close" id="close-stats" aria-label="关闭">×</button>
+            </div>
+            <div class="panel-body stats-body">
+              <section class="stats-block stats-today-block">
+                <h2 class="stats-heading">今日</h2>
+                <strong class="stats-today-value" id="stats-today-count">0</strong>
+              </section>
+              <section class="stats-block stats-chart-block">
+                <div class="panel-tabs stats-range-tabs" role="tablist" aria-label="统计范围">
+                  <button type="button" class="tab active" data-range="week" id="stats-tab-week" role="tab" aria-selected="true">周</button>
+                  <button type="button" class="tab" data-range="month" id="stats-tab-month" role="tab" aria-selected="false">月</button>
+                </div>
+                <div class="stats-chart is-line" id="stats-chart" role="img" aria-label="次数走势图"></div>
+                <div class="stats-chart-foot">
+                  <span>合计</span>
+                  <strong id="stats-range-total">0</strong>
+                </div>
+              </section>
+            </div>
+          </aside>
+
+          <!-- Resources drawer (closed by default) -->
+          <aside class="resources-drawer hud-box" id="resources-drawer" hidden>
+            <div class="drawer-head">
+              <span>资源</span>
+              <button type="button" class="icon-close" id="close-resources" aria-label="关闭">×</button>
+            </div>
+            <div class="panel-tabs">
+              <button type="button" class="tab active" data-res-view="faq" id="tab-res-faq">常见问题</button>
+              <button type="button" class="tab" data-res-view="links" id="tab-res-links">参考视频</button>
+            </div>
+            <div class="panel-body resources-body">
+              <div id="resources-faq-view" class="res-view active">
+                <p class="res-lead">显化里最常见的 10 个卡点，点开看简明解答。</p>
+                <div class="faq-list" id="faq-list"></div>
+              </div>
+              <div id="resources-links-view" class="res-view" hidden>
+                <p class="res-lead">精选参考视频，也可粘贴链接生成跳转卡片，方便下次打开。</p>
+                <form class="resource-add" id="resource-add-form">
+                  <input
+                    type="url"
+                    id="resource-url-input"
+                    class="resource-add-url"
+                    placeholder="粘贴 B站 / YouTube 等视频链接…"
+                    autocomplete="off"
+                    spellcheck="false"
+                    required
+                  />
+                  <div class="resource-add-row">
+                    <input
+                      type="text"
+                      id="resource-title-input"
+                      class="resource-add-title"
+                      placeholder="标题（可选，不填自动识别）"
+                      maxlength="80"
+                      autocomplete="off"
+                    />
+                    <button type="submit" class="resource-add-btn" id="resource-add-btn">添加</button>
+                  </div>
+                </form>
+                <div class="resource-cards" id="resource-cards"></div>
+              </div>
+            </div>
+          </aside>
+
+          <main class="stage" id="stage">
+            <button
+              type="button"
+              class="ritual-expand-btn"
+              id="ritual-expand"
+              hidden
+              title="展开今日任务"
+              aria-label="展开今日任务"
+            >
+              <i class="fa-solid fa-anchor" aria-hidden="true"></i>
+            </button>
+            <section class="ritual-bar" id="ritual-bar">
+              <button
+                type="button"
+                class="ritual-collapse-btn"
+                id="ritual-collapse"
+                title="收起今日任务"
+                aria-label="收起今日任务"
+              >
+                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
+              </button>
+              <div class="ritual-title-row">
+                <span class="ritual-title">今日任务</span>
+                <span class="ritual-done-mark" id="ritual-active-done" hidden>✓ 已完成</span>
+              </div>
+              <div class="ritual-tabs" role="tablist" aria-label="今日任务类型">
+                <button
+                  type="button"
+                  class="ritual-tab is-active"
+                  id="tab-robotic"
+                  role="tab"
+                  aria-selected="true"
+                  aria-controls="panel-robotic"
+                >
+                  机械 A
+                </button>
+                <button
+                  type="button"
+                  class="ritual-tab"
+                  id="tab-visual"
+                  role="tab"
+                  aria-selected="false"
+                  aria-controls="panel-visual"
+                >
+                  视觉化
+                </button>
+              </div>
+              <div class="ritual-panels">
+                <div
+                  class="ritual-panel is-active"
+                  id="panel-robotic"
+                  role="tabpanel"
+                  aria-labelledby="tab-robotic"
+                >
+                  <p class="ritual-panel-copy" id="ritual-robotic-copy">
+                    还没有机械 A 短句。去对话点「今日复盘」生成，或点首页形象用当前肯定语练习。
+                  </p>
+                  <button type="button" class="ritual-btn" id="btn-start-robotic">开始机械 A</button>
+                </div>
+                <div
+                  class="ritual-panel"
+                  id="panel-visual"
+                  role="tabpanel"
+                  aria-labelledby="tab-visual"
+                  hidden
+                >
+                  <p class="ritual-panel-copy" id="ritual-visual-copy">
+                    还没有今日视觉化脚本。去对话点「今日复盘」生成。
+                  </p>
+                  <button type="button" class="ritual-btn" id="btn-start-visual">开始视觉化</button>
+                </div>
+              </div>
+            </section>
+
+            <div class="pingu-stage">
+              <div class="bubble-anchor">
+                <div class="bubble-motion">
+                  <div class="speech-bubble" id="speech-bubble">
+                    <div class="bubble-toolbar">
+                      <p class="bubble-mode-label" id="bubble-mode-label">故事稿</p>
+                      <button type="button" class="bubble-switch" id="bubble-mode-switch" title="切换故事稿 / 机械A" aria-label="切换故事稿与机械A">
+                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                          <path d="M7 7h11v3l4-4-4-4v3H5v6h2V7zm10 10H6v-3l-4 4 4 4v-3h13v-6h-2v4z" fill="currentColor"/>
+                        </svg>
+                      </button>
+                    </div>
+                    <div class="speech-text" id="affirm-preview"></div>
+                  </div>
+                </div>
+                <div class="ritual-session" id="ritual-session" hidden>
+                  <div class="ritual-session-panel">
+                    <div class="ritual-session-top">
+                      <span class="ritual-session-mode" id="ritual-session-mode">机械 A</span>
+                      <p class="ritual-session-kicker" id="ritual-session-kicker">仪式进行中</p>
+                    </div>
+                    <div class="ritual-timer-ring" aria-hidden="true">
+                      <svg class="ritual-ring-svg" viewBox="0 0 120 120">
+                        <circle class="ritual-ring-track" cx="60" cy="60" r="52" />
+                        <circle
+                          class="ritual-ring-progress"
+                          id="ritual-ring-progress"
+                          cx="60"
+                          cy="60"
+                          r="52"
+                        />
+                      </svg>
+                      <p class="ritual-session-timer" id="ritual-session-timer">10:00</p>
+                    </div>
+                    <div class="ritual-session-body-card">
+                      <p class="ritual-session-body" id="ritual-session-body"></p>
+                    </div>
+                    <div class="ritual-session-actions">
+                      <button type="button" class="ritual-btn ritual-btn-ghost" id="ritual-session-cancel">取消</button>
+                      <button type="button" class="ritual-btn" id="ritual-session-finish">结束并记完成</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="pingu-wrap" id="pingu-wrap" role="button" tabindex="0" aria-label="显化一次">
+                <img class="pingu-sprite" id="pingu" src="assets/pingu-sprite.png" alt="" draggable="false" />
+                <div class="jump-fx" id="jump-fx" aria-hidden="true">
+                  <span class="jump-plus">+1</span>
+                  <svg class="jump-heart heart-l" viewBox="0 0 7 6" width="16" height="14" aria-hidden="true">
+                    <path fill="currentColor" d="M1 0h1v1H1V0zm4 0h1v1H5V0zM0 1h2v1H0V1zm5 0h2v1H5V1zM0 2h7v1H0V2zm1 1h5v1H1V3zm1 1h3v1H2V4zm1 1h1v1H3V5z"/>
+                  </svg>
+                  <svg class="jump-heart heart-r" viewBox="0 0 7 6" width="14" height="12" aria-hidden="true">
+                    <path fill="currentColor" d="M1 0h1v1H1V0zm4 0h1v1H5V0zM0 1h2v1H0V1zm5 0h2v1H5V1zM0 2h7v1H0V2zm1 1h5v1H1V3zm1 1h3v1H2V4zm1 1h1v1H3V5z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div class="ritual-toast" id="ritual-toast" hidden></div>
+          </main>
+
+          <!-- Affirm history page -->
+          <section class="app-page" id="page-affirm-history" hidden>
+            <header class="page-header">
+              <button type="button" class="page-back" id="back-from-history" aria-label="返回">←</button>
+              <h1>肯定语记录</h1>
+              <button type="button" class="page-action" id="goto-edit">写新的</button>
+            </header>
+            <div class="page-body">
+              <div class="current-card">
+                <p class="card-label">当前故事稿</p>
+                <div class="current-text" id="history-current"></div>
+              </div>
+              <div class="current-card">
+                <p class="card-label">当前机械 A 短句</p>
+                <div class="current-text" id="history-robotic"></div>
+              </div>
+              <p class="history-title">修改历史</p>
+              <ul class="affirm-history-list" id="affirm-history-list"></ul>
+            </div>
+          </section>
+
+          <!-- Affirm edit page -->
+          <section class="app-page" id="page-affirm-edit" hidden>
+            <header class="page-header">
+              <button type="button" class="page-back" id="back-from-edit" aria-label="返回">←</button>
+              <h1>写新肯定语</h1>
+              <span class="page-spacer"></span>
+            </header>
+            <div class="page-body edit-body">
+              <div class="edit-kind-tabs" role="tablist" aria-label="肯定语类型">
+                <button
+                  type="button"
+                  class="edit-kind-tab is-active"
+                  id="edit-kind-story"
+                  role="tab"
+                  aria-selected="true"
+                  data-kind="story"
+                >
+                  故事稿
+                </button>
+                <button
+                  type="button"
+                  class="edit-kind-tab"
+                  id="edit-kind-robotic"
+                  role="tab"
+                  aria-selected="false"
+                  data-kind="robotic"
+                >
+                  机械 A
+                </button>
+              </div>
+              <textarea
+                id="affirm-input"
+                maxlength="800"
+                placeholder="从空白开始写，当前肯定语不会预填在这里…"
+                autocomplete="off"
+                spellcheck="false"
+              ></textarea>
+              <div class="edit-actions">
+                <button type="button" class="btn-discard" id="discard-affirm">放弃</button>
+                <button type="button" class="btn-save" id="save-affirm">保存</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- AI chat page -->
+          <section class="app-page chat-page" id="page-chat" hidden>
+            <header class="page-header">
+              <button type="button" class="page-back" id="back-from-chat" aria-label="返回">←</button>
+              <h1>Pingu 对话</h1>
+              <button type="button" class="page-action" id="chat-settings-btn" aria-label="设置">设置</button>
+            </header>
+
+            <div class="chat-settings" id="chat-settings" hidden>
+              <label class="chat-field">
+                <span>OpenAI API Key</span>
+                <input type="password" id="openai-key" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+              </label>
+              <label class="chat-field">
+                <span>模型</span>
+                <select id="openai-model">
+                  <option value="gpt-5.6-luna">gpt-5.6-luna（省钱）</option>
+                  <option value="gpt-5.6-terra">gpt-5.6-terra（均衡）</option>
+                  <option value="gpt-5.6-sol">gpt-5.6-sol（更强）</option>
+                  <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+                  <option value="gpt-5.4">gpt-5.4</option>
+                  <option value="gpt-5-mini">gpt-5-mini</option>
+                  <option value="gpt-5">gpt-5</option>
+                  <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+                  <option value="gpt-4.1">gpt-4.1</option>
+                  <option value="gpt-4o-mini">gpt-4o-mini</option>
+                  <option value="gpt-4o">gpt-4o</option>
+                  <option value="__custom__">自定义模型 ID…</option>
+                </select>
+              </label>
+              <label class="chat-field" id="custom-model-field" hidden>
+                <span>自定义模型 ID</span>
+                <input type="text" id="openai-model-custom" placeholder="例如 gpt-5.2" autocomplete="off" spellcheck="false" />
+              </label>
+              <label class="chat-check">
+                <input type="checkbox" id="auto-analyze" checked />
+                <span>每天第一次打开时自动分析</span>
+              </label>
+              <div class="chat-settings-actions">
+                <button type="button" class="btn-discard" id="clear-chat">清空对话</button>
+                <button type="button" class="btn-save" id="save-chat-settings">保存</button>
+              </div>
+              <p class="chat-settings-note">
+                ChatGPT 网页/App 会员 ≠ API。这里要用
+                <strong>platform.openai.com</strong>
+                的 API Key，并在那边开通 API 计费。Key 只存在本机。
+              </p>
+            </div>
+
+            <div class="chat-toolbar">
+              <button type="button" class="chat-chip" id="btn-daily-check">今日复盘</button>
+              <button type="button" class="chat-chip" id="btn-analyze">分析数据</button>
+              <button type="button" class="chat-chip chat-chip-ghost" id="btn-show-memory">档案</button>
+            </div>
+
+            <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+            <button type="button" class="chat-jump-bottom" id="chat-jump-bottom" hidden aria-label="回到底部" title="回到底部">
+              <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+            </button>
+
+            <form class="chat-composer" id="chat-form">
+              <textarea id="chat-input" rows="1" maxlength="2000" placeholder="跟 Pingu 聊聊…" autocomplete="off"></textarea>
+              <button type="submit" class="chat-send" id="chat-send">发送</button>
+            </form>
+          </section>
+
+          <!-- Coach profile page -->
+          <section class="app-page" id="page-profile" hidden>
+            <header class="page-header">
+              <button type="button" class="page-back" id="back-from-profile" aria-label="返回">←</button>
+              <h1>显化档案</h1>
+              <button type="button" class="page-action" id="save-profile">保存</button>
+            </header>
+            <div class="page-body profile-body">
+              <p class="profile-intro">这些会喂给 coach。你可以随时改；对话里学到的新细节也会往这里补。</p>
+
+              <label class="profile-field">
+                <span>终点目标</span>
+                <textarea id="profile-goal" rows="3" placeholder="你要显化到的关系/生活终点…"></textarea>
+              </label>
+              <label class="profile-field">
+                <span>旧故事</span>
+                <textarea id="profile-old-story" rows="3" placeholder="一遇到 3D 就容易信的旧剧本…"></textarea>
+              </label>
+              <label class="profile-field">
+                <span>有效肯定语</span>
+                <textarea id="profile-effective" rows="3" placeholder="真正用着顺、能稳住你的句子…"></textarea>
+              </label>
+              <label class="profile-field">
+                <span>崩溃模式</span>
+                <textarea id="profile-crash" rows="3" placeholder="什么会击穿你？崩的时候通常怎么反应？"></textarea>
+              </label>
+              <label class="profile-field">
+                <span>边界</span>
+                <textarea id="profile-boundaries" rows="3" placeholder="你接受/不接受的关系底线…"></textarea>
+              </label>
+              <label class="profile-field">
+                <span>其他备注</span>
+                <textarea id="profile-notes" rows="4" placeholder="时间线、触发点、背景细节…"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <!-- Appearance settings -->
+          <section class="app-page" id="page-appearance" hidden>
+            <header class="page-header">
+              <button type="button" class="page-back" id="back-from-appearance" aria-label="返回">←</button>
+              <h1>外观设置</h1>
+              <button type="button" class="page-action" id="save-appearance">完成</button>
+            </header>
+            <div class="page-body appearance-body">
+              <section class="appearance-block">
+                <h2 class="appearance-heading">首页形象</h2>
+                <div class="pingu-preset-grid" id="pingu-preset-grid" role="group" aria-label="预设形象">
+                  <button type="button" class="pingu-preset-btn is-active" data-preset="pingu" data-src="assets/pingu-sprite.png" title="企鹅" aria-pressed="true">
+                    <img src="assets/pingu-sprite.png" alt="" draggable="false" />
+                    <span>企鹅</span>
+                  </button>
+                  <button type="button" class="pingu-preset-btn" data-preset="jishibao" data-src="assets/chiwawa.png" title="吉式堡" aria-pressed="false">
+                    <img src="assets/chiwawa.png" alt="" draggable="false" />
+                    <span>吉式堡</span>
+                  </button>
+                  <button type="button" class="pingu-preset-btn" data-preset="xuebi-idle" data-src="assets/xuebi1.png" title="雪碧发呆" aria-pressed="false">
+                    <img src="assets/xuebi1.png" alt="" draggable="false" />
+                    <span>雪碧发呆</span>
+                  </button>
+                  <button type="button" class="pingu-preset-btn" data-preset="xuebi-cast" data-src="assets/xuebi2.png" title="雪碧施法" aria-pressed="false">
+                    <img src="assets/xuebi2.png" alt="" draggable="false" />
+                    <span>雪碧施法</span>
+                  </button>
+                  <button type="button" class="pingu-preset-btn pingu-preset-custom" data-preset="__custom__" title="上传自定义形象" aria-pressed="false">
+                    <span class="pingu-preset-plus">+</span>
+                    <span>自定义</span>
+                  </button>
+                </div>
+                <button type="button" class="appearance-pick appearance-preview-pingu" id="pingu-preview" title="当前首页形象预览">
+                  <span class="appearance-pick-hint">当前形象</span>
+                </button>
+                <input type="file" id="pingu-upload" accept="image/*" hidden />
+              </section>
+
+              <section class="appearance-block">
+                <h2 class="appearance-heading">主页背景</h2>
+                <div class="appearance-mode-row appearance-mode-row-3" role="group" aria-label="主页背景类型">
+                  <button type="button" class="appearance-mode-btn is-active" id="home-mode-gradient" data-target="home" data-mode="gradient">渐变</button>
+                  <button type="button" class="appearance-mode-btn" id="home-mode-image" data-target="home" data-mode="image">图片</button>
+                  <button type="button" class="appearance-mode-btn" id="home-mode-color" data-target="home" data-mode="color">纯色</button>
+                </div>
+                <button type="button" class="appearance-pick" id="home-bg-preview" title="点击更换背景图">
+                  <span class="appearance-pick-hint">点击更换</span>
+                </button>
+                <input type="file" id="home-bg-upload" accept="image/*" hidden />
+                <label class="chat-field appearance-color-field" id="home-bg-color-field" hidden>
+                  <span>背景颜色</span>
+                  <input type="color" id="home-bg-color" value="#fff5f9" />
+                </label>
+              </section>
+
+              <section class="appearance-block">
+                <h2 class="appearance-heading">聊天背景</h2>
+                <div class="appearance-mode-row" role="group" aria-label="聊天背景类型">
+                  <button type="button" class="appearance-mode-btn is-active" id="chat-mode-image" data-target="chat" data-mode="image">图片</button>
+                  <button type="button" class="appearance-mode-btn" id="chat-mode-color" data-target="chat" data-mode="color">纯色</button>
+                </div>
+                <button type="button" class="appearance-pick" id="chat-bg-preview" title="点击更换背景图">
+                  <span class="appearance-pick-hint">点击更换</span>
+                </button>
+                <input type="file" id="chat-bg-upload" accept="image/*" hidden />
+                <label class="chat-field appearance-color-field" id="chat-bg-color-field" hidden>
+                  <span>背景颜色</span>
+                  <input type="color" id="chat-bg-color" value="#fff5f9" />
+                </label>
+              </section>
+
+              <p class="appearance-note">可先点预设形象一键切换；点「自定义」可从相册上传。背景图点上方预览即可替换，设置保存在本机。</p>
+              <button type="button" class="btn-discard" id="reset-appearance">恢复默认外观</button>
+            </div>
+          </section>
+        </div>
+      </div>
+      <div class="laptop-hinge"></div>
+      <div class="laptop-base">
+        <div class="trackpad"></div>
+        <div class="brand">NOOT NOOT · AFFIRM</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+  </script>
+</body>
+</html>
