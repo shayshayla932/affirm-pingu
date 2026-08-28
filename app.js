@@ -6,7 +6,7 @@
   const DEFAULT_HOME_BG = "assets/home-bg.jpeg";
   const DEFAULT_CHAT_BG = "assets/450-20170130161150300883.jpg";
   const DEFAULT_HOME_COLOR = "#fff5f9";
-  const DEFAULT_CHAT_COLOR = "#fff5f9";
+  const DEFAULT_CHAT_COLOR = "#cfe8f8";
   const DEFAULT_PINGU = "assets/pingu-sprite.png";
   const PINGU_PRESETS = [
     { id: "pingu", label: "企鹅", src: "assets/pingu-sprite.png" },
@@ -558,7 +558,9 @@
           : base.chatPreset,
       chatColor:
         typeof raw.chatColor === "string" && /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(raw.chatColor)
-          ? raw.chatColor
+          ? raw.chatColor.toLowerCase() === "#fff5f9"
+            ? base.chatColor
+            : raw.chatColor
           : base.chatColor,
       chatCustom: typeof raw.chatCustom === "string" ? raw.chatCustom : "",
       pinguPreset:
