@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#e93abb" />
+  <title>下载 Affirm Pingu</title>
+  <style>
+    :root {
+      --accent: #e93abb;
+      --ink: #1a1a1a;
+      --soft: #fff5f9;
+      --border: #f7c4d8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 20% 20%, #ffd6ec 0%, transparent 45%),
+        radial-gradient(circle at 80% 10%, #b6d9ff 0%, transparent 40%),
+        linear-gradient(165deg, #fff9fc, #fff5f9 55%, #ffeef6);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+    .card {
+      width: min(420px, 100%);
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      padding: 28px 24px 24px;
+      box-shadow: 0 16px 40px rgba(245, 184, 206, 0.28);
+      text-align: center;
+    }
+    img.icon {
+      width: 84px;
+      height: 84px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      letter-spacing: -0.02em;
+    }
+    p {
+      margin: 0 0 18px;
+      color: #667085;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    .btn {
+      display: block;
+      width: 100%;
+      text-decoration: none;
+      border-radius: 999px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: #fff;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+    }
+    .note {
+      margin-top: 14px;
+      font-size: 12px;
+      color: #8b8b8b;
+      text-align: left;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <img class="icon" src="assets/icon-192.png" alt="Affirm Pingu" />
+    <h1>Affirm Pingu</h1>
+    <p>安卓安装包（debug）与网页版入口。苹果请用 Safari 打开网页版并「添加到主屏幕」。</p>
+    <a class="btn btn-primary" href="download/Affirm-Pingu.apk" download="Affirm-Pingu.apk">下载安卓 APK</a>
+    <a class="btn btn-secondary" href="./">打开网页版</a>
+    <div class="note">
+      安装提示：下载后允许「安装未知应用」。若浏览器拦截，可改用 GitHub Release 直链。
+    </div>
+  </main>
+</body>
+</html>
