@@ -1,6 +1,6 @@
 {
   "name": "affirm-pingu",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "像素风肯定语计数器 · 本机应用",
   "main": "main.js",
   "author": "shaygu",
@@ -11,6 +11,9 @@
     "pack": "electron-builder --mac dir",
     "dist": "electron-builder --mac dmg",
     "www": "bash scripts/sync-www.sh",
+    "server:install": "npm install --prefix server",
+    "server:dev": "npm run dev --prefix server",
+    "server:codes": "npm run gen-codes --prefix server",
     "cap:sync": "npm run www && npx cap sync android",
     "cap:open": "npm run cap:sync && npx cap open android",
     "apk:hint": "echo 'Install Android Studio, then: npm run cap:open  → Build APK'"

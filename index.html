@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#e93abb" />
+  <meta name="theme-color" content="#C8E4F8" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="mobile-web-app-capable" content="yes" />
@@ -13,567 +13,912 @@
   <link rel="apple-touch-icon" href="assets/icon-192.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&family=Press+Start+2P&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=31" />
+  <link rel="stylesheet" href="v2.css?v=65" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<body>
-  <div class="desk">
-    <div class="laptop">
-      <div class="laptop-bezel">
-        <div class="webcam"></div>
-        <div class="screen" id="screen">
-          <div class="scene-bg" aria-hidden="true">
-            <div class="bg-photo" id="bg-photo">
-              <div class="bg-aurora">
-                <span class="aurora-blob aurora-a"></span>
-                <span class="aurora-blob aurora-b"></span>
-                <span class="aurora-blob aurora-c"></span>
-                <span class="aurora-blob aurora-d"></span>
+<body class="theme-v2">
+  <div class="screen" id="screen">
+    <div class="scene-bg" aria-hidden="true">
+      <div class="bg-photo" id="bg-photo">
+        <div class="bg-aurora">
+          <span class="bg-stars bg-stars-a" aria-hidden="true"></span>
+          <span class="bg-stars bg-stars-b" aria-hidden="true"></span>
+        </div>
+      </div>
+      <div class="scene-vignette"></div>
+    </div>
+
+    <!-- Top bar (home) — Figma 69:2939 -->
+    <header class="top-bar" id="top-bar">
+      <button type="button" class="top-round" id="icon-calendar" title="日历" aria-label="日历" data-i18n-title="navCalendar" data-i18n-aria="navCalendar" aria-expanded="false">
+        <img src="assets/nav-calendar.svg" alt="" width="24" height="24" decoding="async" />
+      </button>
+      <button type="button" class="daily-pill" id="daily-tasks-pill" aria-expanded="false" data-i18n="dailyTasks">每日任务</button>
+      <button type="button" class="avatar-btn" id="icon-settings" title="设置" aria-label="设置" data-i18n-title="navSettings" data-i18n-aria="navSettings">
+        <img class="avatar-btn-photo" id="icon-settings-photo" alt="" hidden decoding="async" />
+        <span class="avatar-btn-letter" id="icon-settings-letter">N</span>
+      </button>
+    </header>
+
+    <!-- Music — centered under 「每日任务」pill (Figma) -->
+    <div class="home-music-hub" id="home-music-hub">
+      <div class="task-music-wrap" id="task-music-wrap">
+        <div class="music-dial-backdrop" id="music-dial-backdrop" hidden aria-hidden="true"></div>
+        <div class="music-control-cluster" id="music-control-cluster">
+          <div class="music-control-bar" id="music-control-bar">
+            <div class="home-music-anchor">
+              <button type="button" class="home-music-btn" id="home-music-btn" title="选择音乐 App" aria-label="选择音乐 App" aria-haspopup="menu" aria-expanded="false">
+                <i class="fa-solid fa-music" aria-hidden="true"></i>
+                <span class="home-music-dot" id="home-music-dot" hidden aria-hidden="true"></span>
+              </button>
+              <div class="music-provider-menu" id="music-dial" role="menu" aria-label="选择音乐 App" hidden>
+                <button type="button" class="music-provider-menu-item is-spotify" role="menuitem" data-provider="spotify" aria-label="Spotify">
+                  <span class="music-provider-menu-icon" aria-hidden="true"><i class="fa-brands fa-spotify"></i></span>
+                </button>
+                <button type="button" class="music-provider-menu-item is-apple" role="menuitem" data-provider="apple" aria-label="Apple Music">
+                  <span class="music-provider-menu-icon" aria-hidden="true"><i class="fa-brands fa-apple"></i></span>
+                </button>
+                <button type="button" class="music-provider-menu-item is-netease" role="menuitem" data-provider="netease" aria-label="网易云音乐">
+                  <span class="music-provider-menu-icon music-provider-menu-icon-text" aria-hidden="true">云</span>
+                </button>
+                <button type="button" class="music-provider-menu-item is-qq" role="menuitem" data-provider="qq" aria-label="QQ 音乐">
+                  <span class="music-provider-menu-icon music-provider-menu-icon-text" aria-hidden="true">Q</span>
+                </button>
               </div>
             </div>
-            <div class="scene-vignette"></div>
+            <div class="music-transport" id="music-transport" hidden>
+              <button type="button" class="music-transport-btn" id="music-transport-prev" title="上一首" aria-label="上一首" hidden>
+                <i class="fa-solid fa-backward-step" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="music-transport-btn music-transport-play" id="music-transport-play" title="播放" aria-label="播放">
+                <i class="fa-solid fa-play" id="music-transport-play-icon" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="music-transport-btn" id="music-transport-next" title="下一首" aria-label="下一首" hidden>
+                <i class="fa-solid fa-forward-step" aria-hidden="true"></i>
+              </button>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
 
-          <!-- Left icon rail -->
-          <nav class="icon-rail" id="icon-rail" aria-label="侧栏">
-            <div class="rail-items">
-              <button type="button" class="rail-btn" id="icon-calendar" title="日历" aria-label="日历" aria-expanded="false">
-                <i class="fa-solid fa-calendar" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="rail-btn" id="icon-affirm" title="肯定语" aria-label="肯定语">
-                <i class="fa-solid fa-lightbulb" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="rail-btn" id="icon-stats" title="统计" aria-label="统计" aria-expanded="false">
-                <i class="fa-solid fa-trophy" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="rail-btn" id="icon-chat" title="Pingu 对话" aria-label="Pingu 对话">
-                <i class="fa-solid fa-comment" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="rail-btn" id="icon-resources" title="资源" aria-label="资源" aria-expanded="false">
-                <i class="fa-solid fa-book" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="rail-btn rail-btn-bottom" id="icon-settings" title="外观设置" aria-label="外观设置">
-                <i class="fa-solid fa-gear" aria-hidden="true"></i>
-              </button>
-            </div>
-            <button type="button" class="rail-toggle" id="rail-toggle" title="收起侧栏" aria-label="收起侧栏" aria-expanded="true">
-              <svg class="rail-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M9.5 6.5 15 12l-5.5 5.5"/>
-              </svg>
+    <!-- Bottom dock 4+1 — Figma 69:2954 -->
+    <nav class="icon-rail dock-v2" id="icon-rail" aria-label="底部导航" data-i18n-aria="railAria">
+      <div class="rail-pill" id="rail-pill">
+        <div class="rail-items" id="rail-items">
+          <span class="rail-indicator" id="rail-indicator" aria-hidden="true"></span>
+          <button type="button" class="rail-btn is-active" id="icon-home" title="首页" aria-label="首页" data-i18n-title="navHome" data-i18n-aria="navHome" aria-current="page">
+            <img class="rail-icon-img" src="assets/nav-home.svg" alt="" width="24" height="24" decoding="async" />
+          </button>
+          <button type="button" class="rail-btn" id="icon-affirm" title="肯定语" aria-label="肯定语" data-i18n-title="navAffirm" data-i18n-aria="navAffirm">
+            <img class="rail-icon-img" src="assets/nav-story.svg" alt="" width="24" height="24" decoding="async" />
+          </button>
+          <button type="button" class="rail-btn" id="icon-diary" title="感恩日记" aria-label="感恩日记" data-i18n-title="navDiary" data-i18n-aria="navDiary">
+            <img class="rail-icon-img" src="assets/nav-diary.svg" alt="" width="24" height="24" decoding="async" />
+          </button>
+          <button type="button" class="rail-btn" id="icon-favorites" title="收藏" aria-label="收藏" data-i18n-title="navFavorites" data-i18n-aria="navFavorites" aria-expanded="false">
+            <img class="rail-icon-img" src="assets/nav-folder.svg" alt="" width="24" height="24" decoding="async" />
+          </button>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="dock-crystal"
+        id="icon-chat"
+        title="Pingu 对话"
+        aria-label="Pingu 对话"
+        data-i18n-title="navChat"
+        data-i18n-aria="navChat"
+      >
+        <img class="dock-crystal-img" src="assets/nav-crystal.svg" alt="" width="24" height="24" decoding="async" />
+      </button>
+      <!-- Legacy hooks kept for remap (hidden) -->
+      <button type="button" id="icon-resources" hidden tabindex="-1" aria-hidden="true"></button>
+      <button type="button" id="icon-faq" hidden tabindex="-1" aria-hidden="true"></button>
+      <button type="button" id="icon-stats" hidden tabindex="-1" aria-hidden="true"></button>
+    </nav>
+
+    <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+
+    <!-- Calendar drawer -->
+    <aside class="calendar-drawer hud-box" id="calendar-drawer" hidden>
+      <header class="drawer-head cal-drawer-head">
+        <button type="button" class="page-round-back" id="close-calendar" aria-label="关闭" data-i18n-aria="close">←</button>
+        <h2 class="edit-title-pill cal-drawer-title" data-i18n="calendar">日历</h2>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="panel-tabs cal-tabs" role="tablist" aria-label="日历视图">
+        <span class="seg-indicator" aria-hidden="true"></span>
+        <button type="button" class="tab active" data-view="calendar" id="tab-calendar" data-i18n="calendar">日历</button>
+        <button type="button" class="tab" data-view="stats" id="tab-stats-inline" data-i18n="stats">统计</button>
+        <button type="button" class="tab" data-view="list" id="tab-list" data-i18n="list" hidden>列表</button>
+      </div>
+      <div class="panel-body">
+        <div id="calendar-view" class="view active">
+          <div class="cal-header">
+            <button type="button" id="prev-month" class="nav-btn" aria-label="上个月" data-i18n-aria="prevMonth">
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-          </nav>
-
-          <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
-
-          <!-- Calendar drawer (closed by default) -->
-          <aside class="calendar-drawer hud-box" id="calendar-drawer" hidden>
-            <div class="drawer-head">
-              <span>日历</span>
-              <button type="button" class="icon-close" id="close-calendar" aria-label="关闭">×</button>
-            </div>
-            <div class="panel-tabs">
-              <button type="button" class="tab active" data-view="calendar" id="tab-calendar">日历</button>
-              <button type="button" class="tab" data-view="list" id="tab-list">列表</button>
-            </div>
-            <div class="panel-body">
-              <div id="calendar-view" class="view active">
-                <div class="cal-header">
-                  <button type="button" id="prev-month" class="nav-btn" aria-label="上个月">
-                    <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
-                  <span id="cal-title" class="cal-title"></span>
-                  <button type="button" id="next-month" class="nav-btn" aria-label="下个月">
-                    <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  </button>
-                </div>
-                <div class="cal-weekdays">
-                  <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
-                </div>
-                <div id="cal-grid" class="cal-grid"></div>
-                <div class="cal-legend" aria-hidden="true">
-                  <span>少</span>
-                  <i class="heat-swatch heat-0"></i>
-                  <i class="heat-swatch heat-1"></i>
-                  <i class="heat-swatch heat-2"></i>
-                  <i class="heat-swatch heat-3"></i>
-                  <i class="heat-swatch heat-4"></i>
-                  <span>多</span>
-                </div>
-              </div>
-              <div id="list-view" class="view">
-                <ul id="history-list" class="history-list"></ul>
-              </div>
-            </div>
-            <div class="panel-footer">
-              <div class="stat-chip">
-                <span class="stat-chip-label">今日</span>
-                <strong class="stat-chip-value" id="today-count">0</strong>
-              </div>
-              <div class="stat-chip">
-                <span class="stat-chip-label">累计</span>
-                <strong class="stat-chip-value" id="total-count">0</strong>
-              </div>
-            </div>
-          </aside>
-
-          <!-- Stats drawer (closed by default) -->
-          <aside class="stats-drawer hud-box" id="stats-drawer" hidden>
-            <div class="drawer-head">
-              <span>统计</span>
-              <button type="button" class="icon-close" id="close-stats" aria-label="关闭">×</button>
-            </div>
-            <div class="panel-body stats-body">
-              <section class="stats-block stats-today-block">
-                <h2 class="stats-heading">今日</h2>
-                <strong class="stats-today-value" id="stats-today-count">0</strong>
-              </section>
-              <section class="stats-block stats-chart-block">
-                <div class="panel-tabs stats-range-tabs" role="tablist" aria-label="统计范围">
-                  <button type="button" class="tab active" data-range="week" id="stats-tab-week" role="tab" aria-selected="true">周</button>
-                  <button type="button" class="tab" data-range="month" id="stats-tab-month" role="tab" aria-selected="false">月</button>
-                </div>
-                <div class="stats-chart is-line" id="stats-chart" role="img" aria-label="次数走势图"></div>
-                <div class="stats-chart-foot">
-                  <span>合计</span>
-                  <strong id="stats-range-total">0</strong>
-                </div>
-              </section>
-            </div>
-          </aside>
-
-          <!-- Resources drawer (closed by default) -->
-          <aside class="resources-drawer hud-box" id="resources-drawer" hidden>
-            <div class="drawer-head">
-              <span>资源</span>
-              <button type="button" class="icon-close" id="close-resources" aria-label="关闭">×</button>
-            </div>
-            <div class="panel-tabs">
-              <button type="button" class="tab active" data-res-view="faq" id="tab-res-faq">常见问题</button>
-              <button type="button" class="tab" data-res-view="links" id="tab-res-links">参考视频</button>
-            </div>
-            <div class="panel-body resources-body">
-              <div id="resources-faq-view" class="res-view active">
-                <p class="res-lead">显化里最常见的 10 个卡点，点开看简明解答。</p>
-                <div class="faq-list" id="faq-list"></div>
-              </div>
-              <div id="resources-links-view" class="res-view" hidden>
-                <p class="res-lead">精选参考视频，也可粘贴链接生成跳转卡片，方便下次打开。</p>
-                <form class="resource-add" id="resource-add-form">
-                  <input
-                    type="url"
-                    id="resource-url-input"
-                    class="resource-add-url"
-                    placeholder="粘贴 B站 / YouTube 等视频链接…"
-                    autocomplete="off"
-                    spellcheck="false"
-                    required
-                  />
-                  <div class="resource-add-row">
-                    <input
-                      type="text"
-                      id="resource-title-input"
-                      class="resource-add-title"
-                      placeholder="标题（可选，不填自动识别）"
-                      maxlength="80"
-                      autocomplete="off"
-                    />
-                    <button type="submit" class="resource-add-btn" id="resource-add-btn">添加</button>
-                  </div>
-                </form>
-                <div class="resource-cards" id="resource-cards"></div>
-              </div>
-            </div>
-          </aside>
-
-          <main class="stage" id="stage">
-            <button
-              type="button"
-              class="ritual-expand-btn"
-              id="ritual-expand"
-              hidden
-              title="展开今日任务"
-              aria-label="展开今日任务"
-            >
-              <i class="fa-solid fa-anchor" aria-hidden="true"></i>
+            <span id="cal-title" class="cal-title"></span>
+            <button type="button" id="next-month" class="nav-btn" aria-label="下个月" data-i18n-aria="nextMonth">
+              <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-            <section class="ritual-bar" id="ritual-bar">
-              <button
-                type="button"
-                class="ritual-collapse-btn"
-                id="ritual-collapse"
-                title="收起今日任务"
-                aria-label="收起今日任务"
-              >
-                <i class="fa-solid fa-chevron-up" aria-hidden="true"></i>
-              </button>
-              <div class="ritual-title-row">
-                <span class="ritual-title">今日任务</span>
-                <span class="ritual-done-mark" id="ritual-active-done" hidden>✓ 已完成</span>
-              </div>
-              <div class="ritual-tabs" role="tablist" aria-label="今日任务类型">
-                <button
-                  type="button"
-                  class="ritual-tab is-active"
-                  id="tab-robotic"
-                  role="tab"
-                  aria-selected="true"
-                  aria-controls="panel-robotic"
-                >
-                  机械 A
-                </button>
-                <button
-                  type="button"
-                  class="ritual-tab"
-                  id="tab-visual"
-                  role="tab"
-                  aria-selected="false"
-                  aria-controls="panel-visual"
-                >
-                  视觉化
-                </button>
-              </div>
-              <div class="ritual-panels">
-                <div
-                  class="ritual-panel is-active"
-                  id="panel-robotic"
-                  role="tabpanel"
-                  aria-labelledby="tab-robotic"
-                >
-                  <p class="ritual-panel-copy" id="ritual-robotic-copy">
-                    还没有机械 A 短句。去对话点「今日复盘」生成，或点首页形象用当前肯定语练习。
-                  </p>
-                  <button type="button" class="ritual-btn" id="btn-start-robotic">开始机械 A</button>
-                </div>
-                <div
-                  class="ritual-panel"
-                  id="panel-visual"
-                  role="tabpanel"
-                  aria-labelledby="tab-visual"
-                  hidden
-                >
-                  <p class="ritual-panel-copy" id="ritual-visual-copy">
-                    还没有今日视觉化脚本。去对话点「今日复盘」生成。
-                  </p>
-                  <button type="button" class="ritual-btn" id="btn-start-visual">开始视觉化</button>
-                </div>
-              </div>
-            </section>
-
-            <div class="pingu-stage">
-              <div class="bubble-anchor">
-                <div class="bubble-motion">
-                  <div class="speech-bubble" id="speech-bubble">
-                    <div class="bubble-toolbar">
-                      <p class="bubble-mode-label" id="bubble-mode-label">故事稿</p>
-                      <button type="button" class="bubble-switch" id="bubble-mode-switch" title="切换故事稿 / 机械A" aria-label="切换故事稿与机械A">
-                        <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-                          <path d="M7 7h11v3l4-4-4-4v3H5v6h2V7zm10 10H6v-3l-4 4 4 4v-3h13v-6h-2v4z" fill="currentColor"/>
-                        </svg>
-                      </button>
-                    </div>
-                    <div class="speech-text" id="affirm-preview"></div>
-                  </div>
-                </div>
-                <div class="ritual-session" id="ritual-session" hidden>
-                  <div class="ritual-session-panel">
-                    <div class="ritual-session-top">
-                      <span class="ritual-session-mode" id="ritual-session-mode">机械 A</span>
-                      <p class="ritual-session-kicker" id="ritual-session-kicker">仪式进行中</p>
-                    </div>
-                    <div class="ritual-timer-ring" aria-hidden="true">
-                      <svg class="ritual-ring-svg" viewBox="0 0 120 120">
-                        <circle class="ritual-ring-track" cx="60" cy="60" r="52" />
-                        <circle
-                          class="ritual-ring-progress"
-                          id="ritual-ring-progress"
-                          cx="60"
-                          cy="60"
-                          r="52"
-                        />
-                      </svg>
-                      <p class="ritual-session-timer" id="ritual-session-timer">10:00</p>
-                    </div>
-                    <div class="ritual-session-body-card">
-                      <p class="ritual-session-body" id="ritual-session-body"></p>
-                    </div>
-                    <div class="ritual-session-actions">
-                      <button type="button" class="ritual-btn ritual-btn-ghost" id="ritual-session-cancel">取消</button>
-                      <button type="button" class="ritual-btn" id="ritual-session-finish">结束并记完成</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="pingu-wrap" id="pingu-wrap" role="button" tabindex="0" aria-label="显化一次">
-                <img class="pingu-sprite" id="pingu" src="assets/pingu-sprite.png" alt="" draggable="false" />
-                <div class="jump-fx" id="jump-fx" aria-hidden="true">
-                  <span class="jump-plus">+1</span>
-                  <svg class="jump-heart heart-l" viewBox="0 0 7 6" width="16" height="14" aria-hidden="true">
-                    <path fill="currentColor" d="M1 0h1v1H1V0zm4 0h1v1H5V0zM0 1h2v1H0V1zm5 0h2v1H5V1zM0 2h7v1H0V2zm1 1h5v1H1V3zm1 1h3v1H2V4zm1 1h1v1H3V5z"/>
-                  </svg>
-                  <svg class="jump-heart heart-r" viewBox="0 0 7 6" width="14" height="12" aria-hidden="true">
-                    <path fill="currentColor" d="M1 0h1v1H1V0zm4 0h1v1H5V0zM0 1h2v1H0V1zm5 0h2v1H5V1zM0 2h7v1H0V2zm1 1h5v1H1V3zm1 1h3v1H2V4zm1 1h1v1H3V5z"/>
-                  </svg>
-                </div>
-              </div>
+          </div>
+          <div class="cal-weekdays">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div id="cal-grid" class="cal-grid"></div>
+          <div class="cal-legend" aria-hidden="true">
+            <span>少</span>
+            <i class="heat-swatch heat-0"></i>
+            <i class="heat-swatch heat-1"></i>
+            <i class="heat-swatch heat-2"></i>
+            <i class="heat-swatch heat-3"></i>
+            <i class="heat-swatch heat-4"></i>
+            <span>多</span>
+          </div>
+        </div>
+        <div id="list-view" class="view">
+          <ul id="history-list" class="history-list"></ul>
+        </div>
+        <div id="stats-inline-view" class="view">
+          <section class="stats-block stats-today-block">
+            <p class="stats-kicker" data-i18n="statsTodayKicker">今日计数</p>
+            <div class="stats-today-row">
+              <strong class="stats-today-value" id="stats-today-count">0</strong>
+              <span class="stats-today-unit" data-i18n="statsTimesUnit">次</span>
             </div>
-            <div class="ritual-toast" id="ritual-toast" hidden></div>
-          </main>
-
-          <!-- Affirm history page -->
-          <section class="app-page" id="page-affirm-history" hidden>
-            <header class="page-header">
-              <button type="button" class="page-back" id="back-from-history" aria-label="返回">←</button>
-              <h1>肯定语记录</h1>
-              <button type="button" class="page-action" id="goto-edit">写新的</button>
-            </header>
-            <div class="page-body">
-              <div class="current-card">
-                <p class="card-label">当前故事稿</p>
-                <div class="current-text" id="history-current"></div>
-              </div>
-              <div class="current-card">
-                <p class="card-label">当前机械 A 短句</p>
-                <div class="current-text" id="history-robotic"></div>
-              </div>
-              <p class="history-title">修改历史</p>
-              <ul class="affirm-history-list" id="affirm-history-list"></ul>
-            </div>
+            <p class="stats-today-caption" id="stats-today-caption"></p>
           </section>
-
-          <!-- Affirm edit page -->
-          <section class="app-page" id="page-affirm-edit" hidden>
-            <header class="page-header">
-              <button type="button" class="page-back" id="back-from-edit" aria-label="返回">←</button>
-              <h1>写新肯定语</h1>
-              <span class="page-spacer"></span>
-            </header>
-            <div class="page-body edit-body">
-              <div class="edit-kind-tabs" role="tablist" aria-label="肯定语类型">
-                <button
-                  type="button"
-                  class="edit-kind-tab is-active"
-                  id="edit-kind-story"
-                  role="tab"
-                  aria-selected="true"
-                  data-kind="story"
-                >
-                  故事稿
-                </button>
-                <button
-                  type="button"
-                  class="edit-kind-tab"
-                  id="edit-kind-robotic"
-                  role="tab"
-                  aria-selected="false"
-                  data-kind="robotic"
-                >
-                  机械 A
-                </button>
-              </div>
-              <textarea
-                id="affirm-input"
-                maxlength="800"
-                placeholder="从空白开始写，当前肯定语不会预填在这里…"
-                autocomplete="off"
-                spellcheck="false"
-              ></textarea>
-              <div class="edit-actions">
-                <button type="button" class="btn-discard" id="discard-affirm">放弃</button>
-                <button type="button" class="btn-save" id="save-affirm">保存</button>
-              </div>
-            </div>
-          </section>
-
-          <!-- AI chat page -->
-          <section class="app-page chat-page" id="page-chat" hidden>
-            <header class="page-header">
-              <button type="button" class="page-back" id="back-from-chat" aria-label="返回">←</button>
-              <h1>Pingu 对话</h1>
-              <button type="button" class="page-action" id="chat-settings-btn" aria-label="设置">设置</button>
-            </header>
-
-            <div class="chat-settings" id="chat-settings" hidden>
-              <label class="chat-field">
-                <span>OpenAI API Key</span>
-                <input type="password" id="openai-key" placeholder="sk-..." autocomplete="off" spellcheck="false" />
-              </label>
-              <label class="chat-field">
-                <span>模型</span>
-                <select id="openai-model">
-                  <option value="gpt-5.6-luna">gpt-5.6-luna（省钱）</option>
-                  <option value="gpt-5.6-terra">gpt-5.6-terra（均衡）</option>
-                  <option value="gpt-5.6-sol">gpt-5.6-sol（更强）</option>
-                  <option value="gpt-5.4-mini">gpt-5.4-mini</option>
-                  <option value="gpt-5.4">gpt-5.4</option>
-                  <option value="gpt-5-mini">gpt-5-mini</option>
-                  <option value="gpt-5">gpt-5</option>
-                  <option value="gpt-4.1-mini">gpt-4.1-mini</option>
-                  <option value="gpt-4.1">gpt-4.1</option>
-                  <option value="gpt-4o-mini">gpt-4o-mini</option>
-                  <option value="gpt-4o">gpt-4o</option>
-                  <option value="__custom__">自定义模型 ID…</option>
-                </select>
-              </label>
-              <label class="chat-field" id="custom-model-field" hidden>
-                <span>自定义模型 ID</span>
-                <input type="text" id="openai-model-custom" placeholder="例如 gpt-5.2" autocomplete="off" spellcheck="false" />
-              </label>
-              <label class="chat-check">
-                <input type="checkbox" id="auto-analyze" checked />
-                <span>每天第一次打开时自动分析</span>
-              </label>
-              <div class="chat-settings-actions">
-                <button type="button" class="btn-discard" id="clear-chat">清空对话</button>
-                <button type="button" class="btn-save" id="save-chat-settings">保存</button>
-              </div>
-              <p class="chat-settings-note">
-                ChatGPT 网页/App 会员 ≠ API。这里要用
-                <strong>platform.openai.com</strong>
-                的 API Key，并在那边开通 API 计费。Key 只存在本机。
-              </p>
-            </div>
-
-            <div class="chat-toolbar">
-              <button type="button" class="chat-chip" id="btn-daily-check">今日复盘</button>
-              <button type="button" class="chat-chip" id="btn-analyze">分析数据</button>
-              <button type="button" class="chat-chip chat-chip-ghost" id="btn-show-memory">档案</button>
-            </div>
-
-            <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
-            <button type="button" class="chat-jump-bottom" id="chat-jump-bottom" hidden aria-label="回到底部" title="回到底部">
-              <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+          <div class="panel-tabs stats-range-tabs" role="tablist" aria-label="统计范围" data-i18n-aria="statsRangeAria">
+            <button type="button" class="tab active" data-range="week" id="stats-tab-week" role="tab" aria-selected="true" data-i18n="week">周</button>
+            <button type="button" class="tab" data-range="month" id="stats-tab-month" role="tab" aria-selected="false" data-i18n="month">月</button>
+          </div>
+          <div class="stats-period-nav">
+            <button type="button" class="stats-nav-btn" id="stats-prev-period" aria-label="上一段" data-i18n-aria="statsPrevPeriod">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </button>
-
-            <form class="chat-composer" id="chat-form">
-              <textarea id="chat-input" rows="1" maxlength="2000" placeholder="跟 Pingu 聊聊…" autocomplete="off"></textarea>
-              <button type="submit" class="chat-send" id="chat-send">发送</button>
-            </form>
+            <span class="stats-period-label" id="stats-period-label"></span>
+            <button type="button" class="stats-nav-btn" id="stats-next-period" aria-label="下一段" data-i18n-aria="statsNextPeriod">
+              <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+          <section class="stats-block stats-chart-block">
+            <p class="stats-kicker" data-i18n="statsChartKicker">每日次数</p>
+            <div class="stats-chart is-line" id="stats-chart" role="img" aria-label="次数走势图" data-i18n-aria="chartAria"></div>
           </section>
-
-          <!-- Coach profile page -->
-          <section class="app-page" id="page-profile" hidden>
-            <header class="page-header">
-              <button type="button" class="page-back" id="back-from-profile" aria-label="返回">←</button>
-              <h1>显化档案</h1>
-              <button type="button" class="page-action" id="save-profile">保存</button>
-            </header>
-            <div class="page-body profile-body">
-              <p class="profile-intro">这些会喂给 coach。你可以随时改；对话里学到的新细节也会往这里补。</p>
-
-              <label class="profile-field">
-                <span>终点目标</span>
-                <textarea id="profile-goal" rows="3" placeholder="你要显化到的关系/生活终点…"></textarea>
-              </label>
-              <label class="profile-field">
-                <span>旧故事</span>
-                <textarea id="profile-old-story" rows="3" placeholder="一遇到 3D 就容易信的旧剧本…"></textarea>
-              </label>
-              <label class="profile-field">
-                <span>有效肯定语</span>
-                <textarea id="profile-effective" rows="3" placeholder="真正用着顺、能稳住你的句子…"></textarea>
-              </label>
-              <label class="profile-field">
-                <span>崩溃模式</span>
-                <textarea id="profile-crash" rows="3" placeholder="什么会击穿你？崩的时候通常怎么反应？"></textarea>
-              </label>
-              <label class="profile-field">
-                <span>边界</span>
-                <textarea id="profile-boundaries" rows="3" placeholder="你接受/不接受的关系底线…"></textarea>
-              </label>
-              <label class="profile-field">
-                <span>其他备注</span>
-                <textarea id="profile-notes" rows="4" placeholder="时间线、触发点、背景细节…"></textarea>
-              </label>
+          <section class="stats-block stats-day-detail" id="stats-day-detail" aria-live="polite">
+            <div class="stats-day-detail-head">
+              <h3 class="stats-day-detail-title" id="stats-detail-title"></h3>
+              <span class="stats-day-detail-sub" id="stats-detail-sub"></span>
             </div>
-          </section>
-
-          <!-- Appearance settings -->
-          <section class="app-page" id="page-appearance" hidden>
-            <header class="page-header">
-              <button type="button" class="page-back" id="back-from-appearance" aria-label="返回">←</button>
-              <h1>外观设置</h1>
-              <button type="button" class="page-action" id="save-appearance">完成</button>
-            </header>
-            <div class="page-body appearance-body">
-              <section class="appearance-block">
-                <h2 class="appearance-heading">首页形象</h2>
-                <div class="pingu-preset-grid" id="pingu-preset-grid" role="group" aria-label="预设形象">
-                  <button type="button" class="pingu-preset-btn is-active" data-preset="pingu" data-src="assets/pingu-sprite.png" title="企鹅" aria-pressed="true">
-                    <img src="assets/pingu-sprite.png" alt="" draggable="false" />
-                    <span>企鹅</span>
-                  </button>
-                  <button type="button" class="pingu-preset-btn" data-preset="jishibao" data-src="assets/chiwawa.png" title="吉式堡" aria-pressed="false">
-                    <img src="assets/chiwawa.png" alt="" draggable="false" />
-                    <span>吉式堡</span>
-                  </button>
-                  <button type="button" class="pingu-preset-btn" data-preset="xuebi-idle" data-src="assets/xuebi1.png" title="雪碧发呆" aria-pressed="false">
-                    <img src="assets/xuebi1.png" alt="" draggable="false" />
-                    <span>雪碧发呆</span>
-                  </button>
-                  <button type="button" class="pingu-preset-btn" data-preset="xuebi-cast" data-src="assets/xuebi2.png" title="雪碧施法" aria-pressed="false">
-                    <img src="assets/xuebi2.png" alt="" draggable="false" />
-                    <span>雪碧施法</span>
-                  </button>
-                  <button type="button" class="pingu-preset-btn pingu-preset-custom" data-preset="__custom__" title="上传自定义形象" aria-pressed="false">
-                    <span class="pingu-preset-plus">+</span>
-                    <span>自定义</span>
-                  </button>
-                </div>
-                <button type="button" class="appearance-pick appearance-preview-pingu" id="pingu-preview" title="当前首页形象预览">
-                  <span class="appearance-pick-hint">当前形象</span>
-                </button>
-                <input type="file" id="pingu-upload" accept="image/*" hidden />
-              </section>
-
-              <section class="appearance-block">
-                <h2 class="appearance-heading">主页背景</h2>
-                <div class="appearance-mode-row appearance-mode-row-3" role="group" aria-label="主页背景类型">
-                  <button type="button" class="appearance-mode-btn is-active" id="home-mode-gradient" data-target="home" data-mode="gradient">渐变</button>
-                  <button type="button" class="appearance-mode-btn" id="home-mode-image" data-target="home" data-mode="image">图片</button>
-                  <button type="button" class="appearance-mode-btn" id="home-mode-color" data-target="home" data-mode="color">纯色</button>
-                </div>
-                <button type="button" class="appearance-pick" id="home-bg-preview" title="点击更换背景图">
-                  <span class="appearance-pick-hint">点击更换</span>
-                </button>
-                <input type="file" id="home-bg-upload" accept="image/*" hidden />
-                <label class="chat-field appearance-color-field" id="home-bg-color-field" hidden>
-                  <span>背景颜色</span>
-                  <input type="color" id="home-bg-color" value="#fff5f9" />
-                </label>
-              </section>
-
-              <section class="appearance-block">
-                <h2 class="appearance-heading">聊天背景</h2>
-                <div class="appearance-mode-row" role="group" aria-label="聊天背景类型">
-                  <button type="button" class="appearance-mode-btn is-active" id="chat-mode-image" data-target="chat" data-mode="image">图片</button>
-                  <button type="button" class="appearance-mode-btn" id="chat-mode-color" data-target="chat" data-mode="color">纯色</button>
-                </div>
-                <button type="button" class="appearance-pick" id="chat-bg-preview" title="点击更换背景图">
-                  <span class="appearance-pick-hint">点击更换</span>
-                </button>
-                <input type="file" id="chat-bg-upload" accept="image/*" hidden />
-                <label class="chat-field appearance-color-field" id="chat-bg-color-field" hidden>
-                  <span>背景颜色</span>
-                  <input type="color" id="chat-bg-color" value="#cfe8f8" />
-                </label>
-              </section>
-
-              <p class="appearance-note">可先点预设形象一键切换；点「自定义」可从相册上传。背景图点上方预览即可替换，设置保存在本机。</p>
-              <button type="button" class="btn-discard" id="reset-appearance">恢复默认外观</button>
-            </div>
+            <p class="stats-day-detail-body" id="stats-detail-body"></p>
           </section>
         </div>
       </div>
-      <div class="laptop-hinge"></div>
-      <div class="laptop-base">
-        <div class="trackpad"></div>
-        <div class="brand">NOOT NOOT · AFFIRM</div>
+      <div class="panel-footer cal-panel-footer">
+        <div class="cal-footer-panel">
+          <div class="cal-footer-stat">
+            <span class="stat-chip-label" data-i18n="today">今日</span>
+            <strong class="stat-chip-value" id="today-count">0</strong>
+          </div>
+          <div class="cal-footer-stat">
+            <span class="stat-chip-label" data-i18n="total">累计</span>
+            <strong class="stat-chip-value" id="total-count">0</strong>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Stats drawer (legacy, still available) -->
+    <aside class="stats-drawer hud-box" id="stats-drawer" hidden>
+      <div class="drawer-head">
+        <span data-i18n="stats">统计</span>
+        <button type="button" class="icon-close" id="close-stats" aria-label="关闭" data-i18n-aria="close">×</button>
+      </div>
+      <div class="panel-body stats-body">
+        <p class="res-lead" data-i18n="statsMovedHint">统计已移到日历页的「统计」标签。</p>
+      </div>
+    </aside>
+
+    <!-- Legacy hook (drawer removed — favorites is a full page like diary) -->
+    <aside class="favorites-drawer hud-box" id="favorites-drawer" hidden aria-hidden="true"></aside>
+
+    <!-- Legacy drawers kept for JS compatibility -->
+    <aside class="resources-drawer hud-box" id="resources-drawer" hidden></aside>
+    <aside class="faq-drawer hud-box" id="faq-drawer" hidden></aside>
+    <button type="button" id="close-resources" hidden tabindex="-1" aria-hidden="true"></button>
+    <button type="button" id="close-faq" hidden tabindex="-1" aria-hidden="true"></button>
+
+    <main class="stage" id="stage">
+      <!-- Legacy expand hook (hidden; pill drives expand) -->
+      <button type="button" class="ritual-expand-btn" id="ritual-expand" hidden title="展开今日任务" aria-label="展开今日任务" data-i18n-title="expandTasks" data-i18n-aria="expandTasks"></button>
+
+      <div class="pingu-stage">
+        <div class="home-greeting" id="home-greeting">
+          <p class="home-greeting-name" id="home-greeting-name" data-i18n="greetingName">小 Gin,</p>
+          <p class="home-greeting-line" id="home-greeting-line" data-i18n="greetingDiaryHint">你今天还没有开始写你的感恩日记</p>
+        </div>
+        <div class="bubble-anchor" hidden aria-hidden="true">
+          <div class="bubble-motion">
+            <div class="speech-bubble" id="speech-bubble" hidden>
+              <div class="bubble-toolbar">
+                <p class="bubble-mode-label" id="bubble-mode-label" data-i18n="storyMode">故事稿</p>
+                <button type="button" class="bubble-switch" id="bubble-mode-switch" title="切换故事稿 / 机械A" aria-label="切换故事稿与机械A" data-i18n-title="switchBubble" data-i18n-aria="switchBubble">
+                  <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                    <path d="M7 7h11v3l4-4-4-4v3H5v6h2V7zm10 10H6v-3l-4 4 4 4v-3h13v-6h-2v4z" fill="currentColor"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="speech-text" id="affirm-preview"></div>
+            </div>
+          </div>
+        </div>
+        <div class="pingu-wrap" id="pingu-wrap" role="button" tabindex="0" aria-label="显化一次" data-i18n-aria="tapToAffirm">
+          <img class="pingu-sprite" id="pingu" src="assets/curly-cat-animated.gif" alt="" draggable="false" />
+          <div class="jump-fx" id="jump-fx" aria-hidden="true">
+            <span class="jump-plus">+1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily task card (bottom, above dock) -->
+      <div class="task-dock" id="task-dock">
+      <section class="task-card" id="ritual-bar" data-state="collapsed" data-kind="robotic">
+        <!-- Idle: 今日任务 · 机械A / 视觉化 -->
+        <div class="task-idle" id="task-idle">
+          <div class="task-idle-head">
+            <h2 class="task-card-title" data-i18n="dailyTasks">今日任务</h2>
+            <div class="task-seg" role="tablist" aria-label="今日任务类型" data-i18n-aria="ritualTabsAria">
+              <span class="seg-indicator" aria-hidden="true"></span>
+              <button type="button" class="task-seg-btn is-active" id="tab-robotic" role="tab" aria-selected="true" data-i18n="robotic">机械 A</button>
+              <button type="button" class="task-seg-btn" id="tab-visual" role="tab" aria-selected="false" data-i18n="visual">视觉化</button>
+            </div>
+          </div>
+          <div class="task-idle-body">
+            <div class="task-timer-row" id="task-idle-timer-row">
+              <span class="task-timer-big" id="task-idle-timer">10:00</span>
+              <span class="task-timer-unit">mins</span>
+            </div>
+            <p class="task-copy" id="ritual-robotic-copy" data-i18n="roboticEmpty">还没有机械 A 短句。去对话点「今日复盘」生成，或点首页形象用当前肯定语练习。</p>
+            <p class="task-copy" id="ritual-visual-copy" data-i18n="visualEmpty" hidden>还没有今日视觉化脚本。去对话点「今日复盘」生成。</p>
+          </div>
+          <button type="button" class="task-cta task-cta-mint" id="btn-start-robotic" data-i18n="startRobotic">开始机械 A</button>
+          <button type="button" class="task-cta task-cta-pink" id="btn-start-visual" data-i18n="startVisual" hidden>开始视觉化</button>
+        </div>
+
+        <!-- Running -->
+        <div class="ritual-session task-running" id="ritual-session" hidden>
+          <h2 class="task-card-title" id="ritual-session-title">机械 A · 10 分钟</h2>
+          <div class="task-running-mid">
+            <div class="task-timer-block">
+              <div class="task-timer-row">
+                <span class="task-timer-big" id="ritual-session-timer">10:00</span>
+                <span class="task-timer-unit">mins</span>
+              </div>
+              <p class="task-tap-hint" id="ritual-tap-hint" hidden data-i18n="tapBuddyHint">点按nunu可以进行计数</p>
+            </div>
+            <div class="task-progress-track" aria-hidden="true">
+              <div class="task-progress-fill" id="task-progress-fill"></div>
+            </div>
+            <p class="task-copy" id="ritual-session-body"></p>
+          </div>
+          <div class="task-run-actions">
+            <button type="button" class="task-btn-ghost" id="ritual-session-cancel" data-i18n="sessionPause">暂停</button>
+            <button type="button" class="task-btn-dark" id="ritual-session-finish" data-i18n="sessionFinish">结束并记完成</button>
+          </div>
+          <!-- kept for legacy refs / progress math -->
+          <span id="ritual-session-mode" hidden></span>
+          <span id="ritual-session-kicker" hidden></span>
+          <span id="ritual-ring-progress" hidden></span>
+        </div>
+
+        <!-- Summary (both kinds) -->
+        <div class="task-summary" id="task-summary" hidden>
+          <h2 class="task-card-title" id="task-summary-title">机械 A · 本次练习总结</h2>
+          <div class="task-summary-mid">
+            <div class="task-timer-row">
+              <span class="task-timer-big" id="task-summary-timer">10:00</span>
+              <span class="task-timer-unit">mins</span>
+            </div>
+            <p class="task-summary-label" data-i18n="sessionRepeatCount">本次重复次数</p>
+            <div class="task-stepper" id="task-stepper">
+              <button type="button" class="task-stepper-btn" id="summary-minus" aria-label="减少">−</button>
+              <strong class="task-stepper-value" id="summary-count">0</strong>
+              <button type="button" class="task-stepper-btn" id="summary-plus" aria-label="增加">+</button>
+            </div>
+          </div>
+          <button type="button" class="task-btn-dark task-cta-full" id="summary-confirm" data-i18n="confirm">确认</button>
+        </div>
+
+        <!-- Legacy panels (for setRitualTab compatibility) -->
+        <div class="ritual-panels" hidden>
+          <div id="panel-robotic" class="ritual-panel is-active"></div>
+          <div id="panel-visual" class="ritual-panel" hidden></div>
+        </div>
+        <button type="button" id="ritual-collapse" hidden aria-hidden="true"></button>
+        <div id="task-finished" hidden></div>
+        <span id="ritual-active-done" hidden></span>
+        <span id="task-finished-text" hidden></span>
+        <button type="button" id="task-finished-ok" hidden></button>
+      </section>
+      </div>
+
+      <div class="ritual-toast" id="ritual-toast" hidden></div>
+    </main>
+
+    <div class="music-provider-sheet user-profile-sheet" id="music-provider-sheet" hidden>
+      <div class="user-profile-sheet-panel music-provider-panel" role="dialog" aria-modal="true" aria-labelledby="music-provider-sheet-title">
+        <h2 class="user-profile-sheet-title" id="music-provider-sheet-title">Spotify</h2>
+        <p class="music-provider-lead" id="music-provider-sheet-lead"></p>
+        <div class="music-provider-body" id="music-provider-body"></div>
+        <div class="user-profile-sheet-actions">
+          <button type="button" class="user-profile-sheet-cancel" id="music-provider-cancel" data-i18n="cancel">取消</button>
+          <button type="button" class="user-profile-sheet-save" id="music-provider-save" data-i18n="done">完成</button>
+        </div>
       </div>
     </div>
+
+    <!-- Affirm history -->
+    <section class="app-page page-affirm" id="page-affirm-history" hidden>
+      <header class="page-header affirm-head">
+        <h1 data-i18n="yourNewStory">你的新故事</h1>
+        <button type="button" class="page-round-plus" id="goto-edit" aria-label="写新的" data-i18n-aria="writeNew">
+          <img src="assets/icon-plus.svg" alt="" width="18" height="18" />
+        </button>
+      </header>
+      <div class="page-body affirm-body">
+        <div class="current-card story-card">
+          <div class="card-badges">
+            <span class="badge badge-mint" data-i18n="currentStory">当前故事稿</span>
+            <span class="badge badge-outline" id="history-story-tag" hidden></span>
+          </div>
+          <div class="current-text" id="history-current"></div>
+          <p class="story-card-meta" id="history-story-meta"></p>
+        </div>
+        <div class="current-card story-card">
+          <div class="card-badges">
+            <span class="badge badge-pink" data-i18n="currentRobotic">机械 A 短句</span>
+            <span class="badge badge-outline" id="history-robotic-tag" hidden></span>
+          </div>
+          <div class="current-text" id="history-robotic"></div>
+          <p class="story-card-meta" id="history-robotic-meta"></p>
+        </div>
+        <div class="history-title-row">
+          <p class="history-title" data-i18n="editHistory">历史肯定语</p>
+        </div>
+        <div class="history-tag-scroll-wrap">
+          <div class="history-tag-bar" id="history-tag-bar" role="toolbar" aria-label="分类筛选"></div>
+        </div>
+        <form class="history-tag-add" id="history-tag-add-form" hidden>
+          <input type="text" id="history-tag-input" class="history-tag-input" maxlength="16" placeholder="新分类名称" data-i18n-placeholder="newTagPlaceholder" autocomplete="off" />
+          <button type="submit" class="history-tag-add-btn" data-i18n="addTag">添加</button>
+          <button type="button" class="history-tag-add-cancel" id="history-tag-cancel" data-i18n="cancel">取消</button>
+        </form>
+        <ul class="affirm-history-list" id="affirm-history-list"></ul>
+      </div>
+    </section>
+
+    <!-- Affirm edit -->
+    <section class="app-page page-affirm-edit" id="page-affirm-edit" hidden>
+      <header class="page-header page-head-grid edit-head">
+        <button type="button" class="page-round-back" id="back-from-edit" aria-label="返回" data-i18n-aria="back">←</button>
+        <h1 class="edit-title-pill" data-i18n="writeNewAffirm">新建肯定语</h1>
+        <span class="page-spacer"></span>
+      </header>
+      <div class="page-body edit-body">
+        <div class="task-seg edit-kind-tabs" role="tablist" aria-label="肯定语类型">
+          <span class="seg-indicator" aria-hidden="true"></span>
+          <button type="button" class="task-seg-btn edit-kind-tab is-active" id="edit-kind-story" role="tab" aria-selected="true" data-kind="story" data-i18n="storyMode">故事稿</button>
+          <button type="button" class="task-seg-btn edit-kind-tab" id="edit-kind-robotic" role="tab" aria-selected="false" data-kind="robotic" data-i18n="robotic">机械 A</button>
+        </div>
+        <p class="edit-hint" data-i18n="editHintEndstate">让句子站在「已拥有」的终点。</p>
+        <div class="edit-compose-card">
+          <textarea id="affirm-input" maxlength="800" placeholder="从这里写下你的新故事…" data-i18n-placeholder="editPlaceholderStory" autocomplete="off" spellcheck="false"></textarea>
+        </div>
+        <div class="edit-actions">
+          <button type="button" class="btn-discard" id="discard-affirm" data-i18n="discard">放弃</button>
+          <button type="button" class="btn-save" id="save-affirm" data-i18n="save">保存</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Diary -->
+    <section class="app-page page-diary" id="page-diary" hidden>
+      <header class="page-header diary-head">
+        <div class="diary-head-text">
+          <h1 data-i18n="diaryTitle">感恩日记</h1>
+          <p class="diary-sub">Little things, big love.</p>
+        </div>
+        <button type="button" class="page-round-plus" id="diary-add" aria-label="新建日记" data-i18n-aria="diaryAdd">
+          <img src="assets/icon-plus.svg" alt="" width="18" height="18" />
+        </button>
+      </header>
+      <div class="page-body diary-body" id="diary-list"></div>
+    </section>
+
+    <!-- Favorites — Figma 14:29033 (full page, same pattern as diary / affirm) -->
+    <section class="app-page page-favorites" id="page-favorites" hidden>
+      <header class="page-header fav-head">
+        <h1 data-i18n="navFavorites">收藏</h1>
+      </header>
+      <div class="page-body fav-body">
+        <div class="fav-panel resources-body" id="fav-panel-videos">
+          <p class="res-lead" data-i18n="videosLead">粘贴链接生成跳转卡片，方便下次打开。</p>
+          <form class="resource-add" id="resource-add-form">
+            <input
+              type="url"
+              id="resource-url-input"
+              class="resource-add-url"
+              placeholder="粘贴 B站 / YouTube 等视频链接…"
+              data-i18n-placeholder="urlPlaceholder"
+              autocomplete="off"
+              spellcheck="false"
+              required
+            />
+            <div class="resource-add-row">
+              <input
+                type="text"
+                id="resource-title-input"
+                class="resource-add-title"
+                placeholder="标题（可选，不填自动识别）"
+                data-i18n-placeholder="titlePlaceholder"
+                maxlength="80"
+                autocomplete="off"
+              />
+              <button type="submit" class="resource-add-btn" id="resource-add-btn" data-i18n="add">添加</button>
+            </div>
+          </form>
+          <div class="resource-cards" id="resource-cards"></div>
+        </div>
+      </div>
+    </section>
+    <button type="button" id="close-favorites" hidden tabindex="-1" aria-hidden="true"></button>
+
+    <!-- Diary editor (Figma 14:29003) -->
+    <section class="diary-sheet app-page" id="diary-sheet" hidden>
+      <header class="page-header page-head-grid diary-sheet-head">
+        <button type="button" class="page-round-back" id="diary-cancel" aria-label="取消" data-i18n-aria="cancel">←</button>
+        <h2 class="diary-sheet-title-pill" id="diary-sheet-title" data-i18n="diaryNew">写一条感恩</h2>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="page-body diary-compose-body">
+        <div class="diary-compose-card">
+          <textarea id="diary-input" maxlength="2000" rows="10" placeholder="今天想感谢什么？" data-i18n-placeholder="diaryPlaceholder"></textarea>
+        </div>
+        <div class="diary-compose-actions">
+          <button type="button" class="diary-compose-cancel" id="diary-cancel-secondary" data-i18n="cancel">取消</button>
+          <button type="button" class="diary-compose-save" id="diary-save" data-i18n="save">保存</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat sheet -->
+    <section class="chat-page chat-sheet" id="page-chat" hidden>
+      <header class="chat-top">
+        <div class="chat-top-blur" aria-hidden="true"></div>
+        <div class="chat-hero">
+          <button type="button" class="chat-round-btn" id="back-from-chat" aria-label="收起" title="收起" data-i18n-aria="collapseFolder" data-i18n-title="collapseFolder">
+            <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <div class="chat-hero-center">
+            <img class="chat-crystal" src="assets/crystal-ball-pink-glow.gif" alt="" width="44" height="44" decoding="async" aria-hidden="true" />
+          </div>
+          <span class="chat-hero-spacer" aria-hidden="true"></span>
+        </div>
+        <div class="chat-chips" id="chat-chips">
+          <button type="button" class="chat-chip" id="btn-show-memory" data-i18n="chatArchive">档案</button>
+          <button type="button" class="chat-chip" id="btn-analyze" data-i18n="chatDailyAnalyze">每日分析</button>
+          <button type="button" class="chat-chip chat-chip-accent" id="btn-daily-check" data-i18n="chatAdvice">建议</button>
+        </div>
+      </header>
+      <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+      <button type="button" class="chat-jump-bottom" id="chat-jump-bottom" hidden aria-label="回到底部" title="回到底部">
+        <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
+      </button>
+      <form class="chat-composer" id="chat-form">
+        <div class="chat-input-shell">
+          <textarea id="chat-input" rows="1" maxlength="2000" placeholder="跟 Pingu 聊聊…" autocomplete="off" data-i18n-placeholder="chatPlaceholder"></textarea>
+          <button type="submit" class="chat-send" id="chat-send" aria-label="发送">
+            <svg class="rail-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M6 11l6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- User center hub (Figma 14-29365) -->
+    <section class="app-page page-user-center" id="page-user-center" hidden>
+      <header class="page-header page-head-grid user-center-head">
+        <button type="button" class="page-round-back" id="back-from-user-center" aria-label="返回" data-i18n-aria="back">←</button>
+        <h1 class="edit-title-pill" data-i18n="userCenterTitle">个人中心</h1>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="page-body user-center-body">
+        <div class="user-center-profile-card">
+          <div class="user-center-avatar" id="user-center-avatar" aria-hidden="true">
+            <img class="user-center-avatar-photo" id="user-center-avatar-photo" alt="" hidden decoding="async" />
+            <span class="user-center-avatar-letter" id="user-center-avatar-letter">N</span>
+          </div>
+          <div class="user-center-profile-copy">
+            <p class="user-center-name" id="user-center-name">小 Gin</p>
+            <p class="user-center-sub" data-i18n="userCenterSub">本机档案与偏好</p>
+          </div>
+          <button type="button" class="user-center-profile-edit" id="edit-user-profile" aria-label="编辑昵称与头像" data-i18n-aria="userProfileEditAria">
+            <i data-lucide="square-pen" aria-hidden="true"></i>
+          </button>
+        </div>
+        <nav class="user-center-menu" aria-label="个人中心">
+          <button type="button" class="user-center-row" id="goto-profile">
+            <span class="user-center-row-left">
+              <span class="user-center-row-icon" aria-hidden="true"><i data-lucide="scroll-text"></i></span>
+              <span class="user-center-row-label" data-i18n="profileTitle">显化档案</span>
+            </span>
+            <span class="user-center-row-chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+          </button>
+          <button type="button" class="user-center-row" id="goto-auth">
+            <span class="user-center-row-left">
+              <span class="user-center-row-icon" aria-hidden="true"><i data-lucide="shield-check"></i></span>
+              <span class="user-center-row-label" data-i18n="accountSecurityRow">账号登录</span>
+            </span>
+            <span class="user-center-row-chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+          </button>
+          <button type="button" class="user-center-row" id="goto-settings">
+            <span class="user-center-row-left">
+              <span class="user-center-row-icon" aria-hidden="true"><i data-lucide="settings"></i></span>
+              <span class="user-center-row-label" data-i18n="settingsTitle">设置</span>
+            </span>
+            <span class="user-center-row-chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+          </button>
+          <button type="button" class="user-center-row" id="goto-faq">
+            <span class="user-center-row-left">
+              <span class="user-center-row-icon" aria-hidden="true"><i data-lucide="circle-help"></i></span>
+              <span class="user-center-row-label" data-i18n="faq">常见问题</span>
+            </span>
+            <span class="user-center-row-chevron" aria-hidden="true"><i data-lucide="chevron-right"></i></span>
+          </button>
+        </nav>
+      </div>
+      <div class="user-profile-sheet" id="user-profile-sheet" hidden>
+        <div class="user-profile-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="user-profile-sheet-title">
+          <h2 class="user-profile-sheet-title" id="user-profile-sheet-title" data-i18n="userProfileEditTitle">编辑资料</h2>
+          <label class="user-profile-field">
+            <span data-i18n="userProfileNameLabel">昵称</span>
+            <input type="text" id="user-profile-name" maxlength="24" autocomplete="name" />
+          </label>
+          <div class="user-profile-field user-profile-avatar-field">
+            <span data-i18n="userProfileAvatarLabel">头像</span>
+            <button type="button" class="user-profile-avatar-pick" id="user-profile-avatar-pick">
+              <span class="user-profile-avatar-preview" id="user-profile-avatar-preview" aria-hidden="true">
+                <img id="user-profile-avatar-preview-img" alt="" hidden decoding="async" />
+                <span id="user-profile-avatar-preview-letter">N</span>
+              </span>
+              <span class="user-profile-avatar-pick-hint" data-i18n="userProfileAvatarHint">点击上传图片</span>
+            </button>
+            <input type="file" id="user-profile-avatar-upload" accept="image/*" hidden />
+          </div>
+          <div class="user-profile-sheet-actions">
+            <button type="button" class="user-profile-sheet-cancel" id="user-profile-cancel" data-i18n="cancel">取消</button>
+            <button type="button" class="user-profile-sheet-save" id="user-profile-save" data-i18n="save">保存</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Profile -->
+    <section class="app-page page-profile" id="page-profile" hidden>
+      <header class="page-header page-head-grid profile-head">
+        <button type="button" class="page-round-back" id="back-from-profile" aria-label="返回" data-i18n-aria="back">←</button>
+        <h1 class="edit-title-pill" data-i18n="profileTitle">显化档案</h1>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="page-body profile-body">
+        <p class="profile-intro">
+          <span class="profile-intro-text" data-i18n="profileIntro">这些会喂给 coach。你可以随时改；对话里学到的新细节也会往这里补。</span>
+          <span class="profile-saved-flag" id="profile-saved-flag" hidden aria-live="polite">
+            <i data-lucide="check" class="profile-saved-flag-icon" aria-hidden="true"></i>
+            <span data-i18n="profileSavedShort">已保存</span>
+          </span>
+        </p>
+        <label class="profile-field"><span data-i18n="profileGoal">终点目标</span><textarea id="profile-goal" rows="3"></textarea></label>
+        <label class="profile-field"><span data-i18n="profileOldStory">旧故事</span><textarea id="profile-old-story" rows="3"></textarea></label>
+        <label class="profile-field"><span data-i18n="profileEffective">有效肯定语</span><textarea id="profile-effective" rows="3"></textarea></label>
+        <label class="profile-field"><span data-i18n="profileCrash">崩溃模式</span><textarea id="profile-crash" rows="3"></textarea></label>
+        <label class="profile-field"><span data-i18n="profileBoundaries">边界</span><textarea id="profile-boundaries" rows="3"></textarea></label>
+        <label class="profile-field"><span data-i18n="profileNotes">其他备注</span><textarea id="profile-notes" rows="4"></textarea></label>
+      </div>
+    </section>
+
+    <!-- Settings (Figma 14-29461) -->
+    <section class="app-page page-settings page-appearance" id="page-appearance" hidden>
+      <header class="page-header page-head-grid appearance-head">
+        <button type="button" class="page-round-back" id="back-from-appearance" aria-label="返回" data-i18n-aria="back">←</button>
+        <h1 class="edit-title-pill" data-i18n="settingsTitle">设置</h1>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="page-body appearance-body">
+        <section class="appearance-block" id="pingu-assistant-settings">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+            <span data-i18n="cloudHeading">Pingu 助手</span>
+          </h2>
+          <p class="chat-settings-note" data-i18n="cloudIntro">登录并激活兑换码即可使用助手，无需自己的 OpenAI Key。</p>
+          <button type="button" class="appearance-mode-btn cloud-goto-auth-btn" id="goto-auth-from-settings" data-i18n="gotoAuthFromSettings">登录 / 管理账号</button>
+          <label class="chat-field">
+            <span data-i18n="cloudRedeem">兑换码</span>
+            <input type="text" id="cloud-redeem-code" placeholder="PINGU-XXXX-XX" autocomplete="off" spellcheck="false" data-i18n-placeholder="cloudRedeemPh" />
+          </label>
+          <button type="button" class="appearance-mode-btn cloud-redeem-btn" id="cloud-redeem" data-i18n="cloudRedeemBtn">激活</button>
+          <p class="chat-settings-note cloud-status" id="cloud-status" role="status"></p>
+        </section>
+
+        <section class="appearance-block" id="chat-settings">
+          <details class="chat-byok-details">
+            <summary class="appearance-heading appearance-heading-summary">
+              <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="key-round"></i></span>
+              <span data-i18n="chatApiHeadingAdvanced">高级 · 自带 API Key</span>
+            </summary>
+          <label class="chat-field">
+            <span>开发者 · 助手服务地址</span>
+            <input type="url" id="cloud-api-base" placeholder="http://127.0.0.1:8787" autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="chat-field">
+            <span>OpenAI API Key</span>
+            <input type="password" id="openai-key" placeholder="sk-..." autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="chat-field">
+            <span data-i18n="modelLabel">模型</span>
+            <select id="openai-model">
+              <option value="gpt-5.6-luna">gpt-5.6-luna（省钱）</option>
+              <option value="gpt-5.6-terra">gpt-5.6-terra（均衡）</option>
+              <option value="gpt-5.6-sol">gpt-5.6-sol（更强）</option>
+              <option value="gpt-5.4-mini">gpt-5.4-mini</option>
+              <option value="gpt-5.4">gpt-5.4</option>
+              <option value="gpt-5-mini">gpt-5-mini</option>
+              <option value="gpt-5">gpt-5</option>
+              <option value="gpt-4.1-mini">gpt-4.1-mini</option>
+              <option value="gpt-4.1">gpt-4.1</option>
+              <option value="gpt-4o-mini">gpt-4o-mini</option>
+              <option value="gpt-4o">gpt-4o</option>
+              <option value="__custom__">自定义模型 ID…</option>
+            </select>
+          </label>
+          <label class="chat-field" id="custom-model-field" hidden>
+            <span data-i18n="customModelLabel">自定义模型 ID</span>
+            <input type="text" id="openai-model-custom" placeholder="例如 gpt-5.2" autocomplete="off" spellcheck="false" />
+          </label>
+          <label class="chat-check">
+            <input type="checkbox" id="auto-analyze" checked />
+            <span data-i18n="autoAnalyzeLabel">每天第一次打开对话时自动分析</span>
+          </label>
+          <p class="chat-settings-note" data-i18n="apiAutoSaveNote">改动会自动保存。ChatGPT 会员 ≠ API，请用 platform.openai.com 的 Key。</p>
+          </details>
+        </section>
+
+        <section class="appearance-block">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="languages"></i></span>
+            <span data-i18n="languageHeading">语言</span>
+          </h2>
+          <div class="appearance-mode-row" role="group" aria-label="Language" id="locale-switch">
+            <button type="button" class="appearance-mode-btn is-active" id="locale-zh" data-locale="zh">中文</button>
+            <button type="button" class="appearance-mode-btn" id="locale-en" data-locale="en">English</button>
+          </div>
+        </section>
+
+        <section class="appearance-block">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+            <span data-i18n="buddyHeading">首页形象</span>
+          </h2>
+          <div class="pingu-preset-grid" id="pingu-preset-grid" role="group" aria-label="预设形象">
+            <button type="button" class="pingu-preset-btn is-active" data-preset="nunu" data-src="assets/curly-cat-animated.gif" title="Nunu" aria-pressed="true">
+              <img src="assets/curly-cat-animated.gif" alt="" draggable="false" />
+              <span data-i18n="presetNunu">Nunu</span>
+            </button>
+            <button type="button" class="pingu-preset-btn" data-preset="pingu" data-src="assets/pingu-wave-blink.gif" title="企鹅" aria-pressed="false">
+              <img src="assets/pingu-wave-blink.gif" alt="" draggable="false" />
+              <span data-i18n="presetPingu">企鹅</span>
+            </button>
+            <button type="button" class="pingu-preset-btn" data-preset="jishibao" data-src="assets/chiwawa.png" title="吉式堡" aria-pressed="false">
+              <img src="assets/chiwawa.png" alt="" draggable="false" />
+              <span>吉式堡</span>
+            </button>
+            <button type="button" class="pingu-preset-btn" data-preset="xuebi-idle" data-src="assets/xuebi1.png" title="雪碧发呆" aria-pressed="false">
+              <img src="assets/xuebi1.png" alt="" draggable="false" />
+              <span data-i18n="presetXuebiIdle">雪碧发呆</span>
+            </button>
+            <button type="button" class="pingu-preset-btn" data-preset="xuebi-cast" data-src="assets/xuebi2.png" title="雪碧施法" aria-pressed="false">
+              <img src="assets/xuebi2.png" alt="" draggable="false" />
+              <span data-i18n="presetXuebiCast">雪碧施法</span>
+            </button>
+            <button type="button" class="pingu-preset-btn pingu-preset-custom" data-preset="__custom__" title="上传自定义形象" aria-pressed="false">
+              <span class="pingu-preset-plus">+</span>
+              <span data-i18n="presetCustom">自定义</span>
+            </button>
+          </div>
+          <button type="button" class="appearance-pick appearance-preview-pingu" id="pingu-preview" title="当前首页形象预览">
+            <span class="appearance-pick-hint" data-i18n="currentBuddy">当前形象</span>
+          </button>
+          <input type="file" id="pingu-upload" accept="image/*" hidden />
+        </section>
+
+        <section class="appearance-block">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="image"></i></span>
+            <span data-i18n="homeBgHeading">主页背景</span>
+          </h2>
+          <button type="button" class="appearance-pick" id="home-bg-preview" title="点击上传背景图">
+            <span class="appearance-pick-hint" data-i18n="tapUpload">点击上传图片</span>
+          </button>
+          <input type="file" id="home-bg-upload" accept="image/*" hidden />
+        </section>
+
+        <section class="appearance-block">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="message-circle"></i></span>
+            <span data-i18n="chatBgHeading">聊天背景</span>
+          </h2>
+          <button type="button" class="appearance-pick" id="chat-bg-preview" title="点击上传背景图">
+            <span class="appearance-pick-hint" data-i18n="tapUpload">点击上传图片</span>
+          </button>
+          <input type="file" id="chat-bg-upload" accept="image/*" hidden />
+        </section>
+
+        <section class="appearance-block" id="privacy-security-block">
+          <h2 class="appearance-heading">
+            <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="shield"></i></span>
+            <span data-i18n="privacyHeading">隐私与安全</span>
+          </h2>
+          <p class="privacy-lead" data-i18n="privacyLead">Affirm Pingu 以本机优先保存你的日记、打卡与档案；使用云端助手时，对话会经加密连接发往服务商以生成回复。</p>
+          <div class="privacy-sections">
+            <article class="privacy-article">
+              <h3 class="privacy-article-title" data-i18n="privacyDataLocalTitle">本机数据</h3>
+              <p class="privacy-article-body" data-i18n="privacyDataLocalBody">肯定语、感恩日记、显化档案、外观与大部分设置默认保存在你的设备本地（浏览器 / App 存储），不会自动上传到 Pingu 服务器，除非你主动使用云端功能。</p>
+            </article>
+            <article class="privacy-article">
+              <h3 class="privacy-article-title" data-i18n="privacyCloudTitle">云端助手</h3>
+              <p class="privacy-article-body" data-i18n="privacyCloudBody">登录后发送的聊天内容、以及为 coaching 组装的本地活动摘要，会通过 HTTPS 发往创作者配置的 AI 服务以生成回答。请勿在对话中发送银行卡号、密码等敏感信息。</p>
+            </article>
+            <article class="privacy-article">
+              <h3 class="privacy-article-title" data-i18n="privacySecurityTitle">账号安全</h3>
+              <p class="privacy-article-body" data-i18n="privacySecurityBody">密码在服务器以哈希形式保存；登录态令牌保存在本机。建议为邮箱/手机设置独立密码，并在公共设备上使用后退出登录。手机绑定用于找回与多方式登录（短信验证码将在后续版本提供）。</p>
+            </article>
+            <article class="privacy-article">
+              <h3 class="privacy-article-title" data-i18n="privacyDeleteTitle">删除与导出</h3>
+              <p class="privacy-article-body" data-i18n="privacyDeleteBody">清除浏览器数据或卸载 App 会删除本机存档。云端账号数据如需删除，请联系创作者处理；后续版本将提供自助导出/注销入口。</p>
+            </article>
+          </div>
+        </section>
+
+        <p class="appearance-note" data-i18n="appearanceNote">点预设切换形象，点背景预览上传图片。设置保存在本机。</p>
+      </div>
+    </section>
+
+    <!-- Account / Auth -->
+    <section class="app-page page-auth" id="page-auth" hidden>
+      <div class="auth-hero" aria-hidden="true">
+        <strong>Dreamey.</strong>
+        <h1>把愿望<br /><span>练成每天的力量</span></h1>
+      </div>
+      <div class="auth-sheet">
+      <div class="page-body auth-page-body">
+        <div class="auth-logged-in" id="auth-logged-in" hidden>
+          <header class="account-settings-head">
+            <button type="button" class="page-round-back" id="back-from-auth" aria-label="返回">←</button>
+            <h2>账号与数据</h2>
+            <span aria-hidden="true"></span>
+          </header>
+
+          <div class="account-settings-profile">
+            <span class="account-settings-avatar" id="account-settings-avatar">D</span>
+            <div>
+              <strong id="account-settings-name">Dreamey 用户</strong>
+              <p id="auth-account-summary"></p>
+            </div>
+          </div>
+
+          <section class="account-settings-group" aria-label="账号设置">
+            <button type="button" class="account-settings-row" id="auth-change-password">
+              <span class="account-settings-row-icon"><i data-lucide="key-round" aria-hidden="true"></i></span>
+              <span class="account-settings-row-copy"><strong>修改密码</strong><small>更新当前账号的登录密码</small></span>
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+            <div class="account-password-panel" id="account-password-panel" hidden>
+              <input type="password" id="account-current-password" autocomplete="current-password" placeholder="当前密码" />
+              <input type="password" id="account-new-password" autocomplete="new-password" placeholder="新密码（至少 8 位）" />
+              <input type="password" id="account-confirm-password" autocomplete="new-password" placeholder="确认新密码" />
+              <div class="account-password-actions">
+                <button type="button" id="account-password-cancel">取消</button>
+                <button type="button" id="account-password-save">保存密码</button>
+              </div>
+            </div>
+            <button type="button" class="account-settings-row" id="auth-download-chat">
+              <span class="account-settings-row-icon"><i data-lucide="download" aria-hidden="true"></i></span>
+              <span class="account-settings-row-copy"><strong>下载本机聊天记录</strong><small>导出为可阅读的文本文件</small></span>
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="account-settings-row" id="auth-clear-cache">
+              <span class="account-settings-row-icon"><i data-lucide="eraser" aria-hidden="true"></i></span>
+              <span class="account-settings-row-copy"><strong>清除缓存</strong><small>不会删除账号与本机记录</small></span>
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="account-settings-row is-danger" id="auth-logout">
+              <span class="account-settings-row-icon"><i data-lucide="log-out" aria-hidden="true"></i></span>
+              <span class="account-settings-row-copy"><strong>退出登录</strong><small>本机记录仍会保留</small></span>
+              <i data-lucide="chevron-right" aria-hidden="true"></i>
+            </button>
+          </section>
+
+          <section class="account-about-card" aria-labelledby="account-about-title">
+            <span class="account-settings-row-icon"><i data-lucide="info" aria-hidden="true"></i></span>
+            <div>
+              <h3 id="account-about-title">关于应用</h3>
+              <p>Dreamey.</p>
+            </div>
+            <span class="account-version" id="account-version">版本 1.1.0</span>
+          </section>
+        </div>
+
+        <div class="auth-form" id="auth-form">
+          <h2 class="auth-form-title" id="auth-form-title">欢迎回来</h2>
+          <div class="auth-mode-row" role="tablist" hidden>
+            <button type="button" class="appearance-mode-btn is-active" id="auth-tab-login" role="tab" aria-selected="true" data-i18n="authTabLogin">登录</button>
+            <button type="button" class="appearance-mode-btn" id="auth-tab-register" role="tab" aria-selected="false" data-i18n="authTabRegister">注册</button>
+          </div>
+          <div class="auth-method-row" role="group" aria-label="登录方式">
+            <button type="button" class="appearance-mode-btn is-active" id="auth-method-email" data-i18n="authMethodEmail">邮箱</button>
+            <button type="button" class="appearance-mode-btn" id="auth-method-phone" data-i18n="authMethodPhone">手机</button>
+          </div>
+          <label class="chat-field" id="auth-email-field">
+            <span class="auth-visually-hidden" data-i18n="cloudEmail">邮箱</span>
+            <input type="email" id="auth-email" autocomplete="username" spellcheck="false" placeholder="邮箱" />
+          </label>
+          <label class="chat-field" id="auth-phone-field" hidden>
+            <span class="auth-visually-hidden" data-i18n="authPhoneLabel">手机号</span>
+            <input type="tel" id="auth-phone" inputmode="tel" autocomplete="tel" spellcheck="false" placeholder="+86 138…" data-i18n-placeholder="authPhonePh" />
+          </label>
+          <label class="chat-field">
+            <span class="auth-visually-hidden" data-i18n="cloudPassword">密码</span>
+            <input type="password" id="auth-password" autocomplete="current-password" spellcheck="false" placeholder="密码" />
+          </label>
+          <label class="chat-field" id="auth-password-confirm-field" hidden>
+            <span class="auth-visually-hidden" data-i18n="authPasswordConfirm">确认密码</span>
+            <input type="password" id="auth-password-confirm" autocomplete="new-password" spellcheck="false" placeholder="确认密码" />
+          </label>
+          <button type="button" class="appearance-mode-btn auth-submit-btn" id="auth-submit" data-i18n="authSubmitLogin">登录</button>
+          <button type="button" class="auth-switch-btn" id="auth-switch-mode">还没有账号？<span>注册</span></button>
+        </div>
+      </div>
+      </div>
+
+      <section class="auth-name-step" id="auth-name-step" hidden aria-labelledby="auth-name-title">
+        <strong class="auth-name-brand">Dreamey.</strong>
+        <div class="auth-name-center">
+          <label for="auth-display-name" id="auth-name-title">What’s your name?</label>
+          <input type="text" id="auth-display-name" maxlength="24" autocomplete="name" enterkeyhint="done" placeholder="First name" />
+          <span class="auth-name-ghost" aria-hidden="true">Last name</span>
+        </div>
+      </section>
+    </section>
+
+    <!-- FAQ (Figma 14-29577) -->
+    <section class="app-page page-faq" id="page-faq" hidden>
+      <header class="page-header page-head-grid faq-page-head">
+        <button type="button" class="page-round-back" id="back-from-faq" aria-label="返回" data-i18n-aria="back">←</button>
+        <h1 class="edit-title-pill" data-i18n="faq">常见问题</h1>
+        <span class="page-spacer" aria-hidden="true"></span>
+      </header>
+      <div class="page-body faq-page-body">
+        <p class="faq-page-lead" data-i18n="faqLead">显化里最常见的 10 个卡点，点开看简明解答。</p>
+        <div class="faq-list" id="faq-list" role="list"></div>
+      </div>
+    </section>
   </div>
 
-  <script src="app.js"></script>
+  <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
+  <script src="app.js?v=65"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
