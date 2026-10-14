@@ -43,7 +43,7 @@
     </header>
 
     <!-- Music — centered under 「每日任务」pill (Figma) -->
-    <div class="home-music-hub" id="home-music-hub">
+    <div class="home-music-hub" id="home-music-hub" hidden>
       <div class="task-music-wrap" id="task-music-wrap">
         <div class="music-dial-backdrop" id="music-dial-backdrop" hidden aria-hidden="true"></div>
         <div class="music-control-cluster" id="music-control-cluster">
@@ -654,7 +654,7 @@
         </section>
 
         <section class="appearance-block" id="chat-settings">
-          <details class="chat-byok-details">
+          <details class="chat-byok-details" hidden aria-hidden="true">
             <summary class="appearance-heading appearance-heading-summary">
               <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="key-round"></i></span>
               <span data-i18n="chatApiHeadingAdvanced">高级 · 自带 API Key</span>
@@ -694,6 +694,10 @@
           </label>
           <p class="chat-settings-note" data-i18n="apiAutoSaveNote">改动会自动保存。ChatGPT 会员 ≠ API，请用 platform.openai.com 的 Key。</p>
           </details>
+          <label class="chat-check auto-analyze-only">
+            <input type="checkbox" id="auto-analyze-visible" checked />
+            <span data-i18n="autoAnalyzeLabel">每天第一次打开对话时自动分析</span>
+          </label>
         </section>
 
         <section class="appearance-block">
@@ -752,6 +756,7 @@
           <button type="button" class="appearance-pick" id="home-bg-preview" title="点击上传背景图">
             <span class="appearance-pick-hint" data-i18n="tapUpload">点击上传图片</span>
           </button>
+          <button type="button" class="appearance-reset-btn" id="home-bg-reset">恢复默认主页背景</button>
           <input type="file" id="home-bg-upload" accept="image/*" hidden />
         </section>
 
@@ -763,6 +768,7 @@
           <button type="button" class="appearance-pick" id="chat-bg-preview" title="点击上传背景图">
             <span class="appearance-pick-hint" data-i18n="tapUpload">点击上传图片</span>
           </button>
+          <button type="button" class="appearance-reset-btn" id="chat-bg-reset">恢复默认聊天背景</button>
           <input type="file" id="chat-bg-upload" accept="image/*" hidden />
         </section>
 
@@ -792,7 +798,6 @@
           </div>
         </section>
 
-        <p class="appearance-note" data-i18n="appearanceNote">点预设切换形象，点背景预览上传图片。设置保存在本机。</p>
       </div>
     </section>
 
@@ -812,7 +817,10 @@
           </header>
 
           <div class="account-settings-profile">
-            <span class="account-settings-avatar" id="account-settings-avatar">D</span>
+            <span class="account-settings-avatar" id="account-settings-avatar">
+              <img id="account-settings-avatar-photo" alt="" hidden decoding="async" />
+              <span id="account-settings-avatar-letter">D</span>
+            </span>
             <div>
               <strong id="account-settings-name">Dreamey 用户</strong>
               <p id="auth-account-summary"></p>
@@ -851,14 +859,19 @@
             </button>
           </section>
 
-          <section class="account-about-card" aria-labelledby="account-about-title">
-            <span class="account-settings-row-icon"><i data-lucide="info" aria-hidden="true"></i></span>
-            <div>
-              <h3 id="account-about-title">关于应用</h3>
-              <p>Dreamey.</p>
+          <details class="account-about-card" aria-labelledby="account-about-title">
+            <summary>
+              <span class="account-settings-row-icon"><i data-lucide="info" aria-hidden="true"></i></span>
+              <span class="account-about-copy"><strong id="account-about-title">关于应用</strong><small>Dreamey.</small></span>
+              <span class="account-version" id="account-version">版本 1.3.0</span>
+              <i data-lucide="chevron-down" class="account-about-chevron" aria-hidden="true"></i>
+            </summary>
+            <div class="account-about-details">
+              <strong>Dreamey. 1.3.0</strong>
+              <p>专注于每日肯定、显化记录与陪伴式对话。</p>
+              <p>本次更新：优化账号资料同步，新增默认背景恢复，并精简设置选项。</p>
             </div>
-            <span class="account-version" id="account-version">版本 1.2.2</span>
-          </section>
+          </details>
         </div>
 
         <div class="auth-form" id="auth-form">
@@ -897,9 +910,8 @@
       <section class="auth-name-step" id="auth-name-step" hidden aria-labelledby="auth-name-title">
         <strong class="auth-name-brand">Dreamey.</strong>
         <div class="auth-name-center">
-          <label for="auth-display-name" id="auth-name-title">What’s your name?</label>
-          <input type="text" id="auth-display-name" maxlength="24" autocomplete="name" enterkeyhint="done" placeholder="First name" />
-          <span class="auth-name-ghost" aria-hidden="true">Last name</span>
+          <label for="auth-display-name" id="auth-name-title">我要怎么称呼你？</label>
+          <input type="text" id="auth-display-name" maxlength="24" autocomplete="name" enterkeyhint="done" placeholder="你的名字" />
         </div>
       </section>
     </section>

@@ -547,7 +547,7 @@ body.theme-v2 {
   position: relative;
   z-index: var(--z-stage);
   padding:
-    calc(var(--safe-top) + 8px + var(--top-bar-h) + 8px + var(--home-music-reserve, 44px) + 8px)
+    calc(var(--safe-top) + 8px + var(--top-bar-h) + 16px)
     16px
     calc(var(--rail-reserve) + 6px);
   display: flex;
@@ -584,6 +584,13 @@ body.theme-v2 {
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.15;
+  color: #101716;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.72);
+}
+
+.theme-v2 .home-music-hub,
+.theme-v2 .music-provider-sheet {
+  display: none !important;
 }
 
 .home-greeting-line {
@@ -1592,6 +1599,21 @@ body.theme-v2 {
 .theme-v2 .chat-byok-details {
   border: none;
   padding: 0;
+}
+
+.theme-v2 .auto-analyze-only {
+  margin: 0;
+}
+
+.theme-v2 .appearance-reset-btn {
+  width: 100%;
+  min-height: 44px;
+  margin-top: 10px;
+  border: 1px solid rgba(21, 25, 23, 0.1);
+  border-radius: 13px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #151917;
+  font: 700 13px/1 inherit;
 }
 
 .theme-v2 .chat-byok-details > summary {
@@ -4850,6 +4872,13 @@ body.theme-v2 .dock-crystal.is-chat-open {
   color: #151917;
   font-size: 22px;
   font-weight: 800;
+  overflow: hidden;
+}
+
+.theme-v2 .account-settings-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .theme-v2 .account-settings-profile strong {
@@ -4967,31 +4996,64 @@ body.theme-v2 .dock-crystal.is-chat-open {
 }
 
 .theme-v2 .account-about-card {
-  display: grid;
-  grid-template-columns: 24px 1fr auto;
-  align-items: center;
-  gap: 12px;
   margin-top: 14px;
-  padding: 15px 16px;
   border-radius: 20px;
+  overflow: hidden;
 }
 
-.theme-v2 .account-about-card h3,
-.theme-v2 .account-about-card p {
+.theme-v2 .account-about-card > summary {
+  display: grid;
+  grid-template-columns: 24px 1fr auto 18px;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 16px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.theme-v2 .account-about-card > summary::-webkit-details-marker { display: none; }
+
+.theme-v2 .account-about-copy strong,
+.theme-v2 .account-about-copy small {
+  display: block;
   margin: 0;
 }
 
-.theme-v2 .account-about-card h3 {
+.theme-v2 .account-about-copy strong {
   color: #151917;
   font-size: 15px;
 }
 
-.theme-v2 .account-about-card p,
+.theme-v2 .account-about-copy small,
 .theme-v2 .account-version {
   margin-top: 3px;
   color: var(--ink-soft);
   font-size: 11px;
 }
+
+.theme-v2 .account-about-chevron {
+  width: 18px;
+  color: #8e8e93;
+  transition: transform 0.2s ease;
+}
+
+.theme-v2 .account-about-card[open] .account-about-chevron { transform: rotate(180deg); }
+
+.theme-v2 .account-about-details {
+  padding: 0 16px 16px 52px;
+  border-top: 1px solid rgba(21, 25, 23, 0.06);
+  color: rgba(21, 25, 23, 0.66);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.theme-v2 .account-about-details strong {
+  display: block;
+  margin-top: 14px;
+  color: #151917;
+}
+
+.theme-v2 .account-about-details p { margin: 6px 0 0; }
 
 .theme-v2 .auth-name-step {
   position: absolute;
@@ -5059,17 +5121,6 @@ body.theme-v2 .dock-crystal.is-chat-open {
   opacity: 1;
 }
 
-.theme-v2 .auth-name-ghost {
-  display: block;
-  margin-top: 20px;
-  color: #cfcdcd;
-  font-family: "Figtree", "Noto Sans SC", sans-serif;
-  font-size: clamp(44px, 11.5vw, 60px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -0.06em;
-  white-space: nowrap;
-}
 
 @media (max-height: 700px) {
   .theme-v2 .auth-hero {

@@ -36,7 +36,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.2.2";
+  const APP_VERSION = "1.3.0";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -1440,6 +1440,8 @@
     authBindSubmit: document.getElementById("auth-bind-submit"),
     authLogout: document.getElementById("auth-logout"),
     accountSettingsAvatar: document.getElementById("account-settings-avatar"),
+    accountSettingsAvatarPhoto: document.getElementById("account-settings-avatar-photo"),
+    accountSettingsAvatarLetter: document.getElementById("account-settings-avatar-letter"),
     accountSettingsName: document.getElementById("account-settings-name"),
     accountVersion: document.getElementById("account-version"),
     authChangePassword: document.getElementById("auth-change-password"),
@@ -1474,8 +1476,10 @@
     backFromFaq: document.getElementById("back-from-faq"),
     homeBgUpload: document.getElementById("home-bg-upload"),
     homeBgPreview: document.getElementById("home-bg-preview"),
+    homeBgReset: document.getElementById("home-bg-reset"),
     chatBgUpload: document.getElementById("chat-bg-upload"),
     chatBgPreview: document.getElementById("chat-bg-preview"),
+    chatBgReset: document.getElementById("chat-bg-reset"),
     pinguUpload: document.getElementById("pingu-upload"),
     pinguPreview: document.getElementById("pingu-preview"),
     pinguPresetGrid: document.getElementById("pingu-preset-grid"),
@@ -1555,6 +1559,7 @@
     cloudStatus: document.getElementById("cloud-status"),
     openaiModel: document.getElementById("openai-model"),
     autoAnalyze: document.getElementById("auto-analyze"),
+    autoAnalyzeVisible: document.getElementById("auto-analyze-visible"),
     btnAnalyze: document.getElementById("btn-analyze"),
     btnDailyCheck: document.getElementById("btn-daily-check"),
     btnShowMemory: document.getElementById("btn-show-memory"),
@@ -5126,7 +5131,7 @@
     els.screen?.classList.toggle("is-home", showHomeTop);
     if (els.topBar) els.topBar.hidden = !showHomeTop;
     if (els.taskDock) els.taskDock.hidden = !showHomeTop;
-    if (els.homeMusicHub) els.homeMusicHub.hidden = !showHomeTop;
+    if (els.homeMusicHub) els.homeMusicHub.hidden = true;
   }
 
   function fillProfileForm(profile) {
@@ -5263,6 +5268,13 @@
       wrap: els.iconSettings,
       img: els.iconSettingsPhoto,
       letterEl: els.iconSettingsLetter,
+      url: photo,
+      letter,
+    });
+    paintAvatarSlot({
+      wrap: els.accountSettingsAvatar,
+      img: els.accountSettingsAvatarPhoto,
+      letterEl: els.accountSettingsAvatarLetter,
       url: photo,
       letter,
     });
@@ -5429,7 +5441,7 @@
     if (loggedIn && els.authAccountSummary) {
       els.authAccountSummary.textContent = cloudAccountLabel();
       if (els.accountSettingsName) els.accountSettingsName.textContent = getUserDisplayName();
-      if (els.accountSettingsAvatar) els.accountSettingsAvatar.textContent = getUserAvatarLetter();
+      syncUserProfileFromTheme();
       if (els.accountVersion) els.accountVersion.textContent = `版本 ${APP_VERSION}`;
     }
     if (loggedIn && els.authEntitlementSummary) {
@@ -5649,6 +5661,7 @@
     }
     syncCustomModelField();
     if (els.autoAnalyze) els.autoAnalyze.checked = ai.autoAnalyze !== false;
+    if (els.autoAnalyzeVisible) els.autoAnalyzeVisible.checked = ai.autoAnalyze !== false;
     if (els.cloudApiBase) {
       els.cloudApiBase.value = ai.cloudApiBase || DEFAULT_CLOUD_API;
     }
@@ -5665,7 +5678,8 @@
     if (!els.openaiKey) return;
     ai.apiKey = (els.openaiKey.value || "").trim();
     ai.model = selectedModelId();
-    ai.autoAnalyze = Boolean(els.autoAnalyze?.checked);
+    ai.autoAnalyze = Boolean(els.autoAnalyzeVisible?.checked ?? els.autoAnalyze?.checked);
+    if (els.autoAnalyze) els.autoAnalyze.checked = ai.autoAnalyze;
     saveAi();
   }
 
@@ -6367,6 +6381,26 @@
   if (els.chatBgPreview) {
     els.chatBgPreview.addEventListener("click", () => {
       pickAppearanceImage(els.chatBgUpload);
+    });
+  }
+  if (els.homeBgReset) {
+    els.homeBgReset.addEventListener("click", () => {
+      appearanceDraft.homeMode = "image";
+      appearanceDraft.homePreset = DEFAULT_HOME_BG;
+      appearanceDraft.homeCustom = "";
+      syncAppearanceFields();
+      commitAppearance();
+      showRitualToast("已恢复默认主页背景");
+    });
+  }
+  if (els.chatBgReset) {
+    els.chatBgReset.addEventListener("click", () => {
+      appearanceDraft.chatMode = "image";
+      appearanceDraft.chatPreset = DEFAULT_CHAT_BG;
+      appearanceDraft.chatCustom = "";
+      syncAppearanceFields();
+      commitAppearance();
+      showRitualToast("已恢复默认聊天背景");
     });
   }
   if (els.homeBgUpload) {
@@ -7868,6 +7902,9 @@
   }
   if (els.autoAnalyze) {
     els.autoAnalyze.addEventListener("change", scheduleChatApiPersist);
+  }
+  if (els.autoAnalyzeVisible) {
+    els.autoAnalyzeVisible.addEventListener("change", scheduleChatApiPersist);
   }
   if (els.cloudApiBase) {
     els.cloudApiBase.addEventListener("change", persistCloudApiBase);
