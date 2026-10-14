@@ -100,6 +100,41 @@ function maskPhone(phone) {
   return digits.length > 4 ? `${String(phone).slice(0, 3)}****${digits.slice(-4)}` : String(phone || "");
 }
 
+function safePreviewUrl(raw) {
+  try {
+    const url = new URL(String(raw || "").trim());
+    if (!/^https?:$/.test(url.protocol)) return null;
+    const host = url.hostname.toLowerCase();
+    if (
+      host === "localhost" ||
+      host === "0.0.0.0" ||
+      host === "::1" ||
+      /^127\./.test(host) ||
+      /^10\./.test(host) ||
+      /^192\.168\./.test(host) ||
+      /^172\.(1[6-9]|2\d|3[01])\./.test(host)
+    ) return null;
+    return url;
+  } catch {
+    return null;
+  }
+}
+
+function htmlAttribute(tag, name) {
+  const match = tag.match(new RegExp(`${name}\\s*=\\s*["']([^"']+)["']`, "i"));
+  return match ? match[1].trim() : "";
+}
+
+function htmlMeta(html, keys) {
+  const wanted = new Set(keys.map((key) => key.toLowerCase()));
+  const tags = String(html || "").match(/<meta\b[^>]*>/gi) || [];
+  for (const tag of tags) {
+    const key = (htmlAttribute(tag, "property") || htmlAttribute(tag, "name")).toLowerCase();
+    if (wanted.has(key)) return htmlAttribute(tag, "content");
+  }
+  return "";
+}
+
 function userPayload(user) {
   const active = user.plan_expires_at && Date.parse(user.plan_expires_at) > Date.now();
   return {
@@ -129,6 +164,41 @@ async function handle(request, env) {
   const origin = allowedOrigin(request, env);
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: { "access-control-allow-origin": origin, "access-control-allow-headers": "authorization, content-type, x-admin-secret", "access-control-allow-methods": "GET, POST, OPTIONS" } });
   if (request.method === "GET" && url.pathname === "/health") return json({ ok: true, service: "dreamey-api" }, 200, origin);
+
+  if (request.method === "POST" && url.pathname === "/v1/link-preview") {
+    const target = safePreviewUrl((await bodyOf(request)).url);
+    if (!target) return json({ error: "invalid_url" }, 400, origin);
+    try {
+      const response = await fetch(target.href, {
+        redirect: "follow",
+        headers: {
+          accept: "text/html,application/xhtml+xml",
+          "user-agent": "Mozilla/5.0 (compatible; DreameyLinkPreview/1.0)",
+        },
+      });
+      const contentType = response.headers.get("content-type") || "";
+      if (!response.ok || !contentType.includes("text/html")) {
+        return json({ url: target.href }, 200, origin);
+      }
+      const html = (await response.text()).slice(0, 600000);
+      const titleTag = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1] || "";
+      const title = htmlMeta(html, ["og:title", "twitter:title"]) || titleTag;
+      const image = htmlMeta(html, ["og:image", "og:image:secure_url", "twitter:image", "twitter:image:src"]);
+      const siteName = htmlMeta(html, ["og:site_name", "application-name"]);
+      let cover = "";
+      if (image) {
+        try { cover = new URL(image.replace(/&amp;/g, "&"), response.url || target.href).href; } catch { cover = ""; }
+      }
+      return json({
+        url: response.url || target.href,
+        title: String(title).replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").trim().slice(0, 160),
+        cover,
+        siteName: String(siteName).trim().slice(0, 80),
+      }, 200, origin);
+    } catch {
+      return json({ url: target.href }, 200, origin);
+    }
+  }
 
   if (request.method === "POST" && url.pathname === "/v1/auth/register") {
     const { email, phone, password } = parseIdentity(await bodyOf(request));

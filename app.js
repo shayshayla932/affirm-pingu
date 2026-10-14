@@ -36,7 +36,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.3.1";
+  const APP_VERSION = "1.3.2";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -3063,6 +3063,7 @@
           meta: String(item.meta || t("customLabel")).slice(0, 60),
           url: String(item.url).trim(),
           badge: String(item.badge || t("linkBadge")).slice(0, 12),
+          cover: typeof item.cover === "string" ? item.cover.trim() : "",
           custom: true,
         }));
     } catch {
@@ -3082,6 +3083,7 @@
             meta: item.meta,
             url: item.url,
             badge: item.badge,
+            cover: item.cover || "",
           }))
         )
       );
@@ -3149,17 +3151,41 @@
       meta,
       url: url.href,
       badge,
+      cover: "",
       custom: true,
     };
+  }
+
+  async function enrichResourcePreview(item, customTitle = "") {
+    const url = new URL(item.url);
+    if (url.hostname === "youtu.be" || url.hostname.includes("youtube.com")) {
+      const id = url.hostname === "youtu.be"
+        ? url.pathname.replace(/^\//, "").split("/")[0]
+        : url.searchParams.get("v");
+      if (id) item.cover = `https://i.ytimg.com/vi/${encodeURIComponent(id)}/hqdefault.jpg`;
+    }
+    try {
+      const { res, data } = await cloudAuthFetch("/v1/link-preview", {
+        method: "POST",
+        body: JSON.stringify({ url: item.url }),
+        timeoutMs: 12000,
+      });
+      if (res.ok && data) {
+        if (!customTitle && data.title) item.title = String(data.title).slice(0, 120);
+        if (data.siteName) item.author = String(data.siteName).slice(0, 60);
+        if (data.cover) item.cover = String(data.cover);
+        if (data.url) item.url = String(data.url);
+      }
+    } catch {
+      /* Keep the domain-based fallback when preview lookup is unavailable. */
+    }
+    return item;
   }
 
   function renderResourceCards() {
     if (!els.resourceCards) return;
     const customs = loadCustomResourceLinks();
-    const items = [
-      ...RESOURCE_LINKS.map((item) => ({ ...item, custom: false })),
-      ...customs,
-    ];
+    const items = customs;
     els.resourceCards.innerHTML = items
       .map((item) => {
         const wrapClass = item.custom
@@ -3168,9 +3194,13 @@
         const removeBtn = item.custom
           ? `<button type="button" class="resource-card-remove" data-id="${escapeHtml(item.id)}" aria-label="${escapeHtml(t("deleteCard"))}" title="${escapeHtml(t("delete"))}">×</button>`
           : "";
+        const cover = item.cover
+          ? `<img class="resource-card-cover" src="${escapeHtml(item.cover)}" alt="" loading="lazy" referrerpolicy="no-referrer" />`
+          : `<div class="resource-card-cover resource-card-cover-fallback" aria-hidden="true"><span>${escapeHtml(item.badge || t("linkBadge"))}</span></div>`;
         return `
           <div class="${wrapClass}">
             <a class="resource-card" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
+              ${cover}
               <div class="resource-card-top">
                 <span class="resource-badge">${escapeHtml(item.badge || t("linkBadge"))}</span>
                 <span class="resource-card-meta">${escapeHtml(item.author || "")}</span>
@@ -3186,12 +3216,13 @@
       .join("");
   }
 
-  function addCustomResourceLink(rawUrl, customTitle) {
+  async function addCustomResourceLink(rawUrl, customTitle) {
     const item = buildResourceFromUrl(rawUrl, customTitle);
     const list = loadCustomResourceLinks();
     if (list.some((x) => x.url === item.url)) {
       throw new Error(t("linkAlreadyAdded"));
     }
+    await enrichResourcePreview(item, String(customTitle || "").trim());
     list.unshift(item);
     saveCustomResourceLinks(list.slice(0, 40));
     renderResourceCards();
@@ -6242,10 +6273,16 @@
     els.statsTabMonth.addEventListener("click", () => setStatsRange("month"));
   }
   if (els.resourceAddForm) {
-    els.resourceAddForm.addEventListener("submit", (e) => {
+    els.resourceAddForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitButton = document.getElementById("resource-add-btn");
+      if (submitButton?.disabled) return;
+      if (submitButton) {
+        submitButton.disabled = true;
+        submitButton.textContent = "正在识别…";
+      }
       try {
-        addCustomResourceLink(
+        await addCustomResourceLink(
           els.resourceUrlInput?.value || "",
           els.resourceTitleInput?.value || ""
         );
@@ -6254,6 +6291,11 @@
         els.resourceUrlInput?.focus();
       } catch (err) {
         window.alert(err?.message || t("addFailed"));
+      } finally {
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = t("add");
+        }
       }
     });
   }

@@ -593,6 +593,17 @@ body.theme-v2 {
   display: none !important;
 }
 
+.theme-v2 .pingu-preset-btn,
+.theme-v2 .pingu-preset-btn:hover,
+.theme-v2 .pingu-preset-btn.is-active {
+  color: #151917;
+}
+
+.theme-v2 .pingu-preset-btn span:last-child {
+  color: #151917;
+  opacity: 1;
+}
+
 .home-greeting-line {
   margin-top: 4px;
   font-size: clamp(13px, 3.8vw, 16px);
@@ -3444,11 +3455,36 @@ body.theme-v2 {
 }
 
 .theme-v2 .page-favorites .resource-card {
-  padding: 16px 18px;
+  padding: 0 0 16px;
   gap: 8px;
-  min-height: 162px;
+  min-height: 220px;
   box-sizing: border-box;
   transition: filter 0.15s ease;
+  overflow: hidden;
+}
+
+.theme-v2 .page-favorites .resource-card-cover {
+  display: block;
+  width: 100%;
+  height: 128px;
+  object-fit: cover;
+  background: linear-gradient(135deg, #dff8ef, #ffe8f2);
+}
+
+.theme-v2 .page-favorites .resource-card-cover-fallback {
+  display: grid;
+  place-items: center;
+  color: rgba(21, 25, 23, 0.5);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.theme-v2 .page-favorites .resource-card-top,
+.theme-v2 .page-favorites .resource-card-title,
+.theme-v2 .page-favorites .resource-card > .resource-card-meta,
+.theme-v2 .page-favorites .resource-card-cta {
+  margin-left: 18px;
+  margin-right: 18px;
 }
 
 .theme-v2 .page-favorites .resource-card:hover,
