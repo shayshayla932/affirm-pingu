@@ -26,6 +26,7 @@
   ]);
   const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
   const DEFAULT_CLOUD_API = "https://vercel-proxy-gamma-black.vercel.app";
+  const FALLBACK_CLOUD_API = "https://dreamey-api.dreamey-shay.workers.dev";
   const LEGACY_LOCAL_CLOUD_APIS = new Set([
     "http://127.0.0.1:8787",
     "http://localhost:8787",
@@ -35,7 +36,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.2.1";
+  const APP_VERSION = "1.2.2";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -4761,6 +4762,26 @@
     return { res, data };
   }
 
+  async function cloudAuthFetch(path, options = {}) {
+    try {
+      const result = await cloudFetch(path, options);
+      const shouldRetry =
+        getCloudApiBase() === DEFAULT_CLOUD_API &&
+        (!result.data || result.res.status === 404 || result.res.status === 405 || result.res.status >= 500);
+      if (!shouldRetry) return result;
+    } catch (error) {
+      if (getCloudApiBase() !== DEFAULT_CLOUD_API) throw error;
+    }
+
+    const previousBase = ai.cloudApiBase;
+    ai.cloudApiBase = FALLBACK_CLOUD_API;
+    try {
+      return await cloudFetch(path, options);
+    } finally {
+      ai.cloudApiBase = previousBase;
+    }
+  }
+
   async function refreshCloudEntitlement() {
     if (!hasCloudSession()) return false;
     const { res, data } = await cloudFetch("/v1/me", { method: "GET" });
@@ -4790,12 +4811,12 @@
   async function cloudAuthLoginFromForm() {
     const { email, phone, password } = readAuthCredentials();
     if ((!email && !phone) || !password) throw new Error("missing_credentials");
-    const { res, data } = await cloudFetch("/v1/auth/login", {
+    const { res, data } = await cloudAuthFetch("/v1/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, phone, password }),
       timeoutMs: 12000,
     });
-    if (!res.ok) throw new Error(data?.error || data?.code || "auth_failed");
+    if (!res.ok) throw new Error(data?.error || data?.code || `http_${res.status}`);
     ai.cloudToken = data.token || "";
     applyCloudUser(data.user);
     if (els.authPassword) els.authPassword.value = "";
@@ -4807,12 +4828,12 @@
     if (password !== confirm) throw new Error("password_mismatch");
     if (!email && !phone) throw new Error("missing_identity");
     if (password.length < 8) throw new Error("password_too_short");
-    const { res, data } = await cloudFetch("/v1/auth/register", {
+    const { res, data } = await cloudAuthFetch("/v1/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, phone, password }),
       timeoutMs: 12000,
     });
-    if (!res.ok) throw new Error(data?.error || data?.code || "auth_failed");
+    if (!res.ok) throw new Error(data?.error || data?.code || `http_${res.status}`);
     ai.cloudToken = data.token || "";
     applyCloudUser(data.user);
     if (els.authPassword) els.authPassword.value = "";
@@ -5384,8 +5405,12 @@
       invalid_credentials: "邮箱、手机号或密码不正确",
       auth_timeout: "连接服务器超时，请确认代理已开启后重试",
       auth_network: "无法连接登录服务器，请检查网络或代理",
+      server_not_configured: "登录服务尚未配置完成，请联系管理员",
+      internal_error: "登录服务内部错误，请稍后重试",
+      register_failed: "注册失败，请换一个邮箱或稍后重试",
+      not_found: "登录接口地址不正确，请更新应用",
     };
-    return messages[code] || "登录服务器返回异常，请稍后重试";
+    return messages[code] || `登录服务器返回异常（${code || "unknown"}）`;
   }
 
   function setAuthUiMethod(method) {
