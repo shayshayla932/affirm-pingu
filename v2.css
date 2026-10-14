@@ -1515,6 +1515,32 @@ body.theme-v2 {
   font-weight: 780;
 }
 
+.theme-v2 .auth-submit-btn:disabled {
+  opacity: 0.68;
+  cursor: wait;
+}
+
+.theme-v2 .auth-submit-status {
+  min-height: 20px;
+  margin: 8px 0 -4px;
+  color: rgba(21, 24, 23, 0.64);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.theme-v2 .auth-submit-status:empty {
+  visibility: hidden;
+}
+
+.theme-v2 .auth-submit-status[data-tone="error"] {
+  color: #b42318;
+}
+
+.theme-v2 .auth-submit-status[data-tone="success"] {
+  color: #18794e;
+}
+
 .theme-v2 .auth-bind-block {
   margin: 12px 0;
   padding-top: 8px;

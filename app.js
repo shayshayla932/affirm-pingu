@@ -35,7 +35,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.1.0";
+  const APP_VERSION = "1.2.1";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -1428,6 +1428,7 @@
     authPasswordConfirm: document.getElementById("auth-password-confirm"),
     authPasswordConfirmField: document.getElementById("auth-password-confirm-field"),
     authSubmit: document.getElementById("auth-submit"),
+    authStatus: document.getElementById("auth-status"),
     authFormTitle: document.getElementById("auth-form-title"),
     authSwitchMode: document.getElementById("auth-switch-mode"),
     authNameStep: document.getElementById("auth-name-step"),
@@ -1634,6 +1635,7 @@
   let authReturnTo = "userCenter";
   let authUiMode = "login";
   let authUiMethod = "email";
+  let authBusy = false;
   /** @type {null | "calendar" | "stats" | "resources" | "faq" | "favorites"} */
   let openDrawer = null;
   let ritualCardState = "collapsed";
@@ -4728,11 +4730,28 @@
     if (ai.cloudToken && !headers.Authorization) {
       headers.Authorization = `Bearer ${ai.cloudToken.trim()}`;
     }
-    const res = await fetch(url, {
-      ...options,
-      headers,
-      body: options.body,
-    });
+    const { timeoutMs, ...fetchOptions } = options;
+    const controller = timeoutMs ? new AbortController() : null;
+    const timer = controller
+      ? window.setTimeout(() => controller.abort(), timeoutMs)
+      : null;
+    let res;
+    try {
+      res = await fetch(url, {
+        ...fetchOptions,
+        headers,
+        body: options.body,
+        signal: controller?.signal || options.signal,
+      });
+    } catch (error) {
+      const wrapped = new Error(
+        error?.name === "AbortError" ? "auth_timeout" : "auth_network",
+      );
+      wrapped.code = wrapped.message;
+      throw wrapped;
+    } finally {
+      if (timer) window.clearTimeout(timer);
+    }
     let data = null;
     try {
       data = await res.json();
@@ -4770,12 +4789,13 @@
 
   async function cloudAuthLoginFromForm() {
     const { email, phone, password } = readAuthCredentials();
-    if ((!email && !phone) || !password) throw new Error(t("cloudAuthFailed"));
+    if ((!email && !phone) || !password) throw new Error("missing_credentials");
     const { res, data } = await cloudFetch("/v1/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, phone, password }),
+      timeoutMs: 12000,
     });
-    if (!res.ok) throw new Error(t("cloudAuthFailed"));
+    if (!res.ok) throw new Error(data?.error || data?.code || "auth_failed");
     ai.cloudToken = data.token || "";
     applyCloudUser(data.user);
     if (els.authPassword) els.authPassword.value = "";
@@ -4784,13 +4804,15 @@
   async function cloudAuthRegisterFromForm() {
     const { email, phone, password } = readAuthCredentials();
     const confirm = els.authPasswordConfirm?.value || "";
-    if (password !== confirm) throw new Error(t("authPasswordMismatch"));
-    if ((!email && !phone) || password.length < 8) throw new Error(t("cloudAuthFailed"));
+    if (password !== confirm) throw new Error("password_mismatch");
+    if (!email && !phone) throw new Error("missing_identity");
+    if (password.length < 8) throw new Error("password_too_short");
     const { res, data } = await cloudFetch("/v1/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, phone, password }),
+      timeoutMs: 12000,
     });
-    if (!res.ok) throw new Error(t("cloudAuthFailed"));
+    if (!res.ok) throw new Error(data?.error || data?.code || "auth_failed");
     ai.cloudToken = data.token || "";
     applyCloudUser(data.user);
     if (els.authPassword) els.authPassword.value = "";
@@ -5313,7 +5335,7 @@
     if (els.authPasswordConfirmField) {
       els.authPasswordConfirmField.hidden = authUiMode !== "register";
     }
-    if (els.authSubmit) {
+    if (els.authSubmit && !authBusy) {
       els.authSubmit.textContent =
         authUiMode === "register" ? t("authSubmitRegister") : t("authSubmitLogin");
     }
@@ -5327,6 +5349,43 @@
     if (els.authPassword) {
       els.authPassword.autocomplete = authUiMode === "register" ? "new-password" : "current-password";
     }
+    setAuthStatus("");
+  }
+
+  function setAuthStatus(message, tone = "") {
+    if (!els.authStatus) return;
+    els.authStatus.textContent = message || "";
+    els.authStatus.dataset.tone = tone;
+  }
+
+  function setAuthBusy(busy) {
+    authBusy = Boolean(busy);
+    if (!els.authSubmit) return;
+    els.authSubmit.disabled = authBusy;
+    els.authSubmit.textContent = authBusy
+      ? "正在连接…"
+      : authUiMode === "register"
+        ? t("authSubmitRegister")
+        : t("authSubmitLogin");
+  }
+
+  function authErrorMessage(error) {
+    const code = String(error?.code || error?.message || "").toLowerCase();
+    const messages = {
+      missing_credentials: "请输入完整的账号和密码",
+      missing_identity: "请输入邮箱或手机号",
+      invalid_email: "邮箱格式不正确",
+      invalid_phone: "手机号格式不正确",
+      password_too_short: "密码至少需要 8 位",
+      password_mismatch: "两次输入的密码不一致",
+      email_taken: "这个邮箱已经注册，请直接登录",
+      phone_taken: "这个手机号已经注册，请直接登录",
+      identity_taken: "这个账号已经注册，请直接登录",
+      invalid_credentials: "邮箱、手机号或密码不正确",
+      auth_timeout: "连接服务器超时，请确认代理已开启后重试",
+      auth_network: "无法连接登录服务器，请检查网络或代理",
+    };
+    return messages[code] || "登录服务器返回异常，请稍后重试";
   }
 
   function setAuthUiMethod(method) {
@@ -7819,19 +7878,28 @@
     els.authMethodPhone.addEventListener("click", () => setAuthUiMethod("phone"));
   }
   if (els.authSubmit) {
-    els.authSubmit.addEventListener("click", () => {
+    els.authSubmit.addEventListener("click", async () => {
+      if (authBusy) return;
       const submittedMode = authUiMode;
       const run =
         submittedMode === "register" ? cloudAuthRegisterFromForm : cloudAuthLoginFromForm;
-      run()
-        .then(() => {
-          showRitualToast(
-            submittedMode === "register" ? t("cloudRegisterOk") : t("cloudLoginOk"),
-          );
-          if (submittedMode === "register") showNameSetupStep();
-          else if (authReturnTo === "onboarding") completeOnboarding();
-        })
-        .catch((err) => showRitualToast(err?.message || t("cloudAuthFailed")));
+      setAuthStatus("正在连接登录服务器…", "pending");
+      setAuthBusy(true);
+      try {
+        await run();
+        setAuthStatus(submittedMode === "register" ? "注册成功" : "登录成功", "success");
+        showRitualToast(
+          submittedMode === "register" ? t("cloudRegisterOk") : t("cloudLoginOk"),
+        );
+        if (submittedMode === "register") showNameSetupStep();
+        else if (authReturnTo === "onboarding") completeOnboarding();
+      } catch (error) {
+        const message = authErrorMessage(error);
+        setAuthStatus(message, "error");
+        showRitualToast(message);
+      } finally {
+        setAuthBusy(false);
+      }
     });
   }
   els.authNameContinue?.addEventListener("click", completeNameSetup);
