@@ -870,9 +870,14 @@ body.theme-v2 {
   --task-progress: var(--task-progress-visual);
 }
 
+.task-card[data-state="running"] {
+  height: min(52dvh, 460px);
+  min-height: 320px;
+}
+
 .task-card[data-state="running"][data-kind="visual"] {
-  height: var(--task-h-running-visual);
-  min-height: var(--task-h-running-visual);
+  height: min(52dvh, 460px);
+  min-height: 320px;
 }
 
 /* Kill legacy ritual-session chrome from styles.css */
@@ -1888,6 +1893,25 @@ body.theme-v2 {
   margin: 0 4px;
 }
 
+.task-running .task-copy {
+  display: block;
+  max-height: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-line-clamp: unset;
+  white-space: pre-wrap;
+  text-align: left;
+  scrollbar-width: thin;
+}
+
+.task-running .task-copy.md .md-p {
+  margin: 0 0 0.55em;
+}
+
+.task-running .task-copy.md .md-p:last-child {
+  margin-bottom: 0;
+}
+
 .task-cta {
   display: flex;
   align-items: center;
@@ -1930,7 +1954,7 @@ body.theme-v2 {
 .task-progress-track {
   height: 4px;
   border-radius: 2px;
-  background: transparent;
+  background: rgba(21, 25, 23, 0.1);
   overflow: hidden;
   margin: 4px 0 0;
   flex-shrink: 0;

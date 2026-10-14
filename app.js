@@ -36,7 +36,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.3.0";
+  const APP_VERSION = "1.3.1";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -3698,7 +3698,7 @@
   function updateRitualRing(remaining, total) {
     const t = Math.max(1, Number(total) || 1);
     const r = Math.max(0, Math.min(t, Number(remaining) || 0));
-    const ratio = r / t;
+    const ratio = (t - r) / t;
     if (els.ritualRingProgress) {
       const offset = RITUAL_RING_LEN * (1 - ratio);
       els.ritualRingProgress.style.strokeDasharray = String(RITUAL_RING_LEN);
@@ -3935,7 +3935,10 @@
       els.ritualSessionTimer.textContent = formatRitualClock(remaining);
     }
     updateRitualRing(remaining, remaining);
-    if (els.ritualSessionBody) els.ritualSessionBody.textContent = body;
+    if (els.ritualSessionBody) {
+      els.ritualSessionBody.classList.add("md");
+      els.ritualSessionBody.innerHTML = renderMarkdown(body);
+    }
     if (els.ritualSession) {
       els.ritualSession.classList.remove("kind-robotic", "kind-visual");
       els.ritualSession.classList.add(isRobotic ? "kind-robotic" : "kind-visual");
@@ -4321,6 +4324,9 @@
         `<a class="md-link" href="${url}" target="_blank" rel="noopener noreferrer">${label}</a>`
       )
     );
+    // Model output occasionally contains unmatched Markdown markers. Never expose
+    // raw formatting tokens in the UI when a pair could not be parsed above.
+    s = s.replace(/\*\*/g, "").replace(/__/g, "");
 
     stash.forEach((html, i) => {
       s = s.replace(`\u0000MD${i}\u0000`, html);
