@@ -25,7 +25,16 @@
     LEGACY_NUNU_PNG,
   ]);
   const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
-  const DEFAULT_CLOUD_API = "http://127.0.0.1:8787";
+  const DEFAULT_CLOUD_API = "https://vercel-proxy-gamma-black.vercel.app";
+  const LEGACY_LOCAL_CLOUD_APIS = new Set([
+    "http://127.0.0.1:8787",
+    "http://localhost:8787",
+  ]);
+
+  function normalizeCloudApiBase(value) {
+    const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
+    return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
+  }
   const APP_VERSION = "1.1.0";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
@@ -2173,10 +2182,7 @@
         coachProfile: normalizeCoachProfile(data.coachProfile, memory),
         cloudToken: typeof data.cloudToken === "string" ? data.cloudToken : "",
         cloudEmail: typeof data.cloudEmail === "string" ? data.cloudEmail : "",
-        cloudApiBase:
-          typeof data.cloudApiBase === "string" && data.cloudApiBase.trim()
-            ? data.cloudApiBase.trim()
-            : DEFAULT_CLOUD_API,
+        cloudApiBase: normalizeCloudApiBase(data.cloudApiBase),
         cloudCanChat: Boolean(data.cloudCanChat),
         cloudCredits: Number(data.cloudCredits) || 0,
         cloudPlanExpiresAt:
@@ -4568,7 +4574,7 @@
   }
 
   function getCloudApiBase() {
-    return (ai.cloudApiBase || DEFAULT_CLOUD_API).replace(/\/+$/, "");
+    return normalizeCloudApiBase(ai.cloudApiBase);
   }
 
   function hasCloudSession() {

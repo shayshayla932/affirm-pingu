@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dreamey-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dreamey-db",
+      "database_id": "26464838-b06a-418a-a5b9-0f9b631c0510",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "OPENAI_DEFAULT_MODEL": "gpt-4o-mini",
+    "CORS_ORIGINS": "*"
+  }
+}
