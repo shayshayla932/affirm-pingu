@@ -24,6 +24,7 @@
     LEGACY_PINGU,
     LEGACY_NUNU_PNG,
   ]);
+  const PUFF_COLORS = ["pink", "white", "black", "blue", "green", "orange", "rose"];
   const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
   const DEFAULT_CLOUD_API = "https://vercel-proxy-gamma-black.vercel.app";
   const FALLBACK_CLOUD_API = "https://dreamey-api.dreamey-shay.workers.dev";
@@ -1381,6 +1382,10 @@
     calPanelFooter: document.querySelector(".cal-panel-footer"),
     pingu: document.getElementById("pingu"),
     pinguWrap: document.getElementById("pingu-wrap"),
+    puffKitHost: document.getElementById("puff-kit-host"),
+    puffCharacter: document.getElementById("puff-character"),
+    puffBlanketToggle: document.getElementById("puff-blanket-toggle"),
+    puffRandomize: document.getElementById("puff-randomize"),
     jumpFx: document.getElementById("jump-fx"),
     affirmPreview: document.getElementById("affirm-preview"),
     affirmInput: document.getElementById("affirm-input"),
@@ -1499,6 +1504,20 @@
     resourceAddForm: document.getElementById("resource-add-form"),
     resourceUrlInput: document.getElementById("resource-url-input"),
     resourceTitleInput: document.getElementById("resource-title-input"),
+    favoriteFolders: document.getElementById("favorite-folders"),
+    favoriteFolderDetail: document.getElementById("favorite-folder-detail"),
+    favoriteFolderBack: document.getElementById("favorite-folder-back"),
+    favoriteFolderTitle: document.getElementById("favorite-folder-title"),
+    favoriteFolderCount: document.getElementById("favorite-folder-count"),
+    favoritesAdd: document.getElementById("favorites-add"),
+    favoriteCreateSheet: document.getElementById("favorite-create-sheet"),
+    favoriteSheetClose: document.getElementById("favorite-sheet-close"),
+    favoriteSheetX: document.getElementById("favorite-sheet-x"),
+    favoriteModeFolder: document.getElementById("favorite-mode-folder"),
+    favoriteModeLink: document.getElementById("favorite-mode-link"),
+    favoriteFolderForm: document.getElementById("favorite-folder-form"),
+    favoriteFolderName: document.getElementById("favorite-folder-name"),
+    favoriteFolderSelect: document.getElementById("favorite-folder-select"),
     drawerBackdrop: document.getElementById("drawer-backdrop"),
     pageHistory: document.getElementById("page-affirm-history"),
     pageEdit: document.getElementById("page-affirm-edit"),
@@ -2249,6 +2268,12 @@
       chatCustom: "",
       pinguPreset: DEFAULT_PINGU,
       pinguCustom: "",
+      puffColor: "pink",
+      puffHat: false,
+      puffGlasses: false,
+      puffHeadphones: false,
+      puffHold: "none",
+      puffBlanket: false,
       displayName: "",
       avatarLetter: "",
       avatarCustom: "",
@@ -2365,6 +2390,16 @@
               ? raw.pinguPreset
               : base.pinguPreset,
       pinguCustom: typeof raw.pinguCustom === "string" ? raw.pinguCustom : "",
+      puffColor: PUFF_COLORS.includes(raw.puffColor) ? raw.puffColor : base.puffColor,
+      puffHat: typeof raw.puffHat === "boolean" ? raw.puffHat : raw.puffHead === "hat",
+      puffGlasses: typeof raw.puffGlasses === "boolean" ? raw.puffGlasses : raw.puffHead === "glasses",
+      puffHeadphones: typeof raw.puffHeadphones === "boolean" ? raw.puffHeadphones : raw.puffHead === "headphones",
+      puffHold: ["none", "laptop", "pillow"].includes(raw.puffHold)
+        ? raw.puffHold
+        : ["none", "laptop", "pillow"].includes(raw.puffHand)
+          ? raw.puffHand
+          : base.puffHold,
+      puffBlanket: Boolean(raw.puffBlanket),
       displayName: typeof raw.displayName === "string" ? raw.displayName.slice(0, 24) : "",
       avatarLetter: typeof raw.avatarLetter === "string" ? raw.avatarLetter.slice(0, 1) : "",
       avatarCustom: typeof raw.avatarCustom === "string" ? raw.avatarCustom : "",
@@ -2465,6 +2500,66 @@
 
     const pinguSrc = resolveThemeImage("pingu", data);
     if (els.pingu) els.pingu.src = pinguSrc;
+    applyPuffAppearance(data);
+  }
+
+  let puffKit = null;
+  let puffIdleTimer = 0;
+  let puffScreenTimer = 0;
+
+  function puffLook(data = theme) {
+    return {
+      color: PUFF_COLORS.includes(data.puffColor) ? data.puffColor : "pink",
+      hat: Boolean(data.puffHat),
+      glasses: Boolean(data.puffGlasses),
+      headphones: Boolean(data.puffHeadphones),
+      blanket: Boolean(data.puffBlanket),
+      hold: ["none", "laptop", "pillow"].includes(data.puffHold) ? data.puffHold : "none",
+    };
+  }
+
+  function schedulePuffIdle() {
+    window.clearTimeout(puffIdleTimer);
+    puffIdleTimer = window.setTimeout(() => {
+      if (puffKit && !isAnyPageOpen() && !document.hidden && puffKit.getState().hold !== "pillow") {
+        const roll = Math.random();
+        puffKit.play(roll < 0.55 ? "hop" : roll < 0.8 ? "float" : roll < 0.92 ? "press" : "fog");
+      }
+      schedulePuffIdle();
+    }, 3000 + Math.random() * 4000);
+  }
+
+  function setPuffScreenAction(name) {
+    document.body.classList.remove("puff-screen-press", "puff-screen-fog");
+    window.clearTimeout(puffScreenTimer);
+    if (name !== "press" && name !== "fog") return;
+    document.body.classList.add(`puff-screen-${name}`);
+    puffScreenTimer = window.setTimeout(() => {
+      document.body.classList.remove(`puff-screen-${name}`);
+    }, name === "fog" ? 5250 : 2650);
+  }
+
+  function applyPuffAppearance(data = theme) {
+    if (!els.puffKitHost || !window.Puff) return;
+    const look = puffLook(data);
+    if (!puffKit) {
+      const size = Math.max(220, Math.min(300, els.pinguWrap?.clientWidth || 300));
+      puffKit = window.Puff.create(els.puffKitHost, {
+        ...look,
+        mode: "count",
+        size,
+        autoPlay: false,
+        background: false,
+        onAction: setPuffScreenAction,
+      });
+      const glassLayer = puffKit.el.querySelector(".pf-glass");
+      const fogLayer = puffKit.el.querySelector(".pf-fogl");
+      if (glassLayer) document.body.appendChild(glassLayer);
+      if (fogLayer) document.body.appendChild(fogLayer);
+      schedulePuffIdle();
+    } else {
+      puffKit.set(look);
+    }
   }
 
   function commitAppearance({ alertOnFail = true } = {}) {
@@ -2510,14 +2605,23 @@
   function syncPinguPresetButtons() {
     const root = els.pinguPresetGrid;
     if (!root) return;
-    const active = appearanceDraft.pinguPreset;
-    root.querySelectorAll(".pingu-preset-btn").forEach((btn) => {
-      const src = btn.getAttribute("data-src");
-      const isCustom = btn.getAttribute("data-preset") === "__custom__";
-      const on = isCustom ? active === "__custom__" : active === src;
+    root.querySelectorAll("[data-puff-color]").forEach((btn) => {
+      const on = btn.dataset.puffColor === appearanceDraft.puffColor;
       btn.classList.toggle("is-active", on);
       btn.setAttribute("aria-pressed", on ? "true" : "false");
     });
+    root.querySelectorAll("[data-puff-accessory]").forEach((btn) => {
+      const key = `puff${btn.dataset.puffAccessory[0].toUpperCase()}${btn.dataset.puffAccessory.slice(1)}`;
+      const on = Boolean(appearanceDraft[key]);
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    root.querySelectorAll("[data-puff-hold]").forEach((btn) => {
+      const on = btn.dataset.puffHold === appearanceDraft.puffHold;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+    if (els.puffBlanketToggle) els.puffBlanketToggle.checked = Boolean(appearanceDraft.puffBlanket);
   }
 
   function selectPinguPreset(src) {
@@ -3048,7 +3152,46 @@
   ];
 
   const CUSTOM_LINKS_KEY = "affirm-pingu-resource-links-v1";
+  const FAVORITE_FOLDERS_KEY = "affirm-pingu-favorite-folders-v1";
+  const FAVORITE_FOLDER_COLORS = ["#ffcc68", "#ff9fc5", "#83dfc6", "#9bc8ff", "#b9a7ff"];
+  let activeFavoriteFolderId = null;
+  let favoriteFolderLongPressTimer = null;
+  let suppressFavoriteFolderClick = false;
   let resourcesFaqRendered = false;
+
+  function fallbackFolderColor(id) {
+    const hash = [...String(id || "default")].reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return FAVORITE_FOLDER_COLORS[hash % FAVORITE_FOLDER_COLORS.length];
+  }
+
+  function loadFavoriteFolders() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(FAVORITE_FOLDERS_KEY) || "[]");
+      if (Array.isArray(raw) && raw.length) {
+        return raw.map((folder) => ({
+          id: String(folder.id || uid()),
+          name: String(folder.name || "未命名收藏").slice(0, 24),
+          color: FAVORITE_FOLDER_COLORS.includes(folder.color)
+            ? folder.color
+            : fallbackFolderColor(folder.id),
+          createdAt: String(folder.createdAt || new Date().toISOString()),
+        }));
+      }
+    } catch {
+      /* fall through to the default folder */
+    }
+    const initial = [{ id: "default", name: "默认收藏", color: "#ffcc68", createdAt: new Date().toISOString() }];
+    saveFavoriteFolders(initial);
+    return initial;
+  }
+
+  function saveFavoriteFolders(folders) {
+    try {
+      localStorage.setItem(FAVORITE_FOLDERS_KEY, JSON.stringify(folders || []));
+    } catch {
+      /* ignore */
+    }
+  }
 
   function loadCustomResourceLinks() {
     try {
@@ -3064,6 +3207,7 @@
           url: String(item.url).trim(),
           badge: String(item.badge || t("linkBadge")).slice(0, 12),
           cover: typeof item.cover === "string" ? item.cover.trim() : "",
+          folderId: String(item.folderId || "default"),
           custom: true,
         }));
     } catch {
@@ -3084,6 +3228,7 @@
             url: item.url,
             badge: item.badge,
             cover: item.cover || "",
+            folderId: item.folderId || "default",
           }))
         )
       );
@@ -3182,10 +3327,68 @@
     return item;
   }
 
+  function renderFavoriteFolders() {
+    if (!els.favoriteFolders) return;
+    const folders = loadFavoriteFolders();
+    const links = loadCustomResourceLinks();
+    els.favoriteFolders.innerHTML = folders.map((folder, index) => {
+      const count = links.filter((item) => item.folderId === folder.id).length;
+      const palette = FAVORITE_FOLDER_COLORS.map((color) =>
+        `<button type="button" class="favorite-folder-color${folder.color === color ? " is-selected" : ""}" data-folder-color="${color}" aria-label="切换文件夹颜色" style="--swatch:${color}"></button>`
+      ).join("");
+      return `
+        <div class="favorite-folder-wrap" data-folder-id="${escapeHtml(folder.id)}">
+        <button type="button" class="favorite-folder" data-folder-id="${escapeHtml(folder.id)}" style="--folder-color:${folder.color};--folder-index:${index % 4}">
+          <span class="folder-visual" aria-hidden="true">
+            <span class="folder-tab"></span>
+            <span class="folder-paper folder-paper-a"></span>
+            <span class="folder-paper folder-paper-b"></span>
+            <span class="folder-paper folder-paper-c"></span>
+            <span class="folder-front"></span>
+          </span>
+          <span class="favorite-folder-name">${escapeHtml(folder.name)}</span>
+          <span class="favorite-folder-meta">${count} 个收藏</span>
+        </button>
+        <div class="favorite-folder-palette" hidden>${palette}</div>
+        </div>`;
+    }).join("");
+    els.favoriteFolders.hidden = Boolean(activeFavoriteFolderId);
+    const empty = folders.length === 0;
+    els.favoriteFolders.classList.toggle("is-empty", empty);
+  }
+
+  function renderFavoriteFolderSelect() {
+    if (!els.favoriteFolderSelect) return;
+    const folders = loadFavoriteFolders();
+    els.favoriteFolderSelect.innerHTML = folders.map((folder) =>
+      `<option value="${escapeHtml(folder.id)}">${escapeHtml(folder.name)}</option>`
+    ).join("");
+    if (activeFavoriteFolderId && folders.some((folder) => folder.id === activeFavoriteFolderId)) {
+      els.favoriteFolderSelect.value = activeFavoriteFolderId;
+    }
+  }
+
   function renderResourceCards() {
     if (!els.resourceCards) return;
-    const customs = loadCustomResourceLinks();
-    const items = customs;
+    const folders = loadFavoriteFolders();
+    if (activeFavoriteFolderId && !folders.some((folder) => folder.id === activeFavoriteFolderId)) {
+      activeFavoriteFolderId = null;
+    }
+    renderFavoriteFolders();
+    renderFavoriteFolderSelect();
+    if (els.favoriteFolderDetail) els.favoriteFolderDetail.hidden = !activeFavoriteFolderId;
+    if (!activeFavoriteFolderId) {
+      els.resourceCards.innerHTML = "";
+      return;
+    }
+    const folder = folders.find((entry) => entry.id === activeFavoriteFolderId);
+    const items = loadCustomResourceLinks().filter((item) => item.folderId === activeFavoriteFolderId);
+    if (els.favoriteFolderTitle) els.favoriteFolderTitle.textContent = folder?.name || "收藏";
+    if (els.favoriteFolderCount) els.favoriteFolderCount.textContent = `${items.length} 个收藏`;
+    if (!items.length) {
+      els.resourceCards.innerHTML = '<div class="favorite-empty"><strong>这个文件夹还是空的</strong><span>点击右上角 + 添加第一个收藏</span></div>';
+      return;
+    }
     els.resourceCards.innerHTML = items
       .map((item) => {
         const wrapClass = item.custom
@@ -3216,8 +3419,9 @@
       .join("");
   }
 
-  async function addCustomResourceLink(rawUrl, customTitle) {
+  async function addCustomResourceLink(rawUrl, customTitle, folderId = "default") {
     const item = buildResourceFromUrl(rawUrl, customTitle);
+    item.folderId = folderId;
     const list = loadCustomResourceLinks();
     if (list.some((x) => x.url === item.url)) {
       throw new Error(t("linkAlreadyAdded"));
@@ -3227,6 +3431,64 @@
     saveCustomResourceLinks(list.slice(0, 40));
     renderResourceCards();
     return item;
+  }
+
+  function createFavoriteFolder(name) {
+    const clean = String(name || "").trim().slice(0, 24);
+    if (!clean) return null;
+    const folders = loadFavoriteFolders();
+    const existing = folders.find((folder) => folder.name.toLowerCase() === clean.toLowerCase());
+    if (existing) return existing;
+    const folder = {
+      id: uid(),
+      name: clean,
+      color: FAVORITE_FOLDER_COLORS[Math.floor(Math.random() * FAVORITE_FOLDER_COLORS.length)],
+      createdAt: new Date().toISOString(),
+    };
+    folders.unshift(folder);
+    saveFavoriteFolders(folders);
+    renderResourceCards();
+    return folder;
+  }
+
+  function setFavoriteCreateMode(mode) {
+    const linkMode = mode === "link";
+    els.favoriteFolderForm?.toggleAttribute("hidden", linkMode);
+    els.resourceAddForm?.toggleAttribute("hidden", !linkMode);
+    els.favoriteModeFolder?.classList.toggle("is-active", !linkMode);
+    els.favoriteModeLink?.classList.toggle("is-active", linkMode);
+    els.favoriteModeFolder?.setAttribute("aria-selected", linkMode ? "false" : "true");
+    els.favoriteModeLink?.setAttribute("aria-selected", linkMode ? "true" : "false");
+    requestAnimationFrame(() => {
+      updateSegIndicator(els.favoriteModeFolder?.closest(".task-seg"));
+    });
+    window.setTimeout(() => (linkMode ? els.resourceUrlInput : els.favoriteFolderName)?.focus(), 60);
+  }
+
+  function openFavoriteCreateSheet(mode = "folder") {
+    renderFavoriteFolderSelect();
+    if (els.favoriteCreateSheet) els.favoriteCreateSheet.hidden = false;
+    setFavoriteCreateMode(mode);
+  }
+
+  function closeFavoriteCreateSheet() {
+    if (els.favoriteCreateSheet) els.favoriteCreateSheet.hidden = true;
+  }
+
+  function setFavoriteFolderColor(id, color) {
+    if (!FAVORITE_FOLDER_COLORS.includes(color)) return;
+    const folders = loadFavoriteFolders();
+    const folder = folders.find((entry) => entry.id === id);
+    if (!folder) return;
+    folder.color = color;
+    saveFavoriteFolders(folders);
+    renderResourceCards();
+  }
+
+  function closeFavoriteColorPalettes(except = null) {
+    els.favoriteFolders?.querySelectorAll(".favorite-folder-palette").forEach((palette) => {
+      if (palette !== except) palette.hidden = true;
+    });
   }
 
   function removeCustomResourceLink(id) {
@@ -3481,19 +3743,12 @@
     }
     jumping = true;
     els.pingu.classList.add("jump");
-
     if (!silent) {
-      els.jumpFx.classList.remove("show");
-      void els.jumpFx.offsetWidth;
-      els.jumpFx.classList.add("show");
-
       if (els.bigCount) {
         els.bigCount.classList.remove("pop");
         void els.bigCount.offsetWidth;
         els.bigCount.classList.add("pop");
       }
-    } else {
-      els.jumpFx.classList.remove("show");
     }
 
     window.setTimeout(() => {
@@ -4147,7 +4402,17 @@
 
     for (const item of items) {
       const li = document.createElement("li");
+      li.className = "history-swipe-item";
       li.dataset.id = item.id;
+
+      const swipeDelete = document.createElement("button");
+      swipeDelete.type = "button";
+      swipeDelete.className = "history-swipe-delete";
+      swipeDelete.setAttribute("aria-label", t("deleteRecord"));
+      swipeDelete.innerHTML = `<img src="assets/icon-trash.svg" width="18" height="18" alt="" /><span>${escapeHtml(t("delete"))}</span>`;
+
+      const content = document.createElement("div");
+      content.className = "history-card-content";
 
       const tagRow = document.createElement("div");
       tagRow.className = "history-item-tags is-readonly";
@@ -4180,24 +4445,81 @@
       const timeEl = document.createElement("span");
       timeEl.className = "meta-time";
       timeEl.textContent = formatHistoryMeta(item.savedAt);
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.className = "history-delete";
-      delBtn.setAttribute("aria-label", t("deleteRecord"));
-      delBtn.title = t("delete");
-      delBtn.innerHTML = '<img src="assets/icon-trash.svg" width="14" height="14" alt="" />';
-      delBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        deleteAffirmHistory(item.id);
-      });
       meta.appendChild(timeEl);
-      meta.appendChild(delBtn);
 
-      if (tagRow.childElementCount) li.appendChild(tagRow);
-      li.appendChild(snippet);
-      li.appendChild(meta);
+      if (tagRow.childElementCount) content.appendChild(tagRow);
+      content.appendChild(snippet);
+      content.appendChild(meta);
+      li.appendChild(swipeDelete);
+      li.appendChild(content);
+      swipeDelete.addEventListener("click", (e) => {
+        e.stopPropagation();
+        li.classList.add("is-deleting");
+        window.setTimeout(() => deleteAffirmHistory(item.id), 180);
+      });
+      bindHistorySwipe(li);
       els.affirmHistoryList.appendChild(li);
     }
+  }
+
+  function bindHistorySwipe(item) {
+    const content = item.querySelector(".history-card-content");
+    if (!content || !window.PointerEvent) return;
+    const reveal = 92;
+    let pointerId = null;
+    let startX = 0;
+    let startY = 0;
+    let startOffset = 0;
+    let offset = 0;
+    let horizontal = null;
+
+    const setOffset = (next, dragging = false) => {
+      offset = Math.max(-reveal, Math.min(0, next));
+      item.style.setProperty("--swipe-x", `${offset}px`);
+      item.classList.toggle("is-open", offset <= -reveal / 2);
+      item.classList.toggle("is-dragging", dragging);
+    };
+
+    content.addEventListener("pointerdown", (event) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      document.querySelectorAll(".history-swipe-item.is-open").forEach((other) => {
+        if (other !== item) {
+          other.classList.remove("is-open");
+          other.style.setProperty("--swipe-x", "0px");
+        }
+      });
+      pointerId = event.pointerId;
+      startX = event.clientX;
+      startY = event.clientY;
+      startOffset = item.classList.contains("is-open") ? -reveal : 0;
+      offset = startOffset;
+      horizontal = null;
+      content.setPointerCapture?.(pointerId);
+    });
+
+    content.addEventListener("pointermove", (event) => {
+      if (event.pointerId !== pointerId) return;
+      const dx = event.clientX - startX;
+      const dy = event.clientY - startY;
+      if (horizontal === null && Math.hypot(dx, dy) > 7) {
+        horizontal = Math.abs(dx) > Math.abs(dy) * 1.15;
+      }
+      if (!horizontal) return;
+      event.preventDefault();
+      setOffset(startOffset + dx, true);
+    });
+
+    const finish = (event) => {
+      if (event.pointerId !== pointerId) return;
+      const shouldOpen = horizontal === true
+        ? offset < -reveal * 0.42
+        : startOffset < 0;
+      setOffset(shouldOpen ? -reveal : 0, false);
+      pointerId = null;
+      horizontal = null;
+    };
+    content.addEventListener("pointerup", finish);
+    content.addEventListener("pointercancel", finish);
   }
 
   function toggleHistoryItemTag(id, tagId) {
@@ -6284,11 +6606,12 @@
       try {
         await addCustomResourceLink(
           els.resourceUrlInput?.value || "",
-          els.resourceTitleInput?.value || ""
+          els.resourceTitleInput?.value || "",
+          els.favoriteFolderSelect?.value || activeFavoriteFolderId || "default"
         );
         if (els.resourceUrlInput) els.resourceUrlInput.value = "";
         if (els.resourceTitleInput) els.resourceTitleInput.value = "";
-        els.resourceUrlInput?.focus();
+        closeFavoriteCreateSheet();
       } catch (err) {
         window.alert(err?.message || t("addFailed"));
       } finally {
@@ -6299,6 +6622,82 @@
       }
     });
   }
+  els.favoritesAdd?.addEventListener("click", () => {
+    openFavoriteCreateSheet(activeFavoriteFolderId ? "link" : "folder");
+  });
+  els.favoriteSheetClose?.addEventListener("click", closeFavoriteCreateSheet);
+  els.favoriteSheetX?.addEventListener("click", closeFavoriteCreateSheet);
+  els.favoriteModeFolder?.addEventListener("click", () => setFavoriteCreateMode("folder"));
+  els.favoriteModeLink?.addEventListener("click", () => setFavoriteCreateMode("link"));
+  els.favoriteFolderForm?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const folder = createFavoriteFolder(els.favoriteFolderName?.value || "");
+    if (!folder) return;
+    if (els.favoriteFolderName) els.favoriteFolderName.value = "";
+    closeFavoriteCreateSheet();
+  });
+  els.favoriteFolders?.addEventListener("click", (event) => {
+    const colorButton = event.target?.closest?.(".favorite-folder-color");
+    if (colorButton) {
+      event.stopPropagation();
+      const wrap = colorButton.closest(".favorite-folder-wrap");
+      setFavoriteFolderColor(
+        wrap?.getAttribute("data-folder-id"),
+        colorButton.getAttribute("data-folder-color")
+      );
+      return;
+    }
+    const folder = event.target?.closest?.(".favorite-folder");
+    if (!folder) return;
+    if (suppressFavoriteFolderClick) {
+      suppressFavoriteFolderClick = false;
+      return;
+    }
+    closeFavoriteColorPalettes();
+    activeFavoriteFolderId = folder.getAttribute("data-folder-id");
+    renderResourceCards();
+  });
+  els.favoriteFolders?.addEventListener("pointerdown", (event) => {
+    const folder = event.target?.closest?.(".favorite-folder");
+    if (!folder) return;
+    window.clearTimeout(favoriteFolderLongPressTimer);
+    favoriteFolderLongPressTimer = window.setTimeout(() => {
+      const palette = folder.closest(".favorite-folder-wrap")?.querySelector(".favorite-folder-palette");
+      closeFavoriteColorPalettes(palette);
+      if (palette) {
+        const rect = folder.getBoundingClientRect();
+        const paletteWidth = 171;
+        const edge = 12;
+        const centerX = Math.max(
+          edge + paletteWidth / 2,
+          Math.min(window.innerWidth - edge - paletteWidth / 2, rect.left + rect.width / 2)
+        );
+        const showAbove = rect.bottom + 62 > window.innerHeight - 16;
+        palette.style.left = `${centerX}px`;
+        palette.style.top = showAbove ? `${Math.max(58, rect.top - 8)}px` : `${rect.bottom + 8}px`;
+        palette.classList.toggle("is-above", showAbove);
+        palette.hidden = false;
+      }
+      suppressFavoriteFolderClick = true;
+      navigator.vibrate?.(18);
+    }, 520);
+  });
+  ["pointerup", "pointercancel", "pointerleave"].forEach((type) => {
+    els.favoriteFolders?.addEventListener(type, () => {
+      window.clearTimeout(favoriteFolderLongPressTimer);
+      favoriteFolderLongPressTimer = null;
+    });
+  });
+  els.favoriteFolders?.closest(".fav-body")?.addEventListener(
+    "scroll",
+    () => closeFavoriteColorPalettes(),
+    { passive: true }
+  );
+  window.addEventListener("resize", () => closeFavoriteColorPalettes(), { passive: true });
+  els.favoriteFolderBack?.addEventListener("click", () => {
+    activeFavoriteFolderId = null;
+    renderResourceCards();
+  });
   if (els.resourceCards) {
     els.resourceCards.addEventListener("click", (e) => {
       const btn = e.target?.closest?.(".resource-card-remove");
@@ -6412,13 +6811,37 @@
   }
   if (els.pinguPresetGrid) {
     els.pinguPresetGrid.addEventListener("click", (e) => {
-      const btn = e.target?.closest?.(".pingu-preset-btn");
+      const btn = e.target?.closest?.("[data-puff-color], [data-puff-accessory], [data-puff-hold]");
       if (!btn) return;
-      if (btn.getAttribute("data-preset") === "__custom__") {
-        pickAppearanceImage(els.pinguUpload);
-        return;
+      if (btn.dataset.puffColor) appearanceDraft.puffColor = btn.dataset.puffColor;
+      if (btn.dataset.puffAccessory) {
+        const name = btn.dataset.puffAccessory;
+        const key = `puff${name[0].toUpperCase()}${name.slice(1)}`;
+        appearanceDraft[key] = !appearanceDraft[key];
       }
-      selectPinguPreset(btn.getAttribute("data-src"));
+      if (btn.dataset.puffHold) appearanceDraft.puffHold = btn.dataset.puffHold;
+      syncAppearanceFields();
+      commitAppearance();
+    });
+  }
+  if (els.puffBlanketToggle) {
+    els.puffBlanketToggle.addEventListener("change", () => {
+      appearanceDraft.puffBlanket = els.puffBlanketToggle.checked;
+      commitAppearance();
+    });
+  }
+  if (els.puffRandomize) {
+    els.puffRandomize.addEventListener("click", () => {
+      const pick = (items) => items[Math.floor(Math.random() * items.length)];
+      appearanceDraft.puffColor = pick(PUFF_COLORS);
+      appearanceDraft.puffHat = Math.random() > 0.58;
+      appearanceDraft.puffGlasses = Math.random() > 0.68;
+      appearanceDraft.puffHeadphones = Math.random() > 0.62;
+      appearanceDraft.puffHold = pick(["none", "laptop", "pillow"]);
+      appearanceDraft.puffBlanket = Math.random() > 0.5;
+      syncAppearanceFields();
+      commitAppearance();
+      puffKit?.play("hop");
     });
   }
   if (els.homeBgPreview) {
@@ -7705,6 +8128,8 @@
     if (els.pageAppearance) els.pageAppearance.hidden = true;
     if (els.pageDiary) els.pageDiary.hidden = true;
     if (els.diarySheet) els.diarySheet.hidden = true;
+    activeFavoriteFolderId = null;
+    closeFavoriteCreateSheet();
     revealAppPage(els.pageFavorites);
     els.screen?.classList.add("page-open");
     setFavoritesTab();
@@ -8176,6 +8601,7 @@
       if (!touchArmed) return;
       touchArmed = false;
       e.preventDefault();
+      puffKit?.tap();
       affirm();
     },
     { passive: false }

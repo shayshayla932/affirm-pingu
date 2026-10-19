@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>棉棉 Puff · 演示</title>
+<link rel="stylesheet" href="puff.css">
+<style>
+  :root { --ink: #2A2730; --muted: #5E5966; --line: #E1DCD3; --paper: #FBFAF7; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+  .app { max-width: 1100px; margin: 0 auto; padding: 16px; display: flex; flex-wrap: wrap; gap: 20px; }
+  .stage { flex: 999 1 520px; min-width: 0; height: min(78vh, 680px); border-radius: 28px; overflow: hidden; position: relative; }
+  .hud { position: absolute; left: 0; right: 0; top: 20px; display: flex; flex-direction: column; align-items: center; pointer-events: none; z-index: 3; }
+  .hud b { font-size: 56px; line-height: 1; font-variant-numeric: tabular-nums; }
+  .hud span { font-size: 14px; font-weight: 700; color: var(--muted); }
+  .panel { flex: 1 1 300px; display: flex; flex-direction: column; gap: 22px; padding: 8px 4px; }
+  h1 { margin: 0; font-size: 32px; }
+  h2 { margin: 0 0 10px; font-size: 14px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  button.chip { height: 44px; padding: 0 16px; border-radius: 999px; border: 1.5px solid var(--line); background: #fff; color: var(--ink); font: 700 15px inherit; font-family: inherit; cursor: pointer; }
+  button.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: #fff; }
+  button.sw { width: 44px; height: 44px; border-radius: 50%; border: 2px solid rgba(20,16,28,.1); cursor: pointer; padding: 0; }
+  button.sw[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--paper), 0 0 0 5.5px var(--ink); }
+  button:focus-visible { outline: 3px solid #5C61D6; outline-offset: 3px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="stage" id="stage">
+    <div class="hud" id="hud" hidden><b id="count">0</b><span id="combo">点我</span></div>
+  </div>
+  <div class="panel">
+    <h1>棉棉 Puff</h1>
+    <div><h2>点击模式</h2><div class="row" id="modes"></div></div>
+    <div><h2>颜色</h2><div class="row" id="colors"></div></div>
+    <div><h2>配件</h2><div class="row" id="acc"></div></div>
+    <div><h2>动作</h2><div class="row" id="acts"></div></div>
+  </div>
+</div>
+<script src="puff.js"></script>
+<script>
+  var hud = document.getElementById('hud');
+  var puff = Puff.create(document.getElementById('stage'), {
+    color: 'pink',
+    size: Math.min(420, window.innerWidth * 0.8),
+    onCount: function (count, combo) {
+      document.getElementById('count').textContent = count;
+      document.getElementById('combo').textContent = combo >= 3 ? '连击 ×' + combo : '点我';
+    }
+  });
+
+  function btn(parent, label, cls, onClick) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = cls; b.textContent = label; b.onclick = onClick;
+    parent.appendChild(b); return b;
+  }
+  function refresh() {
+    var s = puff.getState();
+    document.querySelectorAll('[data-k]').forEach(function (b) {
+      var k = b.dataset.k, v = b.dataset.v;
+      var on = k === 'mode' ? s.mode === v : k === 'color' ? s.color === v : k === 'hold' ? s.hold === v : !!s[k];
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    hud.hidden = s.mode !== 'count';
+  }
+
+  [['normal', '互动'], ['count', '计数']].forEach(function (m) {
+    var b = btn(document.getElementById('modes'), m[1], 'chip', function () { puff.setMode(m[0]); refresh(); });
+    b.dataset.k = 'mode'; b.dataset.v = m[0];
+  });
+  Puff.COLORS.forEach(function (c) {
+    var t = Puff.THEMES[c];
+    var b = btn(document.getElementById('colors'), '', 'sw', function () { puff.set({ color: c }); refresh(); });
+    b.style.background = 'linear-gradient(145deg,' + t.g1 + ',' + t.g2 + ' 55%,' + t.g3 + ')';
+    b.setAttribute('aria-label', t.name); b.dataset.k = 'color'; b.dataset.v = c;
+  });
+  [['hat', '帽子'], ['glasses', '眼镜'], ['headphones', '耳机'], ['blanket', '毯子']].forEach(function (a) {
+    var b = btn(document.getElementById('acc'), a[1], 'chip', function () { var p = {}; p[a[0]] = !puff.getState()[a[0]]; puff.set(p); refresh(); });
+    b.dataset.k = a[0];
+  });
+  [['laptop', '电脑'], ['pillow', '抱枕']].forEach(function (a) {
+    var b = btn(document.getElementById('acc'), a[1], 'chip', function () { puff.set({ hold: puff.getState().hold === a[0] ? 'none' : a[0] }); refresh(); });
+    b.dataset.k = 'hold'; b.dataset.v = a[0];
+  });
+  [['hop', '弹跳'], ['float', 'Z 字飘浮'], ['press', '贴屏幕'], ['fog', '哈气画笑脸']].forEach(function (a) {
+    btn(document.getElementById('acts'), a[1], 'chip', function () { puff.play(a[0]); });
+  });
+  refresh();
+</script>
+</body>
+</html>

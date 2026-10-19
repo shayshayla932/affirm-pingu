@@ -111,6 +111,29 @@ textarea {
   font-family: inherit;
 }
 
+/* Keep taps visually clean in Android WebView/mobile browsers. */
+button,
+a,
+summary,
+label,
+[role="button"],
+[role="tab"],
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus,
+a:focus,
+summary:focus,
+[role="button"]:focus,
+[role="tab"]:focus,
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: none;
+}
+
 kbd {
   font-family: var(--cute);
   font-size: 11px;

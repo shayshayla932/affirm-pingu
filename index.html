@@ -14,8 +14,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=31" />
-  <link rel="stylesheet" href="v2.css?v=65" />
+  <link rel="stylesheet" href="styles.css?v=32" />
+  <link rel="stylesheet" href="v2.css?v=77" />
+  <link rel="stylesheet" href="assets/puff/puff.css?v=3" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body class="theme-v2">
@@ -124,7 +125,7 @@
 
     <!-- Calendar drawer -->
     <aside class="calendar-drawer hud-box" id="calendar-drawer" hidden>
-      <header class="drawer-head cal-drawer-head">
+      <header class="drawer-head cal-drawer-head page-head-grid">
         <button type="button" class="page-round-back" id="close-calendar" aria-label="关闭" data-i18n-aria="close">←</button>
         <h2 class="edit-title-pill cal-drawer-title" data-i18n="calendar">日历</h2>
         <span class="page-spacer" aria-hidden="true"></span>
@@ -256,10 +257,44 @@
             </div>
           </div>
         </div>
-        <div class="pingu-wrap" id="pingu-wrap" role="button" tabindex="0" aria-label="显化一次" data-i18n-aria="tapToAffirm">
-          <img class="pingu-sprite" id="pingu" src="assets/curly-cat-animated.gif" alt="" draggable="false" />
+        <div class="pingu-wrap" id="pingu-wrap">
+          <div class="puff-kit-host" id="puff-kit-host"></div>
+          <div class="puff-character" id="puff-character" data-motion="idle" aria-hidden="true">
+            <div class="puff-shadow"></div>
+            <div class="puff-motion">
+              <svg class="puff-svg" viewBox="0 0 240 240" focusable="false">
+                <defs>
+                  <linearGradient id="puff-body-gradient" x1=".18" y1=".08" x2=".82" y2=".92">
+                    <stop offset="0" class="puff-stop puff-stop-1"/><stop offset=".58" class="puff-stop puff-stop-2"/><stop offset="1" class="puff-stop puff-stop-3"/>
+                  </linearGradient>
+                  <filter id="puff-soft"><feGaussianBlur stdDeviation="7"/></filter>
+                </defs>
+                <ellipse class="puff-glow" cx="120" cy="150" rx="82" ry="65" filter="url(#puff-soft)"/>
+                <g class="puff-body">
+                  <ellipse cx="120" cy="153" rx="79" ry="60"/>
+                  <circle class="puff-lobe puff-lobe-1" cx="120" cy="83" r="37"/>
+                  <circle class="puff-lobe puff-lobe-2" cx="79" cy="103" r="33"/>
+                  <circle class="puff-lobe puff-lobe-3" cx="161" cy="101" r="34"/>
+                  <circle class="puff-lobe puff-lobe-4" cx="53" cy="143" r="29"/>
+                  <circle class="puff-lobe puff-lobe-5" cx="187" cy="142" r="29"/>
+                  <circle class="puff-lobe puff-lobe-6" cx="68" cy="188" r="27"/>
+                  <circle class="puff-lobe puff-lobe-7" cx="173" cy="187" r="27"/>
+                </g>
+                <path class="puff-hat" d="M75 92c8-43 80-51 91 1-28-13-61-13-91-1Zm3-1c25 14 59 16 88 2"/>
+                <g class="puff-glasses"><circle cx="101" cy="147" r="17"/><circle cx="139" cy="147" r="17"/><path d="M118 145q2-4 4 0M84 143l-17-7M156 143l17-7"/></g>
+                <g class="puff-headphones"><path d="M72 144v-12c0-55 96-55 96 0v12"/><rect x="58" y="132" width="22" height="39" rx="11"/><rect x="160" y="132" width="22" height="39" rx="11"/></g>
+                <g class="puff-face"><ellipse class="puff-eye" cx="102" cy="147" rx="6.5" ry="8.5"/><ellipse class="puff-eye" cx="138" cy="147" rx="6.5" ry="8.5"/></g>
+                <g class="puff-sleep-face"><path d="M94 147q8 10 16 0M130 147q8 10 16 0"/><text x="181" y="88">z</text><text x="200" y="65">z</text></g>
+                <g class="puff-laptop"><path d="M72 170h96l14 52H58z"/><path d="M51 222h138v8H51z"/><circle cx="120" cy="197" r="7"/></g>
+                <g class="puff-pillow"><path d="M66 171q54-22 108 0l-9 56q-45 12-90 0z"/><path d="M76 183q44-17 88 0"/></g>
+                <path class="puff-blanket" d="M45 168q75 36 150 0l8 62H37z"/>
+              </svg>
+            </div>
+          </div>
+          <img class="pingu-sprite puff-legacy-sprite" id="pingu" src="assets/curly-cat-animated.gif" alt="" draggable="false" />
           <div class="jump-fx" id="jump-fx" aria-hidden="true">
-            <span class="jump-plus">+1</span>
+            <span class="puff-count-pop">+1</span>
+            <span class="puff-bit bit-1"></span><span class="puff-bit bit-2"></span><span class="puff-bit bit-3"></span><span class="puff-bit bit-4"></span>
           </div>
         </div>
       </div>
@@ -443,11 +478,51 @@
     <section class="app-page page-favorites" id="page-favorites" hidden>
       <header class="page-header fav-head">
         <h1 data-i18n="navFavorites">收藏</h1>
+        <button type="button" class="page-round-plus" id="favorites-add" aria-label="新建收藏">
+          <img src="assets/icon-plus.svg" alt="" width="18" height="18" />
+        </button>
       </header>
       <div class="page-body fav-body">
         <div class="fav-panel resources-body" id="fav-panel-videos">
-          <p class="res-lead" data-i18n="videosLead">粘贴链接生成跳转卡片，方便下次打开。</p>
-          <form class="resource-add" id="resource-add-form">
+          <p class="favorites-lead">把灵感收进不同文件夹里。</p>
+          <div class="favorite-folders" id="favorite-folders"></div>
+          <section class="favorite-folder-detail" id="favorite-folder-detail" hidden>
+            <button type="button" class="favorite-folder-back" id="favorite-folder-back">← 返回全部</button>
+            <div class="favorite-folder-title-row">
+              <div>
+                <h2 id="favorite-folder-title"></h2>
+                <p id="favorite-folder-count"></p>
+              </div>
+            </div>
+            <div class="resource-cards" id="resource-cards"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="favorite-create-sheet" id="favorite-create-sheet" hidden>
+        <button type="button" class="favorite-sheet-backdrop" id="favorite-sheet-close" aria-label="关闭"></button>
+        <div class="favorite-sheet-panel" role="dialog" aria-modal="true" aria-labelledby="favorite-sheet-title">
+          <div class="favorite-sheet-handle" aria-hidden="true"></div>
+          <div class="favorite-sheet-head">
+            <h2 id="favorite-sheet-title">新建</h2>
+            <button type="button" class="favorite-sheet-x" id="favorite-sheet-x" aria-label="关闭">×</button>
+          </div>
+          <div class="favorite-create-tabs task-seg" role="tablist" aria-label="新建类型">
+            <span class="seg-indicator" aria-hidden="true"></span>
+            <button type="button" class="task-seg-btn is-active" id="favorite-mode-folder" role="tab" aria-selected="true">新建分类</button>
+            <button type="button" class="task-seg-btn" id="favorite-mode-link" role="tab" aria-selected="false">添加链接</button>
+          </div>
+          <form class="favorite-folder-form" id="favorite-folder-form">
+            <label>分类名称
+              <input type="text" id="favorite-folder-name" maxlength="24" placeholder="例如：睡前冥想" autocomplete="off" required />
+            </label>
+            <button type="submit" class="favorite-primary-btn">创建分类</button>
+          </form>
+          <form class="resource-add favorite-link-form" id="resource-add-form" hidden>
+            <label>收藏到
+              <select id="favorite-folder-select"></select>
+            </label>
+            <label>链接
             <input
               type="url"
               id="resource-url-input"
@@ -458,7 +533,8 @@
               spellcheck="false"
               required
             />
-            <div class="resource-add-row">
+            </label>
+            <label>标题（可选）
               <input
                 type="text"
                 id="resource-title-input"
@@ -468,10 +544,9 @@
                 maxlength="80"
                 autocomplete="off"
               />
-              <button type="submit" class="resource-add-btn" id="resource-add-btn" data-i18n="add">添加</button>
-            </div>
+            </label>
+            <button type="submit" class="resource-add-btn favorite-primary-btn" id="resource-add-btn" data-i18n="add">添加</button>
           </form>
-          <div class="resource-cards" id="resource-cards"></div>
         </div>
       </div>
     </section>
@@ -716,36 +791,18 @@
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
             <span data-i18n="buddyHeading">首页形象</span>
           </h2>
-          <div class="pingu-preset-grid" id="pingu-preset-grid" role="group" aria-label="预设形象">
-            <button type="button" class="pingu-preset-btn is-active" data-preset="nunu" data-src="assets/curly-cat-animated.gif" title="Nunu" aria-pressed="true">
-              <img src="assets/curly-cat-animated.gif" alt="" draggable="false" />
-              <span data-i18n="presetNunu">Nunu</span>
-            </button>
-            <button type="button" class="pingu-preset-btn" data-preset="pingu" data-src="assets/pingu-wave-blink.gif" title="企鹅" aria-pressed="false">
-              <img src="assets/pingu-wave-blink.gif" alt="" draggable="false" />
-              <span data-i18n="presetPingu">企鹅</span>
-            </button>
-            <button type="button" class="pingu-preset-btn" data-preset="jishibao" data-src="assets/chiwawa.png" title="吉式堡" aria-pressed="false">
-              <img src="assets/chiwawa.png" alt="" draggable="false" />
-              <span>吉式堡</span>
-            </button>
-            <button type="button" class="pingu-preset-btn" data-preset="xuebi-idle" data-src="assets/xuebi1.png" title="雪碧发呆" aria-pressed="false">
-              <img src="assets/xuebi1.png" alt="" draggable="false" />
-              <span data-i18n="presetXuebiIdle">雪碧发呆</span>
-            </button>
-            <button type="button" class="pingu-preset-btn" data-preset="xuebi-cast" data-src="assets/xuebi2.png" title="雪碧施法" aria-pressed="false">
-              <img src="assets/xuebi2.png" alt="" draggable="false" />
-              <span data-i18n="presetXuebiCast">雪碧施法</span>
-            </button>
-            <button type="button" class="pingu-preset-btn pingu-preset-custom" data-preset="__custom__" title="上传自定义形象" aria-pressed="false">
-              <span class="pingu-preset-plus">+</span>
-              <span data-i18n="presetCustom">自定义</span>
-            </button>
+          <div class="puff-customizer" id="pingu-preset-grid" aria-label="棉棉形象设置">
+            <p class="puff-setting-label">棉花颜色</p>
+            <div class="puff-swatches" role="group" aria-label="棉花颜色">
+              <button type="button" data-puff-color="pink" style="--sw:linear-gradient(145deg,#FFF1F6,#FFC6DA 55%,#E7A2D2)" aria-label="粉色"></button><button type="button" data-puff-color="white" style="--sw:linear-gradient(145deg,#fff,#F7F4EF 55%,#D9D8EA)" aria-label="白色"></button><button type="button" data-puff-color="black" style="--sw:linear-gradient(145deg,#6E6879,#3E3946 55%,#24202B)" aria-label="黑色"></button><button type="button" data-puff-color="blue" style="--sw:linear-gradient(145deg,#F0FAFF,#C4E6F8 55%,#A4C1F0)" aria-label="浅蓝"></button><button type="button" data-puff-color="green" style="--sw:linear-gradient(145deg,#EEFAE2,#B5E08F 55%,#86C8A0)" aria-label="草绿"></button><button type="button" data-puff-color="orange" style="--sw:linear-gradient(145deg,#FFF0DC,#FFBA78 55%,#FF9480)" aria-label="橙色"></button><button type="button" data-puff-color="rose" style="--sw:linear-gradient(145deg,#FFB3CF,#F45C93 55%,#D3479F)" aria-label="玫红"></button>
+            </div>
+            <p class="puff-setting-label">头部配件</p>
+            <div class="puff-choice-row" role="group" aria-label="头部配件"><button type="button" data-puff-accessory="hat">帽子</button><button type="button" data-puff-accessory="glasses">眼镜</button><button type="button" data-puff-accessory="headphones">耳机</button></div>
+            <p class="puff-setting-label">手上</p>
+            <div class="puff-choice-row" role="group" aria-label="手上配件"><button type="button" data-puff-hold="none">无</button><button type="button" data-puff-hold="laptop">电脑</button><button type="button" data-puff-hold="pillow">抱枕</button></div>
+            <label class="puff-toggle"><input type="checkbox" id="puff-blanket-toggle"><span>松松地裹着毯子</span></label>
+            <button type="button" class="puff-randomize" id="puff-randomize"><i data-lucide="shuffle"></i><span>随机搭配</span></button>
           </div>
-          <button type="button" class="appearance-pick appearance-preview-pingu" id="pingu-preview" title="当前首页形象预览">
-            <span class="appearance-pick-hint" data-i18n="currentBuddy">当前形象</span>
-          </button>
-          <input type="file" id="pingu-upload" accept="image/*" hidden />
         </section>
 
         <section class="appearance-block">
@@ -931,7 +988,8 @@
   </div>
 
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
-  <script src="app.js?v=65"></script>
+  <script src="assets/puff/puff.js?v=3"></script>
+  <script src="app.js?v=73"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js").catch(() => {});
