@@ -204,27 +204,27 @@
 </g>
 </g>
 <g class="pf-g-headphones" display="${v.headphones}">
-<defs><radialGradient id="pfPearl" cx="0.35" cy="0.3" r="0.85"><stop offset="0" class="s-p1"></stop><stop offset="0.55" class="s-p3"></stop><stop offset="1" class="s-p2"></stop></radialGradient><linearGradient id="pfShell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="s-p3"></stop><stop offset="1" class="s-p4"></stop></linearGradient></defs>
+<defs><radialGradient id="${gid}Pearl" cx="0.35" cy="0.3" r="0.85"><stop offset="0" class="s-p1"></stop><stop offset="0.55" class="s-p3"></stop><stop offset="1" class="s-p2"></stop></radialGradient><linearGradient id="${gid}Shell" x1="0" y1="0" x2="0" y2="1"><stop offset="0" class="s-p3"></stop><stop offset="1" class="s-p4"></stop></linearGradient></defs>
 <path class="pf-tube" stroke="#1A1020" opacity="0.12" filter="url(#pfS1)" d="M46,126 C40,86 72,50 120,48 C168,50 200,86 194,126"></path>
 <path class="pf-tube" stroke="#B9BAC8" d="M44,120 C38,80 70,44 120,42 C170,44 202,80 196,120"></path>
 <path class="pf-tube2" stroke="#ECECF2" d="M44,119 C38,79 70,43 120,41 C170,43 202,79 196,119"></path>
 <path class="pf-band2" stroke="#FFFFFF" d="M52,92 C62,64 86,47 120,43"></path>
-<rect x="39" y="110" width="7" height="14" rx="3.5" fill="url(#pfShell)"></rect>
-<rect x="194" y="110" width="7" height="14" rx="3.5" fill="url(#pfShell)"></rect>
+<rect x="39" y="110" width="7" height="14" rx="3.5" fill="url(#${gid}Shell)"></rect>
+<rect x="194" y="110" width="7" height="14" rx="3.5" fill="url(#${gid}Shell)"></rect>
 <ellipse cx="50" cy="146" rx="14" ry="20" fill="#1A1020" opacity="0.2" filter="url(#pfS4)"></ellipse>
 <ellipse cx="190" cy="146" rx="14" ry="20" fill="#1A1020" opacity="0.2" filter="url(#pfS4)"></ellipse>
 <ellipse cx="52" cy="140" rx="6.5" ry="18" fill="${c.accSD}"></ellipse>
 <ellipse cx="54" cy="139" rx="4.5" ry="15.5" fill="${c.accS}"></ellipse>
-<ellipse cx="37" cy="141" rx="14" ry="21" fill="url(#pfShell)"></ellipse>
-<ellipse cx="42" cy="140" rx="14" ry="20.5" fill="url(#pfPearl)"></ellipse>
+<ellipse cx="37" cy="141" rx="14" ry="21" fill="url(#${gid}Shell)"></ellipse>
+<ellipse cx="42" cy="140" rx="14" ry="20.5" fill="url(#${gid}Pearl)"></ellipse>
 <path class="pf-band2" stroke="#FFFFFF" opacity="0.95" d="M31,128 Q34,121 40,120"></path>
 <ellipse class="pf-ring" cx="42" cy="140" rx="9.5" ry="15" stroke="${c.acc}" opacity="0.5"></ellipse>
 <ellipse cx="37" cy="131" rx="3.4" ry="5" transform="rotate(-15 37 131)" fill="#FFFFFF" opacity="0.95"></ellipse>
 <circle cx="40" cy="154" r="1.8" fill="${c.accD}"></circle>
 <ellipse cx="188" cy="140" rx="6.5" ry="18" fill="${c.accSD}"></ellipse>
 <ellipse cx="186" cy="139" rx="4.5" ry="15.5" fill="${c.accS}"></ellipse>
-<ellipse cx="203" cy="141" rx="14" ry="21" fill="url(#pfShell)"></ellipse>
-<ellipse cx="198" cy="140" rx="14" ry="20.5" fill="url(#pfPearl)"></ellipse>
+<ellipse cx="203" cy="141" rx="14" ry="21" fill="url(#${gid}Shell)"></ellipse>
+<ellipse cx="198" cy="140" rx="14" ry="20.5" fill="url(#${gid}Pearl)"></ellipse>
 <path class="pf-band2" stroke="#FFFFFF" opacity="0.95" d="M187,128 Q190,121 196,120"></path>
 <ellipse class="pf-ring" cx="198" cy="140" rx="9.5" ry="15" stroke="${c.acc}" opacity="0.5"></ellipse>
 <ellipse cx="193" cy="131" rx="3.4" ry="5" transform="rotate(-15 193 131)" fill="#FFFFFF" opacity="0.95"></ellipse>

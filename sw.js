@@ -1,4 +1,4 @@
-const CACHE = "affirm-pingu-v94";
+const CACHE = "affirm-pingu-v106";
 const ASSETS = [
   "./",
   "./index.html",

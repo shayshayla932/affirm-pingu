@@ -4,9 +4,10 @@
   const THEME_STORAGE_KEY = "affirm-pingu-theme-v1";
   const LEGACY_KEYS = ["affirm-pingu-data-v2", "affirm-pingu-data-v1"];
   const DEFAULT_HOME_BG = "assets/sky-home.png";
-  const DEFAULT_CHAT_BG = "assets/450-20170130161150300883.jpg";
+  const LEGACY_DEFAULT_CHAT_BG = "assets/450-20170130161150300883.jpg";
+  const DEFAULT_CHAT_BG = "";
   const DEFAULT_HOME_COLOR = "#C8E4F8";
-  const DEFAULT_CHAT_COLOR = "#cfe8f8";
+  const DEFAULT_CHAT_COLOR = "#ffffff";
   const DEFAULT_PINGU = "assets/curly-cat-animated.gif";
   const LEGACY_PINGU = "assets/pingu-sprite.png";
   const LEGACY_NUNU_PNG = "assets/buddy-nunu.png";
@@ -37,7 +38,7 @@
     const base = typeof value === "string" ? value.trim().replace(/\/+$/, "") : "";
     return !base || LEGACY_LOCAL_CLOUD_APIS.has(base) ? DEFAULT_CLOUD_API : base;
   }
-  const APP_VERSION = "1.3.2";
+  const APP_VERSION = "1.3.5";
   const MAX_CHAT_MESSAGES = 40;
   const COACH_MD_URL = "./coach/manifestation-coach.md";
   const MEMORY_BLOCK_RE = /\[\[MEMORY\]\]([\s\S]*?)\[\[\/MEMORY\]\]/gi;
@@ -72,6 +73,8 @@
       back: "返回",
       languageHeading: "语言",
       buddyHeading: "首页形象",
+      appIconHeading: "App icon",
+      backgroundHeading: "Background",
       homeBgHeading: "主页背景",
       chatBgHeading: "聊天背景",
       tapUpload: "点击上传图片",
@@ -230,7 +233,7 @@
       chatPlaceholder: "跟 Pingu 聊聊…",
       chatApiHeading: "对话 · API",
       chatApiHeadingAdvanced: "高级 · 自带 API Key",
-      cloudHeading: "Pingu 助手",
+      cloudHeading: "Assistant",
       cloudIntro:
         "使用创作者提供的 AI（走服务端），无需自己的 OpenAI Key。注册/登录后输入兑换码激活。",
       cloudApiBase: "助手服务地址",
@@ -248,7 +251,7 @@
       cloudLoginOk: "登录成功",
       cloudRegisterOk: "注册成功，请激活兑换码",
       cloudRedeemOk: "兑换成功",
-      cloudOrKeyMissing: "请登录 Pingu 助手并激活兑换码，或在「高级」里填写 API Key",
+      cloudOrKeyMissing: "请登录 Assistant 并激活兑换码，或在「高级」里填写 API Key",
       cloudChatQuota: "助手次数或套餐已用完",
       cloudAuthFailed: "登录失败，请检查邮箱、密码与服务地址",
       cloudRedeemFailed: "兑换失败，请检查兑换码",
@@ -550,6 +553,8 @@
       back: "Back",
       languageHeading: "Language",
       buddyHeading: "Home buddy",
+      appIconHeading: "App icon",
+      backgroundHeading: "Background",
       homeBgHeading: "Home background",
       chatBgHeading: "Chat background",
       tapUpload: "Tap to upload image",
@@ -707,7 +712,7 @@
       chatPlaceholder: "Ask Pingu…",
       chatApiHeading: "Chat · API",
       chatApiHeadingAdvanced: "Advanced · own API key",
-      cloudHeading: "Pingu Assistant",
+      cloudHeading: "Assistant",
       cloudIntro:
         "Use hosted AI (via the creator's server). Sign in and redeem a code — no OpenAI key needed.",
       cloudApiBase: "Assistant server URL",
@@ -725,7 +730,7 @@
       cloudLoginOk: "Signed in",
       cloudRegisterOk: "Registered — redeem a code",
       cloudRedeemOk: "Code redeemed",
-      cloudOrKeyMissing: "Sign in to Pingu Assistant and redeem a code, or add an API key under Advanced",
+      cloudOrKeyMissing: "Sign in to Assistant and redeem a code, or add an API key under Advanced",
       cloudChatQuota: "Assistant quota exhausted",
       cloudAuthFailed: "Sign-in failed — check email, password, and server URL",
       cloudRedeemFailed: "Invalid or used code",
@@ -1271,6 +1276,67 @@
       /* ignore */
     }
     applyLocale();
+    if (locale === "en") translateChatHistoryForLocale().catch(() => {});
+  }
+
+  const STATIC_UI_EN = {
+    "AI 智能总结": "AI Daily Summary", "今日分析": "Today's analysis",
+    "把灵感收进不同文件夹里。": "Keep inspiration in separate folders.",
+    "← 返回全部": "← All folders", "新建": "New", "新建分类": "New folder",
+    "添加链接": "Add link", "分类名称": "Folder name", "创建分类": "Create folder",
+    "收藏到": "Save to", "链接": "Link", "标题（可选）": "Title (optional)",
+    "配件": "Accessories", "帽子": "Hat", "眼镜": "Glasses", "耳机": "Headphones",
+    "无手持": "No handheld", "电脑": "Laptop", "抱枕": "Pillow", "裹毯子": "Blanket", "随机": "Random",
+    "更换图标": "Change app icon", "默认": "Default", "捏捏": "Squeeze", "一笔": "Line",
+    "选择显示在手机主屏幕上的棉棉图标，深色模式会自动切换黑底版本。": "Choose the Puff icon shown on your Home Screen. Dark Mode switches to the dark version automatically.",
+    "恢复默认主页背景": "Restore default home background", "恢复默认聊天背景": "Restore default chat background",
+    "开发者 · 助手服务地址": "Developer · Assistant server URL",
+    "模型": "Model", "自定义模型 ID…": "Custom model ID…", "自定义模型 ID": "Custom model ID",
+    "每天第一次打开对话时自动分析": "Analyze automatically the first time chat opens each day",
+    "欢迎回来": "Welcome back", "登录方式": "Sign-in method", "邮箱": "Email", "手机号": "Phone",
+    "还没有账号？": "No account yet?", "注册": "Register", "关于应用": "About",
+    "把愿望": "Turn wishes", "练成每天的力量": "into everyday strength",
+    "账号与数据": "Account & Data", "Dreamey 用户": "Dreamey User", "账号设置": "Account settings",
+    "修改密码": "Change password", "更新当前账号的登录密码": "Update the password for this account",
+    "当前密码": "Current password", "新密码（至少 8 位）": "New password (8+ characters)", "确认新密码": "Confirm new password",
+    "保存密码": "Save password", "下载本机聊天记录": "Download local chat history", "导出为可阅读的文本文件": "Export as a readable text file",
+    "清除缓存": "Clear cache", "不会删除账号与本机记录": "Your account and local records will remain",
+    "退出登录": "Sign out", "本机记录仍会保留": "Local records will remain", "版本 1.3.5": "Version 1.3.5",
+    "专注于每日肯定、显化记录与陪伴式对话。": "Built for daily affirmations, manifestation journaling, and supportive conversations.",
+    "本次更新：优化账号资料同步，新增默认背景恢复，并精简设置选项。": "This update improves account syncing, restores default backgrounds, and simplifies settings.",
+    "我要怎么称呼你？": "What should I call you?", "你的名字": "Your name", "密码": "Password", "确认密码": "Confirm password",
+    "返回全部": "All folders", "修改分类名称": "Rename folder", "保存修改": "Save changes",
+    "分类名称不能为空": "Folder name can't be empty", "已经有同名文件夹了": "A folder with that name already exists",
+    "这个文件夹还是空的": "This folder is empty", "点击右上角 + 添加第一个收藏": "Tap + at the top right to add the first item",
+    "个收藏": "saved items", "正在识别…": "Reading…", "删除文件夹": "Delete folder", "修改文件夹名称": "Rename folder",
+    "今天还没有开始肯定语练习，先轻轻点一次棉棉，让状态启动起来。": "You haven't started affirmations today. Tap Puff once to ease into the state.",
+    "今日": "Today", "累计": "Total", "少": "Less", "多": "More",
+    "机械 A · 10 分钟": "Robotic A · 10 min", "机械 A · 本次练习总结": "Robotic A · Session summary",
+    "暂停": "Pause", "结束并记完成": "Finish and mark complete", "确认": "Confirm",
+    "中文": "中文", "English": "English"
+  };
+
+  function translateStaticUi() {
+    const reverse = Object.fromEntries(Object.entries(STATIC_UI_EN).map(([zh, en]) => [en, zh]));
+    const map = locale === "en" ? STATIC_UI_EN : reverse;
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => {
+      const parent = node.parentElement;
+      if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return;
+      if (parent.closest(".chat-messages, .resource-cards, .diary-body, .history-list")) return;
+      const raw = node.nodeValue || "";
+      const trimmed = raw.trim();
+      if (!map[trimmed]) return;
+      node.nodeValue = raw.replace(trimmed, map[trimmed]);
+    });
+    document.querySelectorAll("[placeholder], [aria-label], [title]").forEach((el) => {
+      ["placeholder", "aria-label", "title"].forEach((attr) => {
+        const value = el.getAttribute(attr);
+        if (value && map[value]) el.setAttribute(attr, map[value]);
+      });
+    });
   }
 
   function applyLocale() {
@@ -1294,6 +1360,7 @@
       const key = el.getAttribute("data-i18n-title");
       if (key) el.setAttribute("title", t(key));
     });
+    translateStaticUi();
     const zhBtn = document.getElementById("locale-zh");
     const enBtn = document.getElementById("locale-en");
     zhBtn?.classList.toggle("is-active", locale === "zh");
@@ -1328,8 +1395,11 @@
       refreshStats?.();
       renderCalendar?.();
       renderDayList?.();
+      refreshCalendarAiSummary?.();
       setEditKind?.(editKind);
       if (els.pageHistory && !els.pageHistory.hidden) renderAffirmHistoryPage?.();
+      renderChatMessages?.();
+      translateStaticUi();
     } catch {
       /* render helpers may not exist yet on first paint */
     }
@@ -1380,6 +1450,9 @@
     statsDetailSub: document.getElementById("stats-detail-sub"),
     statsDetailBody: document.getElementById("stats-detail-body"),
     calPanelFooter: document.querySelector(".cal-panel-footer"),
+    calendarBelow: document.getElementById("calendar-below"),
+    calendarAiText: document.getElementById("calendar-ai-text"),
+    calendarAiPuff: document.getElementById("calendar-ai-puff"),
     pingu: document.getElementById("pingu"),
     pinguWrap: document.getElementById("pingu-wrap"),
     puffKitHost: document.getElementById("puff-kit-host"),
@@ -1507,16 +1580,20 @@
     favoriteFolders: document.getElementById("favorite-folders"),
     favoriteFolderDetail: document.getElementById("favorite-folder-detail"),
     favoriteFolderBack: document.getElementById("favorite-folder-back"),
+    favoriteFolderRename: document.getElementById("favorite-folder-rename"),
     favoriteFolderTitle: document.getElementById("favorite-folder-title"),
     favoriteFolderCount: document.getElementById("favorite-folder-count"),
     favoritesAdd: document.getElementById("favorites-add"),
     favoriteCreateSheet: document.getElementById("favorite-create-sheet"),
     favoriteSheetClose: document.getElementById("favorite-sheet-close"),
     favoriteSheetX: document.getElementById("favorite-sheet-x"),
+    favoriteSheetTitle: document.getElementById("favorite-sheet-title"),
     favoriteModeFolder: document.getElementById("favorite-mode-folder"),
     favoriteModeLink: document.getElementById("favorite-mode-link"),
+    favoriteFormStage: document.getElementById("favorite-form-stage"),
     favoriteFolderForm: document.getElementById("favorite-folder-form"),
     favoriteFolderName: document.getElementById("favorite-folder-name"),
+    favoriteFolderSubmit: document.getElementById("favorite-folder-submit"),
     favoriteFolderSelect: document.getElementById("favorite-folder-select"),
     drawerBackdrop: document.getElementById("drawer-backdrop"),
     pageHistory: document.getElementById("page-affirm-history"),
@@ -1603,6 +1680,8 @@
     favPanelFaq: document.getElementById("fav-panel-faq"),
     dailyTasksPill: document.getElementById("daily-tasks-pill"),
     topBar: document.getElementById("top-bar"),
+    homeGreeting: document.getElementById("home-greeting"),
+    homeGreetingName: document.getElementById("home-greeting-name"),
     homeGreetingLine: document.getElementById("home-greeting-line"),
     pageDiary: document.getElementById("page-diary"),
     diaryList: document.getElementById("diary-list"),
@@ -2262,7 +2341,7 @@
       homePreset: DEFAULT_HOME_BG,
       homeColor: DEFAULT_HOME_COLOR,
       homeCustom: "",
-      chatMode: "image",
+      chatMode: "color",
       chatPreset: DEFAULT_CHAT_BG,
       chatColor: DEFAULT_CHAT_COLOR,
       chatCustom: "",
@@ -2363,7 +2442,9 @@
     const hasChatCustom =
       raw.chatPreset === "__custom__" && typeof raw.chatCustom === "string" && raw.chatCustom;
     const chatPreset =
-      typeof raw.chatPreset === "string" && raw.chatPreset ? raw.chatPreset : base.chatPreset;
+      typeof raw.chatPreset === "string" && raw.chatPreset && raw.chatPreset !== LEGACY_DEFAULT_CHAT_BG
+        ? raw.chatPreset
+        : base.chatPreset;
     return {
       homeMode,
       homePreset:
@@ -2374,8 +2455,7 @@
             : base.homePreset,
       homeColor: base.homeColor,
       homeCustom: typeof raw.homeCustom === "string" ? raw.homeCustom : "",
-      // Color picker removed — always image (preset or custom)
-      chatMode: "image",
+      chatMode: hasChatCustom || chatPreset ? "image" : "color",
       chatPreset: hasChatCustom || chatPreset ? chatPreset : base.chatPreset,
       chatColor: base.chatColor,
       chatCustom: typeof raw.chatCustom === "string" ? raw.chatCustom : "",
@@ -2495,8 +2575,9 @@
       root.style.setProperty("--home-bg-image", cssUrl(resolveThemeImage("home", data)));
     }
 
-    root.style.setProperty("--chat-bg-image", cssUrl(resolveThemeImage("chat", data)));
-    els.pageChat?.classList.remove("chat-bg-mode-color");
+    const chatImage = resolveThemeImage("chat", data);
+    root.style.setProperty("--chat-bg-image", cssUrl(chatImage));
+    els.pageChat?.classList.toggle("chat-bg-mode-color", !chatImage);
 
     const pinguSrc = resolveThemeImage("pingu", data);
     if (els.pingu) els.pingu.src = pinguSrc;
@@ -2504,6 +2585,8 @@
   }
 
   let puffKit = null;
+  let calendarPuffKit = null;
+  let calendarPuffHopTimer = 0;
   let puffIdleTimer = 0;
   let puffScreenTimer = 0;
 
@@ -2523,7 +2606,10 @@
     puffIdleTimer = window.setTimeout(() => {
       if (puffKit && !isAnyPageOpen() && !document.hidden && puffKit.getState().hold !== "pillow") {
         const roll = Math.random();
-        puffKit.play(roll < 0.55 ? "hop" : roll < 0.8 ? "float" : roll < 0.92 ? "press" : "fog");
+        const practiceActive = Boolean(ritualRun) || ritualCardState === "running";
+        puffKit.play(practiceActive
+          ? (roll < 0.72 ? "hop" : "float")
+          : (roll < 0.55 ? "hop" : roll < 0.8 ? "float" : roll < 0.92 ? "press" : "fog"));
       }
       schedulePuffIdle();
     }, 3000 + Math.random() * 4000);
@@ -2533,10 +2619,19 @@
     document.body.classList.remove("puff-screen-press", "puff-screen-fog");
     window.clearTimeout(puffScreenTimer);
     if (name !== "press" && name !== "fog") return;
+    if (!document.body.classList.contains("puff-effects-home") || ritualRun || ritualCardState === "running") return;
     document.body.classList.add(`puff-screen-${name}`);
     puffScreenTimer = window.setTimeout(() => {
       document.body.classList.remove(`puff-screen-${name}`);
     }, name === "fog" ? 5250 : 2650);
+  }
+
+  function clearPuffScreenEffects() {
+    window.clearTimeout(puffScreenTimer);
+    document.body.classList.remove("puff-screen-press", "puff-screen-fog");
+    document.querySelectorAll("body > .pf-glass, body > .pf-fogl").forEach((layer) => {
+      layer.classList.remove("press", "fog", "float", "hop");
+    });
   }
 
   function applyPuffAppearance(data = theme) {
@@ -2559,6 +2654,27 @@
       schedulePuffIdle();
     } else {
       puffKit.set(look);
+    }
+    mountCalendarPuff(look);
+  }
+
+  function mountCalendarPuff(look = puffLook()) {
+    if (!els.calendarAiPuff || !window.Puff) return;
+    if (!calendarPuffKit) {
+      calendarPuffKit = window.Puff.create(els.calendarAiPuff, {
+        ...look,
+        mode: "normal",
+        size: 88,
+        autoPlay: false,
+        background: false,
+      });
+      calendarPuffKit.play("hop");
+      window.clearInterval(calendarPuffHopTimer);
+      calendarPuffHopTimer = window.setInterval(() => {
+        if (calendarPuffKit && els.calendarAiPuff?.offsetParent) calendarPuffKit.play("hop");
+      }, 1280);
+    } else {
+      calendarPuffKit.set(look);
     }
   }
 
@@ -2593,7 +2709,7 @@
       }
     }
     if (chatPrev) {
-      chatPrev.style.backgroundColor = "#cfe8f8";
+      chatPrev.style.backgroundColor = "#fff";
       chatPrev.style.backgroundImage = cssUrl(resolveThemeImage("chat", appearanceDraft));
     }
     if (pinguPrev) {
@@ -2712,6 +2828,7 @@
 
   applyTheme(theme);
   applyLocale();
+  if (locale === "en") window.setTimeout(() => translateChatHistoryForLocale().catch(() => {}), 0);
 
   async function loadCoachManual() {
     try {
@@ -3046,13 +3163,16 @@
     statsDetailIndex = -1;
     if (els.statsTabWeek) {
       els.statsTabWeek.classList.toggle("active", statsRange === "week");
+      els.statsTabWeek.classList.toggle("is-active", statsRange === "week");
       els.statsTabWeek.setAttribute("aria-selected", statsRange === "week" ? "true" : "false");
     }
     if (els.statsTabMonth) {
       els.statsTabMonth.classList.toggle("active", statsRange === "month");
+      els.statsTabMonth.classList.toggle("is-active", statsRange === "month");
       els.statsTabMonth.setAttribute("aria-selected", statsRange === "month" ? "true" : "false");
     }
     refreshStats();
+    requestAnimationFrame(() => updateSegIndicator(els.statsTabWeek?.closest(".task-seg")));
   }
 
   function shiftStatsAnchor(delta) {
@@ -3155,6 +3275,7 @@
   const FAVORITE_FOLDERS_KEY = "affirm-pingu-favorite-folders-v1";
   const FAVORITE_FOLDER_COLORS = ["#ffcc68", "#ff9fc5", "#83dfc6", "#9bc8ff", "#b9a7ff"];
   let activeFavoriteFolderId = null;
+  let editingFavoriteFolderId = null;
   let favoriteFolderLongPressTimer = null;
   let suppressFavoriteFolderClick = false;
   let resourcesFaqRendered = false;
@@ -3329,6 +3450,9 @@
 
   function renderFavoriteFolders() {
     if (!els.favoriteFolders) return;
+    if (els.favoriteFolderDetail?.parentElement === els.favoriteFolders) {
+      els.favoriteFolders.insertAdjacentElement("afterend", els.favoriteFolderDetail);
+    }
     const folders = loadFavoriteFolders();
     const links = loadCustomResourceLinks();
     els.favoriteFolders.innerHTML = folders.map((folder, index) => {
@@ -3336,6 +3460,10 @@
       const palette = FAVORITE_FOLDER_COLORS.map((color) =>
         `<button type="button" class="favorite-folder-color${folder.color === color ? " is-selected" : ""}" data-folder-color="${color}" aria-label="切换文件夹颜色" style="--swatch:${color}"></button>`
       ).join("");
+      const deleteAction = folder.id === "default" ? "" : `
+        <button type="button" class="favorite-folder-action is-danger" data-folder-action="delete" aria-label="删除文件夹" title="删除文件夹">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5"/></svg>
+        </button>`;
       return `
         <div class="favorite-folder-wrap" data-folder-id="${escapeHtml(folder.id)}">
         <button type="button" class="favorite-folder" data-folder-id="${escapeHtml(folder.id)}" style="--folder-color:${folder.color};--folder-index:${index % 4}">
@@ -3347,14 +3475,28 @@
             <span class="folder-front"></span>
           </span>
           <span class="favorite-folder-name">${escapeHtml(folder.name)}</span>
-          <span class="favorite-folder-meta">${count} 个收藏</span>
+          <span class="favorite-folder-meta">${locale === "en" ? `${count} saved` : `${count} 个收藏`}</span>
         </button>
-        <div class="favorite-folder-palette" hidden>${palette}</div>
+        <div class="favorite-folder-palette" hidden>${palette}<span class="favorite-folder-palette-divider" aria-hidden="true"></span><button type="button" class="favorite-folder-action" data-folder-action="rename" aria-label="修改文件夹名称" title="修改文件夹名称"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.2-1 10.9-10.9a2.1 2.1 0 0 0-3-3L5.2 16 4 20Zm10.5-13.5 3 3"/></svg></button>${deleteAction}</div>
         </div>`;
     }).join("");
-    els.favoriteFolders.hidden = Boolean(activeFavoriteFolderId);
     const empty = folders.length === 0;
     els.favoriteFolders.classList.toggle("is-empty", empty);
+    if (activeFavoriteFolderId && els.favoriteFolderDetail) {
+      const folderWraps = Array.from(els.favoriteFolders.querySelectorAll(".favorite-folder-wrap"));
+      const openIndex = folderWraps.findIndex(
+        (wrap) => wrap.getAttribute("data-folder-id") === activeFavoriteFolderId
+      );
+      const openWrap = openIndex >= 0 ? folderWraps[openIndex] : null;
+      const openButton = openWrap?.querySelector(".favorite-folder");
+      openWrap?.classList.add("is-selected");
+      openButton?.classList.add("is-open");
+      openButton?.setAttribute("aria-expanded", "true");
+      if (openIndex >= 0) {
+        const rowEndIndex = Math.min(Math.ceil((openIndex + 1) / 3) * 3 - 1, folderWraps.length - 1);
+        folderWraps[rowEndIndex]?.insertAdjacentElement("afterend", els.favoriteFolderDetail);
+      }
+    }
   }
 
   function renderFavoriteFolderSelect() {
@@ -3376,17 +3518,22 @@
     }
     renderFavoriteFolders();
     renderFavoriteFolderSelect();
-    if (els.favoriteFolderDetail) els.favoriteFolderDetail.hidden = !activeFavoriteFolderId;
+    if (els.favoriteFolderDetail) {
+      els.favoriteFolderDetail.hidden = !activeFavoriteFolderId;
+      els.favoriteFolderDetail.classList.toggle("is-open", Boolean(activeFavoriteFolderId));
+    }
     if (!activeFavoriteFolderId) {
       els.resourceCards.innerHTML = "";
       return;
     }
     const folder = folders.find((entry) => entry.id === activeFavoriteFolderId);
     const items = loadCustomResourceLinks().filter((item) => item.folderId === activeFavoriteFolderId);
-    if (els.favoriteFolderTitle) els.favoriteFolderTitle.textContent = folder?.name || "收藏";
-    if (els.favoriteFolderCount) els.favoriteFolderCount.textContent = `${items.length} 个收藏`;
+    if (els.favoriteFolderTitle) els.favoriteFolderTitle.textContent = folder?.name || (locale === "en" ? "Saved" : "收藏");
+    if (els.favoriteFolderCount) els.favoriteFolderCount.textContent = locale === "en" ? `${items.length} saved` : `${items.length} 个收藏`;
     if (!items.length) {
-      els.resourceCards.innerHTML = '<div class="favorite-empty"><strong>这个文件夹还是空的</strong><span>点击右上角 + 添加第一个收藏</span></div>';
+      els.resourceCards.innerHTML = locale === "en"
+        ? '<div class="favorite-empty"><strong>This folder is empty</strong><span>Tap + at the top right to add the first item</span></div>'
+        : '<div class="favorite-empty"><strong>这个文件夹还是空的</strong><span>点击右上角 + 添加第一个收藏</span></div>';
       return;
     }
     els.resourceCards.innerHTML = items
@@ -3453,8 +3600,26 @@
 
   function setFavoriteCreateMode(mode) {
     const linkMode = mode === "link";
+    const stage = els.favoriteFormStage;
+    const startHeight = stage?.getBoundingClientRect().height || 0;
+    if (stage) {
+      stage.style.height = `${startHeight}px`;
+      stage.classList.add("is-switching");
+    }
     els.favoriteFolderForm?.toggleAttribute("hidden", linkMode);
     els.resourceAddForm?.toggleAttribute("hidden", !linkMode);
+    if (stage) {
+      const activeForm = linkMode ? els.resourceAddForm : els.favoriteFolderForm;
+      const endHeight = activeForm?.getBoundingClientRect().height || activeForm?.scrollHeight || startHeight;
+      requestAnimationFrame(() => {
+        stage.style.height = `${endHeight}px`;
+      });
+      window.clearTimeout(stage._heightTimer);
+      stage._heightTimer = window.setTimeout(() => {
+        stage.style.height = "auto";
+        stage.classList.remove("is-switching");
+      }, 430);
+    }
     els.favoriteModeFolder?.classList.toggle("is-active", !linkMode);
     els.favoriteModeLink?.classList.toggle("is-active", linkMode);
     els.favoriteModeFolder?.setAttribute("aria-selected", linkMode ? "false" : "true");
@@ -3462,10 +3627,15 @@
     requestAnimationFrame(() => {
       updateSegIndicator(els.favoriteModeFolder?.closest(".task-seg"));
     });
-    window.setTimeout(() => (linkMode ? els.resourceUrlInput : els.favoriteFolderName)?.focus(), 60);
+    window.setTimeout(() => (linkMode ? els.resourceUrlInput : els.favoriteFolderName)?.focus(), 440);
   }
 
   function openFavoriteCreateSheet(mode = "folder") {
+    editingFavoriteFolderId = null;
+    els.favoriteCreateSheet?.classList.remove("is-renaming");
+    if (els.favoriteSheetTitle) els.favoriteSheetTitle.textContent = locale === "en" ? "New" : "新建";
+    if (els.favoriteFolderSubmit) els.favoriteFolderSubmit.textContent = locale === "en" ? "Create folder" : "创建分类";
+    if (els.favoriteFolderName) els.favoriteFolderName.value = "";
     renderFavoriteFolderSelect();
     if (els.favoriteCreateSheet) els.favoriteCreateSheet.hidden = false;
     setFavoriteCreateMode(mode);
@@ -3473,6 +3643,7 @@
 
   function closeFavoriteCreateSheet() {
     if (els.favoriteCreateSheet) els.favoriteCreateSheet.hidden = true;
+    editingFavoriteFolderId = null;
   }
 
   function setFavoriteFolderColor(id, color) {
@@ -3482,6 +3653,60 @@
     if (!folder) return;
     folder.color = color;
     saveFavoriteFolders(folders);
+    renderResourceCards();
+  }
+
+  function renameFavoriteFolder(id) {
+    const folders = loadFavoriteFolders();
+    const folder = folders.find((entry) => entry.id === id);
+    if (!folder) return;
+    editingFavoriteFolderId = id;
+    closeFavoriteColorPalettes();
+    els.favoriteCreateSheet?.classList.add("is-renaming");
+    if (els.favoriteSheetTitle) els.favoriteSheetTitle.textContent = locale === "en" ? "Rename folder" : "修改分类名称";
+    if (els.favoriteFolderSubmit) els.favoriteFolderSubmit.textContent = locale === "en" ? "Save changes" : "保存修改";
+    if (els.favoriteFolderName) els.favoriteFolderName.value = folder.name;
+    if (els.favoriteCreateSheet) els.favoriteCreateSheet.hidden = false;
+    setFavoriteCreateMode("folder");
+    window.setTimeout(() => {
+      els.favoriteFolderName?.focus();
+      els.favoriteFolderName?.select();
+    }, 460);
+  }
+
+  function applyFavoriteFolderRename(id, nextName) {
+    const folders = loadFavoriteFolders();
+    const folder = folders.find((entry) => entry.id === id);
+    if (!folder) return false;
+    const clean = String(nextName || "").trim().slice(0, 24);
+    if (!clean) {
+      window.alert("文件夹名称不能为空");
+      return false;
+    }
+    if (folders.some((entry) => entry.id !== id && entry.name.toLowerCase() === clean.toLowerCase())) {
+      window.alert("已经有同名文件夹了");
+      return false;
+    }
+    folder.name = clean;
+    saveFavoriteFolders(folders);
+    renderResourceCards();
+    return true;
+  }
+
+  function deleteFavoriteFolder(id) {
+    if (!id || id === "default") {
+      window.alert("默认收藏夹不能删除");
+      return;
+    }
+    const folders = loadFavoriteFolders();
+    const folder = folders.find((entry) => entry.id === id);
+    if (!folder) return;
+    const itemCount = loadCustomResourceLinks().filter((item) => item.folderId === id).length;
+    const suffix = itemCount ? `，其中 ${itemCount} 个收藏也会一起删除` : "";
+    if (!window.confirm(`确定删除“${folder.name}”吗${suffix}？`)) return;
+    saveFavoriteFolders(folders.filter((entry) => entry.id !== id));
+    saveCustomResourceLinks(loadCustomResourceLinks().filter((item) => item.folderId !== id));
+    if (activeFavoriteFolderId === id) activeFavoriteFolderId = null;
     renderResourceCards();
   }
 
@@ -3634,7 +3859,46 @@
     if (els.bigCount) els.bigCount.textContent = String(today);
     if (els.todayCount) els.todayCount.textContent = String(today);
     if (els.totalCount) els.totalCount.textContent = String(total);
+    refreshCalendarAiSummary();
     refreshStats();
+  }
+
+  function refreshCalendarAiSummary() {
+    if (!els.calendarAiText) return;
+    const count = getTodayCount();
+    const ritual = getRitualFlags(todayKey());
+    let summary = locale === "en"
+      ? "You haven't started affirmations today. Tap Puff once to ease into the state."
+      : "今天还没有开始肯定语练习，先轻轻点一次棉棉，让状态启动起来。";
+    if (locale === "en") {
+      if (count > 0 && count < 10) summary = `You've completed ${count} affirmations today. The state is starting to settle in—repeat a few more rounds gently.`;
+      else if (count < 30 && count >= 10) summary = `You've completed ${count} affirmations today and are building a steady rhythm. Easy repetition matters more than forcing belief.`;
+      else if (count < 60 && count >= 30) summary = `You've completed ${count} affirmations today. Your practice is steady and your attention keeps returning to the desired state.`;
+      else if (count >= 60) summary = `You've completed ${count} affirmations today with strong focus. You can relax now and let that certainty settle.`;
+      if (ritual.robotic && ritual.visual) summary += " Robotic A and visualization are both complete—a full practice day.";
+      else if (ritual.robotic || ritual.visual) summary += ` ${ritual.robotic ? "Robotic A" : "Visualization"} is complete; add ${ritual.robotic ? "visualization" : "Robotic A"} to finish the set.`;
+      else if (count > 0) summary += " If you have a little time, add Robotic A or visualization.";
+      els.calendarAiText.textContent = summary;
+      return;
+    }
+    if (count > 0 && count < 10) {
+      summary = `今天已经完成 ${count} 次肯定语，状态刚刚启动。再重复几轮，让新想法慢慢变得自然。`;
+    } else if (count < 30 && count >= 10) {
+      summary = `今天已经完成 ${count} 次肯定语，节奏正在建立。保持轻松重复，比用力说服自己更重要。`;
+    } else if (count < 60 && count >= 30) {
+      summary = `今天已经完成 ${count} 次肯定语，练习很稳定。你的注意力正在持续回到想要的状态。`;
+    } else if (count >= 60) {
+      summary = `今天已经完成 ${count} 次肯定语，专注度很高。现在可以放松下来，让这份确定感自然沉淀。`;
+    }
+    const completed = [ritual.robotic ? "机械 A" : "", ritual.visual ? "视觉化" : ""].filter(Boolean);
+    if (completed.length === 2) {
+      summary += " 机械 A 和视觉化也都完成了，今天的练习很完整。";
+    } else if (completed.length === 1) {
+      summary += ` ${completed[0]}已经完成，再补上${ritual.robotic ? "视觉化" : "机械 A"}就更完整了。`;
+    } else if (count > 0) {
+      summary += " 如果还有一点时间，可以再完成机械 A 或视觉化。";
+    }
+    els.calendarAiText.textContent = summary;
   }
 
   function refreshStats() {
@@ -3762,6 +4026,7 @@
     const now = Date.now();
     if (now - lastAffirmAt < 120) return;
     lastAffirmAt = now;
+    maybeShowPuffGreeting("tap");
     const key = todayKey();
     state.days[key] = (state.days[key] || 0) + 1;
     save(state);
@@ -4841,10 +5106,11 @@
       return;
     }
     for (const msg of ai.messages) {
+      const localizedContent = locale === "en" ? (msg.translations?.en || msg.content) : msg.content;
       const shown =
         msg.role === "assistant"
-          ? extractMemoryUpdate(msg.content).cleaned || msg.content
-          : msg.content;
+          ? extractMemoryUpdate(localizedContent).cleaned || localizedContent
+          : localizedContent;
       mountChatMessage(msg.role, shown);
     }
     if (stickToBottom) {
@@ -4853,6 +5119,44 @@
       els.chatMessages.scrollTop = prevTop;
     }
     updateChatJumpBottom();
+  }
+
+  let chatHistoryTranslationPromise = null;
+
+  async function translateChatHistoryForLocale() {
+    if (locale !== "en" || !ai.messages.length || !canUseAnyChat()) return;
+    if (chatHistoryTranslationPromise) return chatHistoryTranslationPromise;
+    const pending = ai.messages
+      .map((message, index) => ({ message, index }))
+      .filter(({ message }) => !message.translations?.en && /[\u3400-\u9fff]/.test(message.content));
+    if (!pending.length) return;
+    chatHistoryTranslationPromise = (async () => {
+      for (let start = 0; start < pending.length; start += 8) {
+        if (locale !== "en") break;
+        const batch = pending.slice(start, start + 8);
+        const payload = batch.map(({ index, message }) => ({ index, text: message.content }));
+        const raw = await pinguChatComplete([
+          {
+            role: "system",
+            content: "Translate every item into natural English. Preserve meaning, tone, Markdown, names, and special blocks such as [[AFFIRM]]. Return only a valid JSON array: [{\"index\":number,\"text\":string}]. Do not answer or coach the content.",
+          },
+          { role: "user", content: JSON.stringify(payload) },
+        ]);
+        const jsonText = raw.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+        const translated = JSON.parse(jsonText);
+        if (!Array.isArray(translated)) continue;
+        translated.forEach((entry) => {
+          const msg = ai.messages[Number(entry.index)];
+          if (!msg || typeof entry.text !== "string") return;
+          msg.translations = { ...(msg.translations || {}), en: entry.text.trim() };
+        });
+        saveAi();
+        if (locale === "en") renderChatMessages();
+      }
+    })().finally(() => {
+      chatHistoryTranslationPromise = null;
+    });
+    return chatHistoryTranslationPromise;
   }
 
   function setChatBusy(busy) {
@@ -5487,6 +5791,8 @@
     const chatOpen = Boolean(els.pageChat && !els.pageChat.hidden);
     const anyPage = isAnyPageOpen();
     const showHomeTop = activeNav === "home" && !anyPage && !chatOpen && !openDrawer;
+    document.body.classList.toggle("puff-effects-home", showHomeTop);
+    if (!showHomeTop) clearPuffScreenEffects();
     els.screen?.classList.toggle("is-home", showHomeTop);
     if (els.topBar) els.topBar.hidden = !showHomeTop;
     if (els.taskDock) els.taskDock.hidden = !showHomeTop;
@@ -5501,6 +5807,24 @@
     if (els.profileCrash) els.profileCrash.value = p.crashPatterns || "";
     if (els.profileBoundaries) els.profileBoundaries.value = p.boundaries || "";
     if (els.profileNotes) els.profileNotes.value = p.notes || "";
+    requestAnimationFrame(resizeProfileFields);
+  }
+
+  function resizeProfileField(field) {
+    if (!field) return;
+    field.style.height = "0px";
+    field.style.height = `${Math.max(72, field.scrollHeight)}px`;
+  }
+
+  function resizeProfileFields() {
+    [
+      els.profileGoal,
+      els.profileOldStory,
+      els.profileEffective,
+      els.profileCrash,
+      els.profileBoundaries,
+      els.profileNotes,
+    ].forEach(resizeProfileField);
   }
 
   function readProfileForm() {
@@ -5698,6 +6022,47 @@
     closeUserProfileSheet();
   }
 
+  function ensureInlineUserSettings() {
+    const userBody = els.pageUserCenter?.querySelector(".user-center-body");
+    const settingsBody = els.pageAppearance?.querySelector(".appearance-body");
+    if (!userBody || !settingsBody) return null;
+    if (!settingsBody.classList.contains("is-user-center-inline")) {
+      settingsBody.classList.add("is-user-center-inline");
+      userBody.appendChild(settingsBody);
+    }
+    if (els.gotoSettings) els.gotoSettings.hidden = true;
+    return settingsBody;
+  }
+
+  let settingsDetailScrollTop = 0;
+  const settingsDetailTitleKeys = {
+    language: "languageHeading",
+    buddy: "buddyHeading",
+    icon: "appIconHeading",
+    background: "backgroundHeading",
+    privacy: "privacyHeading",
+  };
+
+  function setSettingsDetail(view, { restoreScroll = true } = {}) {
+    const page = els.pageUserCenter;
+    const body = page?.querySelector(".user-center-body");
+    const title = page?.querySelector(".user-center-head h1");
+    if (!page || !body || !title) return;
+    if (view && !settingsDetailTitleKeys[view]) return;
+    if (view) {
+      settingsDetailScrollTop = body.scrollTop;
+      page.dataset.settingsView = view;
+      title.dataset.i18n = settingsDetailTitleKeys[view];
+      title.textContent = t(settingsDetailTitleKeys[view]);
+      body.scrollTop = 0;
+    } else {
+      delete page.dataset.settingsView;
+      title.dataset.i18n = "userCenterTitle";
+      title.textContent = t("userCenterTitle");
+      if (restoreScroll) body.scrollTop = settingsDetailScrollTop;
+    }
+  }
+
   function openUserCenterPage() {
     setDrawer(null);
     closeChatSheet({ restore: false });
@@ -5707,6 +6072,8 @@
     if (els.pageFavorites) els.pageFavorites.hidden = true;
     if (els.diarySheet) els.diarySheet.hidden = true;
     hideUserHubPages();
+    const inlineSettings = ensureInlineUserSettings();
+    setSettingsDetail(null, { restoreScroll: false });
     revealAppPage(els.pageUserCenter);
     if (els.iconAffirm) els.iconAffirm.classList.remove("active");
     if (els.iconChat) els.iconChat.classList.remove("active");
@@ -5714,8 +6081,13 @@
     els.screen?.classList.add("page-open");
     setNavActive("home");
     syncUserCenterProfile();
+    appearanceDraft = { ...theme };
+    syncAppearanceFields();
+    fillChatSettingsForm();
+    refreshCloudEntitlement().catch(() => {});
     syncTopChrome();
     refreshLucideIcons(els.pageUserCenter);
+    if (inlineSettings) inlineSettings.scrollTop = 0;
   }
 
   function setAuthUiMode(mode) {
@@ -5801,7 +6173,7 @@
       els.authAccountSummary.textContent = cloudAccountLabel();
       if (els.accountSettingsName) els.accountSettingsName.textContent = getUserDisplayName();
       syncUserProfileFromTheme();
-      if (els.accountVersion) els.accountVersion.textContent = `版本 ${APP_VERSION}`;
+      if (els.accountVersion) els.accountVersion.textContent = locale === "en" ? `Version ${APP_VERSION}` : `版本 ${APP_VERSION}`;
     }
     if (loggedIn && els.authEntitlementSummary) {
       if (ai.cloudCanChat) {
@@ -5862,23 +6234,11 @@
   }
 
   function openSettingsPage() {
-    setDrawer(null);
-    if (els.pageHistory) els.pageHistory.hidden = true;
-    if (els.pageEdit) els.pageEdit.hidden = true;
-    if (els.pageProfile) els.pageProfile.hidden = true;
-    if (els.pageFaq) els.pageFaq.hidden = true;
-    if (els.pageUserCenter) els.pageUserCenter.hidden = true;
-    if (els.pageAuth) els.pageAuth.hidden = true;
-    revealAppPage(els.pageAppearance);
-    if (els.iconSettings) els.iconSettings.classList.add("active");
-    els.screen?.classList.add("page-open");
-    setNavActive("home");
-    appearanceDraft = { ...theme };
-    syncAppearanceFields();
-    fillChatSettingsForm();
-    refreshCloudEntitlement().catch(() => {});
-    syncTopChrome();
-    refreshLucideIcons(els.pageAppearance);
+    openUserCenterPage();
+    const inlineSettings = ensureInlineUserSettings();
+    window.requestAnimationFrame(() => {
+      inlineSettings?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
   }
 
   function closeSettingsPage() {
@@ -5935,6 +6295,7 @@
     syncTopChrome();
     profileDraft = { ...(ai.coachProfile || DEFAULT_COACH_PROFILE) };
     fillProfileForm(profileDraft);
+    if (els.autoAnalyzeVisible) els.autoAnalyzeVisible.checked = ai.autoAnalyze !== false;
     if (els.profileSavedFlag) {
       els.profileSavedFlag.hidden = true;
       els.profileSavedFlag.classList.remove("is-visible");
@@ -6088,12 +6449,14 @@
     els.tabList?.classList.toggle("active", which === "list");
     els.tabStatsInline?.classList.toggle("active", which === "stats");
     if (els.calPanelFooter) {
-      els.calPanelFooter.hidden = which === "stats";
+      els.calPanelFooter.hidden = which !== "calendar";
     }
+    if (els.calendarBelow) els.calendarBelow.hidden = which !== "calendar";
     if (which === "stats") refreshStats();
     requestAnimationFrame(() => {
       const seg = els.tabCalendar?.closest(".cal-tabs");
       updateSegIndicator(seg);
+      if (which === "stats") updateSegIndicator(els.statsTabWeek?.closest(".task-seg"));
     });
   }
 
@@ -6318,7 +6681,12 @@
   }
 
   function closePages({ keepNav = false } = {}) {
-    if (els.pageAppearance && !els.pageAppearance.hidden) {
+    const inlineSettingsOpen = Boolean(
+      els.pageUserCenter &&
+      !els.pageUserCenter.hidden &&
+      els.pageUserCenter.querySelector(".appearance-body.is-user-center-inline")
+    );
+    if ((els.pageAppearance && !els.pageAppearance.hidden) || inlineSettingsOpen) {
       persistChatApiSettings();
       commitAppearance({ alertOnFail: false });
     }
@@ -6509,6 +6877,7 @@
 
   function setRitualCardState(next) {
     ritualCardState = next || "collapsed";
+    if (ritualCardState === "running") clearPuffScreenEffects();
     const card = els.ritualBar;
     if (!card) return;
     const collapsed = ritualCardState === "collapsed";
@@ -6631,6 +7000,12 @@
   els.favoriteModeLink?.addEventListener("click", () => setFavoriteCreateMode("link"));
   els.favoriteFolderForm?.addEventListener("submit", (event) => {
     event.preventDefault();
+    if (editingFavoriteFolderId) {
+      if (!applyFavoriteFolderRename(editingFavoriteFolderId, els.favoriteFolderName?.value || "")) return;
+      if (els.favoriteFolderName) els.favoriteFolderName.value = "";
+      closeFavoriteCreateSheet();
+      return;
+    }
     const folder = createFavoriteFolder(els.favoriteFolderName?.value || "");
     if (!folder) return;
     if (els.favoriteFolderName) els.favoriteFolderName.value = "";
@@ -6640,11 +7015,22 @@
     const colorButton = event.target?.closest?.(".favorite-folder-color");
     if (colorButton) {
       event.stopPropagation();
+      suppressFavoriteFolderClick = false;
       const wrap = colorButton.closest(".favorite-folder-wrap");
       setFavoriteFolderColor(
         wrap?.getAttribute("data-folder-id"),
         colorButton.getAttribute("data-folder-color")
       );
+      return;
+    }
+    const actionButton = event.target?.closest?.("[data-folder-action]");
+    if (actionButton) {
+      event.stopPropagation();
+      suppressFavoriteFolderClick = false;
+      const id = actionButton.closest(".favorite-folder-wrap")?.getAttribute("data-folder-id");
+      closeFavoriteColorPalettes();
+      if (actionButton.getAttribute("data-folder-action") === "rename") renameFavoriteFolder(id);
+      if (actionButton.getAttribute("data-folder-action") === "delete") deleteFavoriteFolder(id);
       return;
     }
     const folder = event.target?.closest?.(".favorite-folder");
@@ -6666,7 +7052,7 @@
       closeFavoriteColorPalettes(palette);
       if (palette) {
         const rect = folder.getBoundingClientRect();
-        const paletteWidth = 171;
+        const paletteWidth = folder.getAttribute("data-folder-id") === "default" ? 218 : 254;
         const edge = 12;
         const centerX = Math.max(
           edge + paletteWidth / 2,
@@ -6698,6 +7084,7 @@
     activeFavoriteFolderId = null;
     renderResourceCards();
   });
+  els.favoriteFolderRename?.addEventListener("click", () => renameFavoriteFolder(activeFavoriteFolderId));
   if (els.resourceCards) {
     els.resourceCards.addEventListener("click", (e) => {
       const btn = e.target?.closest?.(".resource-card-remove");
@@ -6760,8 +7147,14 @@
   }
 
   if (els.backFromUserCenter) {
-    els.backFromUserCenter.addEventListener("click", closePages);
+    els.backFromUserCenter.addEventListener("click", () => {
+      if (els.pageUserCenter?.dataset.settingsView) setSettingsDetail(null);
+      else closePages();
+    });
   }
+  document.querySelectorAll("[data-open-settings-detail]").forEach((button) => {
+    button.addEventListener("click", () => setSettingsDetail(button.dataset.openSettingsDetail));
+  });
   if (els.gotoProfile) {
     els.gotoProfile.addEventListener("click", () => openProfilePage({ returnTo: "userCenter" }));
   }
@@ -6817,7 +7210,10 @@
       if (btn.dataset.puffAccessory) {
         const name = btn.dataset.puffAccessory;
         const key = `puff${name[0].toUpperCase()}${name.slice(1)}`;
-        appearanceDraft[key] = !appearanceDraft[key];
+        const nextOn = !appearanceDraft[key];
+        appearanceDraft[key] = nextOn;
+        if (nextOn && name === "headphones") appearanceDraft.puffHat = false;
+        if (nextOn && name === "hat") appearanceDraft.puffHeadphones = false;
       }
       if (btn.dataset.puffHold) appearanceDraft.puffHold = btn.dataset.puffHold;
       syncAppearanceFields();
@@ -6836,7 +7232,7 @@
       appearanceDraft.puffColor = pick(PUFF_COLORS);
       appearanceDraft.puffHat = Math.random() > 0.58;
       appearanceDraft.puffGlasses = Math.random() > 0.68;
-      appearanceDraft.puffHeadphones = Math.random() > 0.62;
+      appearanceDraft.puffHeadphones = !appearanceDraft.puffHat && Math.random() > 0.62;
       appearanceDraft.puffHold = pick(["none", "laptop", "pillow"]);
       appearanceDraft.puffBlanket = Math.random() > 0.5;
       syncAppearanceFields();
@@ -6866,7 +7262,7 @@
   }
   if (els.chatBgReset) {
     els.chatBgReset.addEventListener("click", () => {
-      appearanceDraft.chatMode = "image";
+      appearanceDraft.chatMode = "color";
       appearanceDraft.chatPreset = DEFAULT_CHAT_BG;
       appearanceDraft.chatCustom = "";
       syncAppearanceFields();
@@ -6988,6 +7384,64 @@
   function updateHomeGreeting() {
     if (els.homeGreetingLine) els.homeGreetingLine.textContent = homeGreetingSubline();
     syncUserCenterProfile();
+  }
+
+  let puffGreetingTimer = 0;
+  let puffGreetingHideTimer = 0;
+  let puffGreetingTypeTimer = 0;
+
+  function hidePuffGreeting() {
+    if (!els.homeGreeting) return;
+    window.clearTimeout(puffGreetingTypeTimer);
+    els.homeGreeting.classList.remove("is-visible");
+    window.clearTimeout(puffGreetingHideTimer);
+    puffGreetingHideTimer = window.setTimeout(() => {
+      if (!els.homeGreeting.classList.contains("is-visible")) els.homeGreeting.hidden = true;
+    }, 220);
+  }
+
+  function typePuffGreeting(text) {
+    if (!els.homeGreetingLine) return;
+    window.clearTimeout(puffGreetingTypeTimer);
+    const characters = Array.from(String(text || ""));
+    let index = 0;
+    els.homeGreetingLine.textContent = "";
+    const typeNext = () => {
+      if (!els.homeGreeting?.classList.contains("is-visible") || index >= characters.length) return;
+      const character = characters[index];
+      els.homeGreetingLine.textContent += character;
+      index += 1;
+      const punctuationPause = /[，。！？；,.!?]/.test(character) ? 150 : 0;
+      puffGreetingTypeTimer = window.setTimeout(typeNext, 48 + Math.random() * 34 + punctuationPause);
+    };
+    puffGreetingTypeTimer = window.setTimeout(typeNext, 120);
+  }
+
+  function showPuffGreeting() {
+    if (!els.homeGreeting || isAnyPageOpen() || document.visibilityState !== "visible") return;
+    updateHomeGreeting();
+    const greetingText = els.homeGreetingLine?.textContent || "";
+    window.clearTimeout(puffGreetingHideTimer);
+    els.homeGreeting.hidden = false;
+    requestAnimationFrame(() => {
+      els.homeGreeting?.classList.add("is-visible");
+      typePuffGreeting(greetingText);
+    });
+    const readingTime = Math.min(6800, Math.max(4400, Array.from(greetingText).length * 95 + 1200));
+    puffGreetingHideTimer = window.setTimeout(hidePuffGreeting, readingTime);
+  }
+
+  function schedulePuffGreeting() {
+    window.clearTimeout(puffGreetingTimer);
+    const delay = 18000 + Math.random() * 30000;
+    puffGreetingTimer = window.setTimeout(() => {
+      if (!isAnyPageOpen() && document.visibilityState === "visible") showPuffGreeting();
+      schedulePuffGreeting();
+    }, delay);
+  }
+
+  function maybeShowPuffGreeting(source) {
+    if (source === "tap" && Math.random() < 0.42) showPuffGreeting();
   }
 
   /** @type {HTMLAudioElement | null} */
@@ -8050,6 +8504,10 @@
     const root = els.diaryList;
     if (!root) return;
     root.innerHTML = "";
+    const lead = document.createElement("p");
+    lead.className = "favorites-lead diary-page-lead";
+    lead.textContent = "Little things, big love.";
+    root.appendChild(lead);
     if (!diaryEntries.length) {
       const empty = document.createElement("p");
       empty.className = "diary-empty";
@@ -8188,6 +8646,7 @@
 
   loadDiary();
   updateHomeGreeting();
+  schedulePuffGreeting();
   bindMusicUi();
   handleSpotifyOAuthReturn();
   paintMusicChrome();
@@ -8377,7 +8836,7 @@
     els.autoAnalyze.addEventListener("change", scheduleChatApiPersist);
   }
   if (els.autoAnalyzeVisible) {
-    els.autoAnalyzeVisible.addEventListener("change", scheduleChatApiPersist);
+    els.autoAnalyzeVisible.addEventListener("change", persistChatApiSettings);
   }
   if (els.cloudApiBase) {
     els.cloudApiBase.addEventListener("change", persistCloudApiBase);
@@ -8540,7 +8999,10 @@
     els.profileNotes,
   ].filter(Boolean);
   profileFieldEls.forEach((field) => {
-    field.addEventListener("input", () => scheduleProfileAutoSave());
+    field.addEventListener("input", () => {
+      resizeProfileField(field);
+      scheduleProfileAutoSave();
+    });
     field.addEventListener("blur", () => {
       clearTimeout(profileAutoSaveTimer);
       saveProfileFromForm({ stayOnPage: true });
@@ -8663,6 +9125,43 @@
 
   window.addEventListener("beforeunload", () => {
     if (timeDirty) save(state);
+  });
+
+  const appIconChoices = Array.from(document.querySelectorAll("[data-app-icon]"));
+  const appIconStatus = document.getElementById("app-icon-status");
+  const nativeIconApi = window.AffirmNative;
+  const setActiveAppIcon = (icon) => {
+    appIconChoices.forEach((button) => {
+      const active = button.dataset.appIcon === icon;
+      button.classList.toggle("is-active", active);
+      button.setAttribute("aria-checked", active ? "true" : "false");
+    });
+  };
+  let currentAppIcon = "default";
+  try {
+    currentAppIcon = nativeIconApi?.getAppIcon?.() || localStorage.getItem("affirm-pingu-app-icon") || "default";
+  } catch {
+    currentAppIcon = localStorage.getItem("affirm-pingu-app-icon") || "default";
+  }
+  setActiveAppIcon(currentAppIcon);
+  appIconChoices.forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextIcon = button.dataset.appIcon || "default";
+      if (!nativeIconApi?.setAppIcon) {
+        localStorage.setItem("affirm-pingu-app-icon", nextIcon);
+        setActiveAppIcon(nextIcon);
+        if (appIconStatus) appIconStatus.textContent = "安装 Android App 后可切换主屏幕图标。";
+        return;
+      }
+      try {
+        nativeIconApi.setAppIcon(nextIcon);
+        localStorage.setItem("affirm-pingu-app-icon", nextIcon);
+        setActiveAppIcon(nextIcon);
+        if (appIconStatus) appIconStatus.textContent = "图标已更新，部分桌面可能需要几秒刷新。";
+      } catch {
+        if (appIconStatus) appIconStatus.textContent = "图标切换失败，请稍后重试。";
+      }
+    });
   });
 
   loadCoachManual();

@@ -2,6 +2,9 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#C8E4F8" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;600;700&family=Caveat:wght@500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css?v=32" />
-  <link rel="stylesheet" href="v2.css?v=77" />
+  <link rel="stylesheet" href="v2.css?v=104" />
   <link rel="stylesheet" href="assets/puff/puff.css?v=3" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -161,6 +164,30 @@
             <span>多</span>
           </div>
         </div>
+        <div class="calendar-below" id="calendar-below">
+          <div class="panel-footer cal-panel-footer">
+            <div class="cal-footer-panel">
+              <div class="cal-footer-stat">
+                <span class="stat-chip-label" data-i18n="today">今日</span>
+                <strong class="stat-chip-value" id="today-count">0</strong>
+              </div>
+              <div class="cal-footer-stat">
+                <span class="stat-chip-label" data-i18n="total">累计</span>
+                <strong class="stat-chip-value" id="total-count">0</strong>
+              </div>
+            </div>
+          </div>
+          <section class="calendar-ai-summary" aria-labelledby="calendar-ai-title">
+            <div class="calendar-ai-puff" id="calendar-ai-puff" aria-label="正在蹦跶的棉棉"></div>
+            <div class="calendar-ai-copy">
+              <div class="calendar-ai-heading">
+                <h3 id="calendar-ai-title">AI 智能总结</h3>
+                <span>今日分析</span>
+              </div>
+              <p id="calendar-ai-text">今天还没有开始肯定语练习，先轻轻点一次棉棉，让状态启动起来。</p>
+            </div>
+          </section>
+        </div>
         <div id="list-view" class="view">
           <ul id="history-list" class="history-list"></ul>
         </div>
@@ -173,9 +200,10 @@
             </div>
             <p class="stats-today-caption" id="stats-today-caption"></p>
           </section>
-          <div class="panel-tabs stats-range-tabs" role="tablist" aria-label="统计范围" data-i18n-aria="statsRangeAria">
-            <button type="button" class="tab active" data-range="week" id="stats-tab-week" role="tab" aria-selected="true" data-i18n="week">周</button>
-            <button type="button" class="tab" data-range="month" id="stats-tab-month" role="tab" aria-selected="false" data-i18n="month">月</button>
+          <div class="task-seg stats-range-tabs" role="tablist" aria-label="统计范围" data-i18n-aria="statsRangeAria">
+            <span class="seg-indicator" aria-hidden="true"></span>
+            <button type="button" class="task-seg-btn tab active is-active" data-range="week" id="stats-tab-week" role="tab" aria-selected="true" data-i18n="week">周</button>
+            <button type="button" class="task-seg-btn tab" data-range="month" id="stats-tab-month" role="tab" aria-selected="false" data-i18n="month">月</button>
           </div>
           <div class="stats-period-nav">
             <button type="button" class="stats-nav-btn" id="stats-prev-period" aria-label="上一段" data-i18n-aria="statsPrevPeriod">
@@ -197,18 +225,6 @@
             </div>
             <p class="stats-day-detail-body" id="stats-detail-body"></p>
           </section>
-        </div>
-      </div>
-      <div class="panel-footer cal-panel-footer">
-        <div class="cal-footer-panel">
-          <div class="cal-footer-stat">
-            <span class="stat-chip-label" data-i18n="today">今日</span>
-            <strong class="stat-chip-value" id="today-count">0</strong>
-          </div>
-          <div class="cal-footer-stat">
-            <span class="stat-chip-label" data-i18n="total">累计</span>
-            <strong class="stat-chip-value" id="total-count">0</strong>
-          </div>
         </div>
       </div>
     </aside>
@@ -238,7 +254,7 @@
       <button type="button" class="ritual-expand-btn" id="ritual-expand" hidden title="展开今日任务" aria-label="展开今日任务" data-i18n-title="expandTasks" data-i18n-aria="expandTasks"></button>
 
       <div class="pingu-stage">
-        <div class="home-greeting" id="home-greeting">
+        <div class="home-greeting" id="home-greeting" role="status" aria-live="polite" hidden>
           <p class="home-greeting-name" id="home-greeting-name" data-i18n="greetingName">小 Gin,</p>
           <p class="home-greeting-line" id="home-greeting-line" data-i18n="greetingDiaryHint">你今天还没有开始写你的感恩日记</p>
         </div>
@@ -449,7 +465,6 @@
           <button type="button" class="task-seg-btn edit-kind-tab is-active" id="edit-kind-story" role="tab" aria-selected="true" data-kind="story" data-i18n="storyMode">故事稿</button>
           <button type="button" class="task-seg-btn edit-kind-tab" id="edit-kind-robotic" role="tab" aria-selected="false" data-kind="robotic" data-i18n="robotic">机械 A</button>
         </div>
-        <p class="edit-hint" data-i18n="editHintEndstate">让句子站在「已拥有」的终点。</p>
         <div class="edit-compose-card">
           <textarea id="affirm-input" maxlength="800" placeholder="从这里写下你的新故事…" data-i18n-placeholder="editPlaceholderStory" autocomplete="off" spellcheck="false"></textarea>
         </div>
@@ -465,7 +480,6 @@
       <header class="page-header diary-head">
         <div class="diary-head-text">
           <h1 data-i18n="diaryTitle">感恩日记</h1>
-          <p class="diary-sub">Little things, big love.</p>
         </div>
         <button type="button" class="page-round-plus" id="diary-add" aria-label="新建日记" data-i18n-aria="diaryAdd">
           <img src="assets/icon-plus.svg" alt="" width="18" height="18" />
@@ -493,6 +507,9 @@
                 <h2 id="favorite-folder-title"></h2>
                 <p id="favorite-folder-count"></p>
               </div>
+              <button type="button" class="favorite-folder-rename" id="favorite-folder-rename" aria-label="修改文件夹名称" title="修改文件夹名称">
+                <i data-lucide="pencil" aria-hidden="true"></i>
+              </button>
             </div>
             <div class="resource-cards" id="resource-cards"></div>
           </section>
@@ -512,41 +529,43 @@
             <button type="button" class="task-seg-btn is-active" id="favorite-mode-folder" role="tab" aria-selected="true">新建分类</button>
             <button type="button" class="task-seg-btn" id="favorite-mode-link" role="tab" aria-selected="false">添加链接</button>
           </div>
-          <form class="favorite-folder-form" id="favorite-folder-form">
-            <label>分类名称
-              <input type="text" id="favorite-folder-name" maxlength="24" placeholder="例如：睡前冥想" autocomplete="off" required />
-            </label>
-            <button type="submit" class="favorite-primary-btn">创建分类</button>
-          </form>
-          <form class="resource-add favorite-link-form" id="resource-add-form" hidden>
-            <label>收藏到
-              <select id="favorite-folder-select"></select>
-            </label>
-            <label>链接
-            <input
-              type="url"
-              id="resource-url-input"
-              class="resource-add-url"
-              placeholder="粘贴 B站 / YouTube 等视频链接…"
-              data-i18n-placeholder="urlPlaceholder"
-              autocomplete="off"
-              spellcheck="false"
-              required
-            />
-            </label>
-            <label>标题（可选）
+          <div class="favorite-form-stage" id="favorite-form-stage">
+            <form class="favorite-folder-form" id="favorite-folder-form">
+              <label>分类名称
+                <input type="text" id="favorite-folder-name" maxlength="24" placeholder="例如：睡前冥想" autocomplete="off" required />
+              </label>
+              <button type="submit" class="favorite-primary-btn" id="favorite-folder-submit">创建分类</button>
+            </form>
+            <form class="resource-add favorite-link-form" id="resource-add-form" hidden>
+              <label>收藏到
+                <select id="favorite-folder-select"></select>
+              </label>
+              <label>链接
               <input
-                type="text"
-                id="resource-title-input"
-                class="resource-add-title"
-                placeholder="标题（可选，不填自动识别）"
-                data-i18n-placeholder="titlePlaceholder"
-                maxlength="80"
+                type="url"
+                id="resource-url-input"
+                class="resource-add-url"
+                placeholder="粘贴 B站 / YouTube 等视频链接…"
+                data-i18n-placeholder="urlPlaceholder"
                 autocomplete="off"
+                spellcheck="false"
+                required
               />
-            </label>
-            <button type="submit" class="resource-add-btn favorite-primary-btn" id="resource-add-btn" data-i18n="add">添加</button>
-          </form>
+              </label>
+              <label>标题（可选）
+                <input
+                  type="text"
+                  id="resource-title-input"
+                  class="resource-add-title"
+                  placeholder="标题（可选，不填自动识别）"
+                  data-i18n-placeholder="titlePlaceholder"
+                  maxlength="80"
+                  autocomplete="off"
+                />
+              </label>
+              <button type="submit" class="resource-add-btn favorite-primary-btn" id="resource-add-btn" data-i18n="add">添加</button>
+            </form>
+          </div>
         </div>
       </div>
     </section>
@@ -696,6 +715,10 @@
             <span data-i18n="profileSavedShort">已保存</span>
           </span>
         </p>
+        <label class="profile-auto-analyze">
+          <span data-i18n="autoAnalyzeLabel">每天第一次打开对话时自动分析</span>
+          <input type="checkbox" id="auto-analyze-visible" checked />
+        </label>
         <label class="profile-field"><span data-i18n="profileGoal">终点目标</span><textarea id="profile-goal" rows="3"></textarea></label>
         <label class="profile-field"><span data-i18n="profileOldStory">旧故事</span><textarea id="profile-old-story" rows="3"></textarea></label>
         <label class="profile-field"><span data-i18n="profileEffective">有效肯定语</span><textarea id="profile-effective" rows="3"></textarea></label>
@@ -713,10 +736,10 @@
         <span class="page-spacer" aria-hidden="true"></span>
       </header>
       <div class="page-body appearance-body">
-        <section class="appearance-block" id="pingu-assistant-settings">
+        <section class="appearance-block" id="pingu-assistant-settings" hidden>
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
-            <span data-i18n="cloudHeading">Pingu 助手</span>
+            <span data-i18n="cloudHeading">Assistant</span>
           </h2>
           <p class="chat-settings-note" data-i18n="cloudIntro">登录并激活兑换码即可使用助手，无需自己的 OpenAI Key。</p>
           <button type="button" class="appearance-mode-btn cloud-goto-auth-btn" id="goto-auth-from-settings" data-i18n="gotoAuthFromSettings">登录 / 管理账号</button>
@@ -728,7 +751,7 @@
           <p class="chat-settings-note cloud-status" id="cloud-status" role="status"></p>
         </section>
 
-        <section class="appearance-block" id="chat-settings">
+        <section class="appearance-block" id="chat-settings" hidden>
           <details class="chat-byok-details" hidden aria-hidden="true">
             <summary class="appearance-heading appearance-heading-summary">
               <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="key-round"></i></span>
@@ -764,18 +787,19 @@
             <input type="text" id="openai-model-custom" placeholder="例如 gpt-5.2" autocomplete="off" spellcheck="false" />
           </label>
           <label class="chat-check">
-            <input type="checkbox" id="auto-analyze" checked />
             <span data-i18n="autoAnalyzeLabel">每天第一次打开对话时自动分析</span>
+            <input type="checkbox" id="auto-analyze" checked />
           </label>
           <p class="chat-settings-note" data-i18n="apiAutoSaveNote">改动会自动保存。ChatGPT 会员 ≠ API，请用 platform.openai.com 的 Key。</p>
           </details>
-          <label class="chat-check auto-analyze-only">
-            <input type="checkbox" id="auto-analyze-visible" checked />
-            <span data-i18n="autoAnalyzeLabel">每天第一次打开对话时自动分析</span>
-          </label>
         </section>
 
-        <section class="appearance-block">
+        <button type="button" class="settings-entry-row" data-open-settings-detail="language">
+          <span class="settings-entry-icon" aria-hidden="true"><i data-lucide="languages"></i></span>
+          <span data-i18n="languageHeading">语言</span>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <section class="appearance-block settings-detail-block" data-settings-detail="language">
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="languages"></i></span>
             <span data-i18n="languageHeading">语言</span>
@@ -786,26 +810,49 @@
           </div>
         </section>
 
-        <section class="appearance-block">
+        <button type="button" class="settings-entry-row" data-open-settings-detail="buddy">
+          <span class="settings-entry-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
+          <span data-i18n="buddyHeading">首页形象</span>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <section class="appearance-block settings-detail-block" data-settings-detail="buddy">
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="sparkles"></i></span>
             <span data-i18n="buddyHeading">首页形象</span>
           </h2>
           <div class="puff-customizer" id="pingu-preset-grid" aria-label="棉棉形象设置">
-            <p class="puff-setting-label">棉花颜色</p>
             <div class="puff-swatches" role="group" aria-label="棉花颜色">
               <button type="button" data-puff-color="pink" style="--sw:linear-gradient(145deg,#FFF1F6,#FFC6DA 55%,#E7A2D2)" aria-label="粉色"></button><button type="button" data-puff-color="white" style="--sw:linear-gradient(145deg,#fff,#F7F4EF 55%,#D9D8EA)" aria-label="白色"></button><button type="button" data-puff-color="black" style="--sw:linear-gradient(145deg,#6E6879,#3E3946 55%,#24202B)" aria-label="黑色"></button><button type="button" data-puff-color="blue" style="--sw:linear-gradient(145deg,#F0FAFF,#C4E6F8 55%,#A4C1F0)" aria-label="浅蓝"></button><button type="button" data-puff-color="green" style="--sw:linear-gradient(145deg,#EEFAE2,#B5E08F 55%,#86C8A0)" aria-label="草绿"></button><button type="button" data-puff-color="orange" style="--sw:linear-gradient(145deg,#FFF0DC,#FFBA78 55%,#FF9480)" aria-label="橙色"></button><button type="button" data-puff-color="rose" style="--sw:linear-gradient(145deg,#FFB3CF,#F45C93 55%,#D3479F)" aria-label="玫红"></button>
             </div>
-            <p class="puff-setting-label">头部配件</p>
-            <div class="puff-choice-row" role="group" aria-label="头部配件"><button type="button" data-puff-accessory="hat">帽子</button><button type="button" data-puff-accessory="glasses">眼镜</button><button type="button" data-puff-accessory="headphones">耳机</button></div>
-            <p class="puff-setting-label">手上</p>
-            <div class="puff-choice-row" role="group" aria-label="手上配件"><button type="button" data-puff-hold="none">无</button><button type="button" data-puff-hold="laptop">电脑</button><button type="button" data-puff-hold="pillow">抱枕</button></div>
-            <label class="puff-toggle"><input type="checkbox" id="puff-blanket-toggle"><span>松松地裹着毯子</span></label>
-            <button type="button" class="puff-randomize" id="puff-randomize"><i data-lucide="shuffle"></i><span>随机搭配</span></button>
+            <p class="puff-setting-label">配件</p>
+            <div class="puff-choice-row" role="group" aria-label="棉棉配件">
+              <button type="button" data-puff-accessory="hat">帽子</button><button type="button" data-puff-accessory="glasses">眼镜</button><button type="button" data-puff-accessory="headphones">耳机</button><button type="button" data-puff-hold="none">无手持</button><button type="button" data-puff-hold="laptop">电脑</button><button type="button" data-puff-hold="pillow">抱枕</button><button type="button" data-puff-accessory="blanket">裹毯子</button><button type="button" class="puff-randomize" id="puff-randomize" aria-label="随机搭配"><i data-lucide="dice-5" aria-hidden="true"></i><span>随机</span></button>
+            </div>
           </div>
         </section>
 
-        <section class="appearance-block">
+        <button type="button" class="settings-entry-row" data-open-settings-detail="icon">
+          <span class="settings-entry-icon" aria-hidden="true"><i data-lucide="app-window"></i></span>
+          <span data-i18n="appIconHeading">App icon</span>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <section class="appearance-block app-icon-settings settings-detail-block" id="app-icon-settings" data-settings-detail="icon">
+          <h2 class="appearance-heading"><span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="app-window"></i></span><span data-i18n="appIconHeading">App icon</span></h2>
+          <p class="app-icon-note">选择显示在手机主屏幕上的棉棉图标，深色模式会自动切换黑底版本。</p>
+          <div class="app-icon-picker" role="radiogroup" aria-label="更换应用图标">
+            <button type="button" class="app-icon-choice" data-app-icon="default" role="radio" aria-checked="false"><img src="assets/app-icons/preview-default.png" alt="默认图标" /><span>默认</span><i data-lucide="check" aria-hidden="true"></i></button>
+            <button type="button" class="app-icon-choice" data-app-icon="squeeze" role="radio" aria-checked="false"><img src="assets/app-icons/preview-squeeze.png" alt="捏捏图标" /><span>捏捏</span><i data-lucide="check" aria-hidden="true"></i></button>
+            <button type="button" class="app-icon-choice" data-app-icon="line" role="radio" aria-checked="false"><img src="assets/app-icons/preview-line.png" alt="一笔图标" /><span>一笔</span><i data-lucide="check" aria-hidden="true"></i></button>
+          </div>
+          <p class="app-icon-status" id="app-icon-status" role="status"></p>
+        </section>
+
+        <button type="button" class="settings-entry-row" data-open-settings-detail="background">
+          <span class="settings-entry-icon" aria-hidden="true"><i data-lucide="image"></i></span>
+          <span data-i18n="backgroundHeading">Background</span>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <section class="appearance-block settings-detail-block" data-settings-detail="background">
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="image"></i></span>
             <span data-i18n="homeBgHeading">主页背景</span>
@@ -817,7 +864,7 @@
           <input type="file" id="home-bg-upload" accept="image/*" hidden />
         </section>
 
-        <section class="appearance-block">
+        <section class="appearance-block settings-detail-block" data-settings-detail="background">
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="message-circle"></i></span>
             <span data-i18n="chatBgHeading">聊天背景</span>
@@ -829,7 +876,12 @@
           <input type="file" id="chat-bg-upload" accept="image/*" hidden />
         </section>
 
-        <section class="appearance-block" id="privacy-security-block">
+        <button type="button" class="settings-entry-row" data-open-settings-detail="privacy">
+          <span class="settings-entry-icon" aria-hidden="true"><i data-lucide="shield"></i></span>
+          <span data-i18n="privacyHeading">隐私与安全</span>
+          <i data-lucide="chevron-right" aria-hidden="true"></i>
+        </button>
+        <section class="appearance-block settings-detail-block" id="privacy-security-block" data-settings-detail="privacy">
           <h2 class="appearance-heading">
             <span class="appearance-heading-icon" aria-hidden="true"><i data-lucide="shield"></i></span>
             <span data-i18n="privacyHeading">隐私与安全</span>
@@ -920,11 +972,11 @@
             <summary>
               <span class="account-settings-row-icon"><i data-lucide="info" aria-hidden="true"></i></span>
               <span class="account-about-copy"><strong id="account-about-title">关于应用</strong><small>Dreamey.</small></span>
-              <span class="account-version" id="account-version">版本 1.3.2</span>
+              <span class="account-version" id="account-version">版本 1.3.5</span>
               <i data-lucide="chevron-down" class="account-about-chevron" aria-hidden="true"></i>
             </summary>
             <div class="account-about-details">
-              <strong>Dreamey. 1.3.2</strong>
+              <strong>Dreamey. 1.3.5</strong>
               <p>专注于每日肯定、显化记录与陪伴式对话。</p>
               <p>本次更新：优化账号资料同步，新增默认背景恢复，并精简设置选项。</p>
             </div>
@@ -988,11 +1040,13 @@
   </div>
 
   <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js" crossorigin="anonymous"></script>
-  <script src="assets/puff/puff.js?v=3"></script>
-  <script src="app.js?v=73"></script>
+  <script src="assets/puff/puff.js?v=4"></script>
+  <script src="app.js?v=92"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js").catch(() => {});
+      navigator.serviceWorker.register("./sw.js?v=95", { updateViaCache: "none" })
+        .then((registration) => registration.update())
+        .catch(() => {});
     }
   </script>
 </body>
